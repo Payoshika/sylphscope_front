@@ -1,0 +1,417 @@
+@use "base" as *;
+@use "mixins" as *;
+
+// Input Fields
+.input {
+  width: 100%;
+  padding: 1.2rem 1.6rem;
+  font-size: 1.6rem;
+  font-family: inherit;
+  border: 2px solid rgba($text-color, 0.2);
+  border-radius: 6px;
+  background-color: $background-color;
+  color: $text-color;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $text-color;
+    @include BoxShadow;
+  }
+
+  &:disabled {
+    background-color: rgba($text-color, 0.05);
+    color: rgba($text-color, 0.5);
+    cursor: not-allowed;
+  }
+
+  &::placeholder {
+    color: rgba($text-color, 0.5);
+  }
+}
+
+.input--small {
+  padding: 0.8rem 1.2rem;
+  font-size: 1.4rem;
+}
+
+.input--large {
+  padding: 1.6rem 2rem;
+  font-size: 1.8rem;
+}
+
+// Textarea
+.textarea {
+  @extend .input;
+  min-height: 12rem;
+  resize: vertical;
+  font-family: inherit;
+}
+
+// Select
+.select {
+  @extend .input;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: right 1.2rem center;
+  background-size: 1.6rem;
+  padding-right: 4rem;
+  appearance: none;
+}
+
+// Checkbox & Radio
+.checkbox,
+.radio {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  font-size: 1.6rem;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .checkmark,
+  .radiomark {
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid rgba($text-color, 0.3);
+    background-color: $background-color;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .checkmark {
+    border-radius: 4px;
+  }
+
+  .radiomark {
+    border-radius: 50%;
+  }
+
+  &:hover .checkmark,
+  &:hover .radiomark {
+    border-color: $text-color;
+  }
+
+  input:checked ~ .checkmark,
+  input:checked ~ .radiomark {
+    background-color: $text-color;
+    border-color: $text-color;
+  }
+
+  input:checked ~ .checkmark::after {
+    content: "";
+    position: absolute;
+    left: 0.6rem;
+    top: 0.2rem;
+    width: 0.6rem;
+    height: 1rem;
+    border: 2px solid $background-color;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  input:checked ~ .radiomark::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    background: $background-color;
+    transform: translate(-50%, -50%);
+  }
+}
+
+// Buttons
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 1.2rem 2.4rem;
+  font-size: 1.6rem;
+  font-weight: 500;
+  font-family: inherit;
+  border: 2px solid $text-color;
+  border-radius: 6px;
+  background-color: $text-color;
+  color: $background-color;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  @include ButtonDown;
+
+  &:hover {
+    background-color: rgba($text-color, 0.9);
+    transform: translateY(-2px);
+    @include BoxShadow;
+  }
+
+  &:focus {
+    outline: 2px solid rgba($text-color, 0.3);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    background-color: rgba($text-color, 0.3);
+    border-color: rgba($text-color, 0.3);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.btn--outline {
+  background-color: transparent;
+  color: $text-color;
+
+  &:hover {
+    background-color: $text-color;
+    color: $background-color;
+  }
+}
+
+.btn--ghost {
+  border-color: transparent;
+  background-color: transparent;
+  color: $text-color;
+
+  &:hover {
+    background-color: rgba($text-color, 0.1);
+    border-color: rgba($text-color, 0.2);
+  }
+}
+
+.btn--small {
+  padding: 0.8rem 1.6rem;
+  font-size: 1.4rem;
+}
+
+.btn--large {
+  padding: 1.6rem 3.2rem;
+  font-size: 1.8rem;
+}
+
+.btn--full {
+  width: 100%;
+}
+
+// Cards
+.card {
+  background-color: $background-color;
+  border: 1px solid rgba($text-color, 0.1);
+  border-radius: 8px;
+  padding: 2.4rem;
+  @include BoxShadow;
+
+  &__header {
+    @include MarginBottom2rem;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin-bottom: 0.8rem;
+    }
+  }
+
+  &__body {
+    @include MarginBottom2rem;
+  }
+
+  &__footer {
+    padding-top: 1.6rem;
+    border-top: 1px solid rgba($text-color, 0.1);
+    @include RowJustifySpaceBetweenFlexbox;
+  }
+}
+
+// Lists
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  &__item {
+    padding: 1.2rem 1.6rem;
+    border-bottom: 1px solid rgba($text-color, 0.1);
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba($text-color, 0.05);
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+.list--bordered {
+  border: 1px solid rgba($text-color, 0.1);
+  border-radius: 6px;
+}
+
+.list--spaced {
+  .list__item {
+    @include MarginBottom1rem;
+    padding: 1.6rem;
+    border: 1px solid rgba($text-color, 0.1);
+    border-radius: 6px;
+    border-bottom: 1px solid rgba($text-color, 0.1);
+  }
+}
+
+// Badges
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 1.2rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  border-radius: 999px;
+  background-color: $text-color;
+  color: $background-color;
+
+  &--outline {
+    background-color: transparent;
+    border: 1px solid $text-color;
+    color: $text-color;
+  }
+
+  &--small {
+    padding: 0.2rem 0.8rem;
+    font-size: 1rem;
+  }
+
+  &--large {
+    padding: 0.6rem 1.6rem;
+    font-size: 1.4rem;
+  }
+}
+
+// Alert/Notification
+.alert {
+  padding: 1.6rem;
+  border-radius: 6px;
+  border: 1px solid rgba($text-color, 0.2);
+  background-color: rgba($text-color, 0.05);
+  @include MarginBottom2rem;
+
+  &__title {
+    font-weight: 600;
+    @include MarginBottom1rem;
+  }
+
+  &__message {
+    margin: 0;
+  }
+}
+
+// Modal
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba($text-color, 0.5);
+  z-index: 1000;
+  @include RowJustifyCenterFlexbox;
+
+  &__content {
+    background-color: $background-color;
+    border-radius: 8px;
+    padding: 3rem;
+    max-width: 50rem;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    @include BoxShadow;
+  }
+
+  &__header {
+    @include RowJustifySpaceBetweenFlexbox;
+    @include MarginBottom2rem;
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    font-size: 2.4rem;
+    cursor: pointer;
+    color: $text-color;
+    padding: 0;
+
+    &:hover {
+      color: rgba($text-color, 0.7);
+    }
+  }
+}
+
+// Progress Bar
+.progress {
+  width: 100%;
+  height: 0.8rem;
+  background-color: rgba($text-color, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+
+  &__bar {
+    height: 100%;
+    background-color: $text-color;
+    transition: width 0.3s ease;
+  }
+}
+
+// Divider
+.divider {
+  border: none;
+  height: 1px;
+  background-color: rgba($text-color, 0.2);
+  margin: 2rem 0;
+
+  &--thick {
+    height: 2px;
+  }
+
+  &--vertical {
+    width: 1px;
+    height: auto;
+    margin: 0 2rem;
+  }
+}
+
+// Responsive adjustments
+@include smartphone {
+  .card {
+    padding: 1.6rem;
+  }
+
+  .modal__content {
+    padding: 2rem;
+    width: 95%;
+  }
+
+  .btn {
+    padding: 1rem 2rem;
+    font-size: 1.4rem;
+  }
+
+  .input,
+  .textarea,
+  .select {
+    padding: 1rem 1.4rem;
+    font-size: 1.4rem;
+  }
+}
