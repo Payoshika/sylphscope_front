@@ -1,6 +1,69 @@
 @use "base" as *;
 @use "mixins" as *;
 
+// ...existing code...
+
+// Form Groups
+.form-group {
+  @include MarginBottom2rem;
+
+  label {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: $text-color;
+    @include MarginBottom1rem;
+  }
+}
+
+// Input Groups (for password toggle)
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+
+  .input {
+    flex: 1;
+  }
+
+  .btn {
+    flex-shrink: 0;
+  }
+}
+
+// Error States
+.input--error {
+  border-color: #e53e3e;
+
+  &:focus {
+    border-color: #e53e3e;
+    box-shadow: 0 0 0 2px rgba(229, 62, 62, 0.2);
+  }
+}
+
+.error-message {
+  font-size: 1.2rem;
+  color: #e53e3e;
+  margin-top: 0.4rem;
+}
+
+// Link styling
+.link {
+  color: $text-color;
+  text-decoration: underline;
+  font-weight: 500;
+
+  &:hover {
+    color: rgba($text-color, 0.8);
+  }
+}
+
+// Text center utility
+.text-center {
+  text-align: center;
+}
+
 // Input Fields
 .input {
   width: 100%;

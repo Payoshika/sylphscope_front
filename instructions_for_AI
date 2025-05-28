@@ -1,0 +1,2 @@
+1. do not use inline styling
+2. always use classname defined in the /src/css folder

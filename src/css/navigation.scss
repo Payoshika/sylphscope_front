@@ -1,0 +1,47 @@
+@use "base" as *;
+@use "mixins" as *;
+
+// Navigation
+.nav-container {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+}
+
+.nav-brand {
+  h3 {
+    color: $text-color;
+  }
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+@include smartphone {
+  .nav-container {
+    flex-direction: column;
+    gap: 1.6rem;
+    text-align: center;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .nav-user {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+}

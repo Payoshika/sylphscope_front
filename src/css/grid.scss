@@ -1,4 +1,5 @@
 @use "base" as *;
+@use "mixins" as *;
 .grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -6,4 +7,9 @@
   min-height: 100vh;
   max-width: 140rem;
   margin: 0 auto;
+}
+
+.signin-container,
+.signup-container {
+  grid-column: 1 / -1;
 }
