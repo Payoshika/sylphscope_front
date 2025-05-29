@@ -1,8 +1,6 @@
 @use "base" as *;
 
 // Typography Scale
-// Based on 1rem = 10px from base.scss
-// Headings
 h1,
 .h1 {
   font-size: 4.8rem;
@@ -90,24 +88,24 @@ p,
   font-size: 1.2rem;
   font-weight: 400;
   line-height: 1.4;
-  color: rgba($text-color, 0.7);
+  color: $secondary-color;
 }
 
 // Links
 a {
-  color: $text-color;
+  color: $primary-color;
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
   transition: all 0.2s ease;
 
   &:hover {
-    color: rgba($text-color, 0.8);
+    color: $secondary-color;
     text-decoration-thickness: 2px;
   }
 
   &:focus {
-    outline: 2px solid rgba($text-color, 0.3);
+    outline: 2px solid rgba($primary-color, 0.3);
     outline-offset: 2px;
   }
 }
@@ -148,8 +146,8 @@ blockquote {
   line-height: 1.6;
   margin: 2rem 0;
   padding: 2rem;
-  border-left: 4px solid rgba($text-color, 0.3);
-  background-color: rgba($text-color, 0.05);
+  border-left: 4px solid $border-color;
+  background-color: $subtle-color;
   color: $text-color;
 
   cite {
@@ -157,7 +155,7 @@ blockquote {
     font-size: 1.4rem;
     font-style: normal;
     margin-top: 1rem;
-    color: rgba($text-color, 0.7);
+    color: $secondary-color;
 
     &::before {
       content: "— ";
@@ -169,7 +167,7 @@ blockquote {
 code {
   font-family: "Courier New", monospace;
   font-size: 1.4rem;
-  background-color: rgba($text-color, 0.1);
+  background-color: $subtle-color;
   padding: 0.2rem 0.4rem;
   border-radius: 3px;
   color: $text-color;
@@ -179,7 +177,7 @@ pre {
   font-family: "Courier New", monospace;
   font-size: 1.4rem;
   line-height: 1.5;
-  background-color: rgba($text-color, 0.1);
+  background-color: $subtle-color;
   padding: 1.6rem;
   border-radius: 6px;
   overflow-x: auto;
@@ -205,7 +203,11 @@ pre {
 }
 
 .text-muted {
-  color: rgba($text-color, 0.6);
+  color: $muted-color;
+}
+
+.text-secondary {
+  color: $secondary-color;
 }
 
 .text-light {
@@ -251,20 +253,21 @@ pre {
 
 .no-margin-top {
   margin-top: 0;
-  // Line height utilities
-  .leading-tight {
-    line-height: 1.2;
-  }
+}
 
-  .leading-normal {
-    line-height: 1.5;
-  }
+// Line height utilities
+.leading-tight {
+  line-height: 1.2;
+}
 
-  .leading-relaxed {
-    line-height: 1.7;
-  }
+.leading-normal {
+  line-height: 1.5;
+}
 
-  .leading-loose {
-    line-height: 2;
-  }
+.leading-relaxed {
+  line-height: 1.7;
+}
+
+.leading-loose {
+  line-height: 2;
 }

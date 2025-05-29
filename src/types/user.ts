@@ -2,8 +2,8 @@
 export interface User {
   id: number;
   username: string;
-  email: string;
-  roles: Array<'ROLE_ADMIN' | 'ROLE_ISSUER' | 'ROLE_RECEIVER' | 'ROLE_VERIFIER'>;
+  email?: string; 
+  roles: string[];
 }
 
 export interface CreateUserRequest {

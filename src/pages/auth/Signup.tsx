@@ -1,218 +1,164 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import AuthService from "../../services/AuthService";
+import { useForm } from "../../hooks/useForm";
+import { usePasswordVisibility } from "../../hooks/usePasswordVisibility";
+import { useToast } from "../../contexts/ToastContext";
 import type { RegisterRequest } from "../../types/auth";
+import AuthCard from "../../components/AuthCard";
+import FormInput from "../../components/FormInput";
+import SubmitButton from "../../components/SubmitButton";
+import Alert from "../../components/Alert";
+
+const validateSignupForm = (
+  values: RegisterRequest
+): Record<string, string> => {
+  const errors: Record<string, string> = {};
+
+  if (!values.username.trim()) {
+    errors.username = "Username is required";
+  }
+
+  if (!values.email.trim()) {
+    errors.email = "Email is required";
+  } else if (!/\S+@\S+\.\S+/.test(values.email)) {
+    errors.email = "Email is invalid";
+  }
+
+  if (!values.password) {
+    errors.password = "Password is required";
+  } else if (values.password.length < 6) {
+    errors.password = "Password must be at least 6 characters";
+  }
+
+  if (!values.confirmPassword) {
+    errors.confirmPassword = "Password confirmation is required";
+  } else if (values.password !== values.confirmPassword) {
+    errors.confirmPassword = "Passwords do not match";
+  }
+
+  return errors;
+};
 
 const Signup: React.FC = () => {
-  const [formData, setFormData] = useState<RegisterRequest>({
-    username: "", // Changed from 'name' to 'username'
-    email: "",
-    password: "",
-    confirmPassword: "",
+  const navigate = useNavigate();
+  const { showSuccess, showError } = useToast();
+  const {
+    showPassword,
+    showConfirmPassword,
+    togglePassword,
+    toggleConfirmPassword,
+  } = usePasswordVisibility();
+
+  const {
+    values,
+    errors,
+    isSubmitting,
+    handleChange,
+    handleSubmit,
+    setFieldError,
+  } = useForm({
+    initialValues: {
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    } as RegisterRequest,
+    validate: validateSignupForm,
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: "",
-      }));
-    }
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.username.trim()) {
-      // Changed from 'name' to 'username'
-      newErrors.username = "Username is required";
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
-
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Password confirmation is required";
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsLoading(true);
-    setErrors({});
-
+  const onSubmit = async (formData: RegisterRequest) => {
     try {
       const response = await AuthService.register(formData);
 
       if (response.success) {
-        // Redirect to dashboard or home page
-        window.location.href = "/";
+        showSuccess(
+          "Your account has been created successfully!",
+          "Welcome to SylphScope"
+        );
+        navigate("/components");
       } else {
-        setErrors({ submit: response.message || "Registration failed" });
+        const errorMessage = response.message || "Registration failed";
+        showError(errorMessage, "Registration Failed");
+        setFieldError("submit", errorMessage);
       }
     } catch (error) {
-      setErrors({ submit: "Registration failed. Please try again." });
-    } finally {
-      setIsLoading(false);
+      const errorMessage = "Registration failed. Please try again.";
+      showError(errorMessage, "Registration Failed");
+      setFieldError("submit", errorMessage);
     }
   };
 
   return (
-    <div className="grid">
-      <div className="signup-container">
-        <div className="card">
-          <div className="card__header">
-            <h2>Create Account</h2>
-            <p className="caption">Join SylphScope to get started</p>
-          </div>
+    <AuthCard
+      title="Create Account"
+      subtitle="Join SylphScope to get started"
+      footerText="Already have an account?"
+      footerLinkText="Sign in here"
+      footerLinkTo="/signin"
+    >
+      {errors.submit && <Alert message={errors.submit} />}
 
-          <div className="card__body">
-            {errors.submit && (
-              <div className="alert">
-                <div className="alert__message">{errors.submit}</div>
-              </div>
-            )}
+      <form onSubmit={(e) => handleSubmit(e, onSubmit)}>
+        <FormInput
+          id="username"
+          name="username"
+          type="text"
+          label="Username"
+          placeholder="Enter your username"
+          value={values.username}
+          onChange={handleChange}
+          error={errors.username}
+          disabled={isSubmitting}
+        />
 
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="username">Username</label> {/* Changed label */}
-                <input
-                  type="text"
-                  id="username"
-                  name="username" // Changed name attribute
-                  className={`input ${errors.username ? "input--error" : ""}`} // Updated error check
-                  placeholder="Enter your username" // Updated placeholder
-                  value={formData.username} // Updated value
-                  onChange={handleInputChange}
-                  disabled={isLoading}
-                />
-                {errors.username && ( // Updated error display
-                  <div className="error-message">{errors.username}</div>
-                )}
-              </div>
+        <FormInput
+          id="email"
+          name="email"
+          type="email"
+          label="Email Address"
+          placeholder="Enter your email"
+          value={values.email}
+          onChange={handleChange}
+          error={errors.email}
+          disabled={isSubmitting}
+        />
 
-              <div className="form-group">
-                <label htmlFor="email">Email Address</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  className={`input ${errors.email ? "input--error" : ""}`}
-                  placeholder="Enter your email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  disabled={isLoading}
-                />
-                {errors.email && (
-                  <div className="error-message">{errors.email}</div>
-                )}
-              </div>
+        <FormInput
+          id="password"
+          name="password"
+          label="Password"
+          placeholder="Create a password"
+          value={values.password}
+          onChange={handleChange}
+          error={errors.password}
+          disabled={isSubmitting}
+          showPasswordToggle
+          showPassword={showPassword}
+          onTogglePassword={togglePassword}
+        />
 
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
-                <div className="input-group">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    name="password"
-                    className={`input ${errors.password ? "input--error" : ""}`}
-                    placeholder="Create a password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    disabled={isLoading}
-                  />
-                  <button
-                    type="button"
-                    className="btn btn--ghost btn--small"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? "Hide" : "Show"}
-                  </button>
-                </div>
-                {errors.password && (
-                  <div className="error-message">{errors.password}</div>
-                )}
-              </div>
+        <FormInput
+          id="confirmPassword"
+          name="confirmPassword"
+          label="Confirm Password"
+          placeholder="Confirm your password"
+          value={values.confirmPassword}
+          onChange={handleChange}
+          error={errors.confirmPassword}
+          disabled={isSubmitting}
+          showPasswordToggle
+          showPassword={showConfirmPassword}
+          onTogglePassword={toggleConfirmPassword}
+        />
 
-              <div className="form-group">
-                <label htmlFor="confirmPassword">Confirm Password</label>
-                <div className="input-group">
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    className={`input ${
-                      errors.confirmPassword ? "input--error" : ""
-                    }`}
-                    placeholder="Confirm your password"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    disabled={isLoading}
-                  />
-                  <button
-                    type="button"
-                    className="btn btn--ghost btn--small"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  >
-                    {showConfirmPassword ? "Hide" : "Show"}
-                  </button>
-                </div>
-                {errors.confirmPassword && (
-                  <div className="error-message">{errors.confirmPassword}</div>
-                )}
-              </div>
-
-              <button
-                type="submit"
-                className="btn btn--full"
-                disabled={isLoading}
-              >
-                {isLoading ? "Creating Account..." : "Create Account"}
-              </button>
-            </form>
-          </div>
-
-          <div className="card__footer">
-            <p className="text-center">
-              Already have an account?{" "}
-              <Link to="/signin" className="link">
-                Sign in here
-              </Link>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+        <SubmitButton
+          isLoading={isSubmitting}
+          loadingText="Creating Account..."
+          defaultText="Create Account"
+        />
+      </form>
+    </AuthCard>
   );
 };
 

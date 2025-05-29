@@ -1,8 +1,6 @@
 @use "base" as *;
 @use "mixins" as *;
 
-// ...existing code...
-
 // Form Groups
 .form-group {
   @include MarginBottom2rem;
@@ -34,28 +32,28 @@
 
 // Error States
 .input--error {
-  border-color: #e53e3e;
+  border-color: $error-color;
 
   &:focus {
-    border-color: #e53e3e;
-    box-shadow: 0 0 0 2px rgba(229, 62, 62, 0.2);
+    border-color: $error-color;
+    box-shadow: 0 0 0 2px rgba($error-color, 0.2);
   }
 }
 
 .error-message {
   font-size: 1.2rem;
-  color: #e53e3e;
+  color: $error-color;
   margin-top: 0.4rem;
 }
 
 // Link styling
 .link {
-  color: $text-color;
+  color: $primary-color;
   text-decoration: underline;
   font-weight: 500;
 
   &:hover {
-    color: rgba($text-color, 0.8);
+    color: $secondary-color;
   }
 }
 
@@ -70,7 +68,7 @@
   padding: 1.2rem 1.6rem;
   font-size: 1.6rem;
   font-family: inherit;
-  border: 2px solid rgba($text-color, 0.2);
+  border: 2px solid $border-color;
   border-radius: 6px;
   background-color: $background-color;
   color: $text-color;
@@ -78,18 +76,18 @@
 
   &:focus {
     outline: none;
-    border-color: $text-color;
+    border-color: $primary-color;
     @include BoxShadow;
   }
 
   &:disabled {
-    background-color: rgba($text-color, 0.05);
-    color: rgba($text-color, 0.5);
+    background-color: $subtle-color;
+    color: $secondary-color;
     cursor: not-allowed;
   }
 
   &::placeholder {
-    color: rgba($text-color, 0.5);
+    color: $muted-color;
   }
 }
 
@@ -143,7 +141,7 @@
   .radiomark {
     width: 2rem;
     height: 2rem;
-    border: 2px solid rgba($text-color, 0.3);
+    border: 2px solid $border-color;
     background-color: $background-color;
     transition: all 0.3s ease;
     flex-shrink: 0;
@@ -159,13 +157,13 @@
 
   &:hover .checkmark,
   &:hover .radiomark {
-    border-color: $text-color;
+    border-color: $primary-color;
   }
 
   input:checked ~ .checkmark,
   input:checked ~ .radiomark {
-    background-color: $text-color;
-    border-color: $text-color;
+    background-color: $primary-color;
+    border-color: $primary-color;
   }
 
   input:checked ~ .checkmark::after {
@@ -203,9 +201,9 @@
   font-size: 1.6rem;
   font-weight: 500;
   font-family: inherit;
-  border: 2px solid $text-color;
+  border: 2px solid $primary-color;
   border-radius: 6px;
-  background-color: $text-color;
+  background-color: $primary-color;
   color: $background-color;
   text-decoration: none;
   cursor: pointer;
@@ -213,19 +211,20 @@
   @include ButtonDown;
 
   &:hover {
-    background-color: rgba($text-color, 0.9);
+    background-color: $secondary-color;
+    border-color: $secondary-color;
     transform: translateY(-2px);
     @include BoxShadow;
   }
 
   &:focus {
-    outline: 2px solid rgba($text-color, 0.3);
+    outline: 2px solid rgba($primary-color, 0.3);
     outline-offset: 2px;
   }
 
   &:disabled {
-    background-color: rgba($text-color, 0.3);
-    border-color: rgba($text-color, 0.3);
+    background-color: $muted-color;
+    border-color: $muted-color;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
@@ -234,10 +233,10 @@
 
 .btn--outline {
   background-color: transparent;
-  color: $text-color;
+  color: $primary-color;
 
   &:hover {
-    background-color: $text-color;
+    background-color: $primary-color;
     color: $background-color;
   }
 }
@@ -245,11 +244,11 @@
 .btn--ghost {
   border-color: transparent;
   background-color: transparent;
-  color: $text-color;
+  color: $primary-color;
 
   &:hover {
-    background-color: rgba($text-color, 0.1);
-    border-color: rgba($text-color, 0.2);
+    background-color: $subtle-color;
+    border-color: $border-color;
   }
 }
 
@@ -270,9 +269,10 @@
 // Cards
 .card {
   background-color: $background-color;
-  border: 1px solid rgba($text-color, 0.1);
+  border: 1px solid $border-color;
   border-radius: 8px;
   padding: 2.4rem;
+  @include MarginBottom2rem;
   @include BoxShadow;
 
   &__header {
@@ -289,12 +289,12 @@
   }
 
   &__body {
-    @include MarginBottom2rem;
+    // @include MarginBottom2rem;
   }
 
   &__footer {
     padding-top: 1.6rem;
-    border-top: 1px solid rgba($text-color, 0.1);
+    border-top: 1px solid $border-color;
     @include RowJustifySpaceBetweenFlexbox;
   }
 }
@@ -307,11 +307,11 @@
 
   &__item {
     padding: 1.2rem 1.6rem;
-    border-bottom: 1px solid rgba($text-color, 0.1);
+    border-bottom: 1px solid $border-color;
     transition: background-color 0.2s ease;
 
     &:hover {
-      background-color: rgba($text-color, 0.05);
+      background-color: $subtle-color;
     }
 
     &:last-child {
@@ -321,7 +321,7 @@
 }
 
 .list--bordered {
-  border: 1px solid rgba($text-color, 0.1);
+  border: 1px solid $border-color;
   border-radius: 6px;
 }
 
@@ -329,9 +329,9 @@
   .list__item {
     @include MarginBottom1rem;
     padding: 1.6rem;
-    border: 1px solid rgba($text-color, 0.1);
+    border: 1px solid $border-color;
     border-radius: 6px;
-    border-bottom: 1px solid rgba($text-color, 0.1);
+    border-bottom: 1px solid $border-color;
   }
 }
 
@@ -343,13 +343,13 @@
   font-size: 1.2rem;
   font-weight: 500;
   border-radius: 999px;
-  background-color: $text-color;
+  background-color: $primary-color;
   color: $background-color;
 
   &--outline {
     background-color: transparent;
-    border: 1px solid $text-color;
-    color: $text-color;
+    border: 1px solid $primary-color;
+    color: $primary-color;
   }
 
   &--small {
@@ -367,8 +367,8 @@
 .alert {
   padding: 1.6rem;
   border-radius: 6px;
-  border: 1px solid rgba($text-color, 0.2);
-  background-color: rgba($text-color, 0.05);
+  border: 1px solid $border-color;
+  background-color: $subtle-color;
   @include MarginBottom2rem;
 
   &__title {
@@ -417,7 +417,7 @@
     padding: 0;
 
     &:hover {
-      color: rgba($text-color, 0.7);
+      color: $secondary-color;
     }
   }
 }
@@ -426,13 +426,13 @@
 .progress {
   width: 100%;
   height: 0.8rem;
-  background-color: rgba($text-color, 0.1);
+  background-color: $subtle-color;
   border-radius: 4px;
   overflow: hidden;
 
   &__bar {
     height: 100%;
-    background-color: $text-color;
+    background-color: $primary-color;
     transition: width 0.3s ease;
   }
 }
@@ -441,7 +441,7 @@
 .divider {
   border: none;
   height: 1px;
-  background-color: rgba($text-color, 0.2);
+  background-color: $border-color;
   margin: 2rem 0;
 
   &--thick {

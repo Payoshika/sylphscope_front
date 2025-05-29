@@ -4,11 +4,12 @@ export interface LoginRequest {
   username: string;
   password: string;
 }
-
 export interface LoginResponse {
-  user: User; 
-  accessToken: string;
-
+  token: string;        
+  type: string;         
+  id: string;
+  username: string;
+  roles: string[];
 }
 
 export interface RegisterRequest {

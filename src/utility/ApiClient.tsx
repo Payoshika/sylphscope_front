@@ -1,12 +1,12 @@
 import { tokenManager } from "./TokenManager";
 
 const env = {
-  API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
+  API_BASE_URL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8080",
   DEBUG_MODE: import.meta.env.VITE_DEBUG_MODE === "true",
 };
 
 interface ApiResponse<T = any> {
-  data: T | null; // Allow null data
+  data: T | null;
   success: boolean;
   message?: string;
 }
@@ -27,10 +27,28 @@ class ApiClient {
     this.defaultHeaders = {
       "Content-Type": "application/json",
     };
+
+    if (env.DEBUG_MODE) {
+      console.log("🔧 API Client initialized with base URL:", this.baseURL);
+    }
   }
 
   private getAuthHeaders(): Record<string, string> {
     const token = this.getStoredToken();
+
+    if (env.DEBUG_MODE) {
+      if (token) {
+        console.log("🔑 Token found - length:", token.length);
+        console.log(
+          "🔑 Token format check:",
+          token.includes(".") ? "JWT format" : "NOT JWT format"
+        );
+        console.log("🔑 Token preview:", token.substring(0, 50) + "...");
+      } else {
+        console.log("⚠️ No token found for authenticated request");
+      }
+    }
+
     return token ? { Authorization: `Bearer ${token}` } : {};
   }
 
@@ -45,11 +63,18 @@ class ApiClient {
     const url = `${this.baseURL}${endpoint}`;
     const { method = "GET", headers = {}, body, skipAuth = false } = config;
 
+    const authHeaders = skipAuth ? {} : this.getAuthHeaders();
     const requestHeaders = {
       ...this.defaultHeaders,
-      ...(skipAuth ? {} : this.getAuthHeaders()),
+      ...authHeaders,
       ...headers,
     };
+
+    if (env.DEBUG_MODE) {
+      console.log(`🌐 API Request: ${method} ${url}`);
+      console.log("📤 Request Headers:", requestHeaders);
+      if (body) console.log("📤 Request Body:", body);
+    }
 
     try {
       const response = await fetch(url, {
@@ -58,17 +83,26 @@ class ApiClient {
         ...(body && { body: JSON.stringify(body) }),
       });
 
+      if (env.DEBUG_MODE) {
+        console.log(
+          `📡 Response Status: ${response.status} ${response.statusText}`
+        );
+      }
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        if (env.DEBUG_MODE) {
+          console.error(`❌ HTTP Error Response:`, errorText);
+        }
+        throw new Error(
+          `HTTP error! status: ${response.status}, message: ${errorText}`
+        );
       }
 
       const data = await response.json();
 
       if (env.DEBUG_MODE) {
-        console.log(`API ${method} ${endpoint}:`, {
-          request: body,
-          response: data,
-        });
+        console.log(`✅ API Response: ${method} ${endpoint}`, data);
       }
 
       return {
@@ -77,7 +111,7 @@ class ApiClient {
       };
     } catch (error) {
       if (env.DEBUG_MODE) {
-        console.error(`API ${method} ${endpoint} error:`, error);
+        console.error(`❌ API Error: ${method} ${endpoint}`, error);
       }
 
       return {

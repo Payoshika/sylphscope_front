@@ -1,26 +1,20 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
-import AuthService from "../services/AuthService";
+import { useAuth } from "../contexts/AuthContext";
 
 const Navigation: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
 
   const handleLogout = async () => {
     try {
-      await AuthService.logout();
+      await logout();
       navigate("/signin");
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
-
-  // Don't show navigation on auth pages
-  if (location.pathname === "/signin" || location.pathname === "/signup") {
-    return null;
-  }
 
   return (
     <nav className="card">

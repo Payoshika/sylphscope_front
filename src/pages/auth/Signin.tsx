@@ -1,156 +1,106 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import AuthService from "../../services/AuthService";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import { useForm } from "../../hooks/useForm";
+import { usePasswordVisibility } from "../../hooks/usePasswordVisibility";
 import type { LoginRequest } from "../../types/auth";
+import AuthCard from "../../components/AuthCard";
+import FormInput from "../../components/FormInput";
+import SubmitButton from "../../components/SubmitButton";
+import Alert from "../../components/Alert";
+
+const validateSigninForm = (values: LoginRequest): Record<string, string> => {
+  const errors: Record<string, string> = {};
+
+  if (!values.username.trim()) {
+    errors.username = "Username is required";
+  }
+
+  if (!values.password) {
+    errors.password = "Password is required";
+  }
+
+  return errors;
+};
 
 const Signin: React.FC = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<LoginRequest>({
-    username: "", // Changed from 'email' to 'username'
-    password: "",
+  const { login } = useAuth();
+  const { showPassword, togglePassword } = usePasswordVisibility();
+
+  const {
+    values,
+    errors,
+    isSubmitting,
+    handleChange,
+    handleSubmit,
+    setFieldError,
+  } = useForm({
+    initialValues: {
+      username: "",
+      password: "",
+    } as LoginRequest,
+    validate: validateSigninForm,
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [showPassword, setShowPassword] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: "",
-      }));
-    }
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.username.trim()) {
-      newErrors.username = "Username is required";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsLoading(true);
-    setErrors({});
-
+  const onSubmit = async (formData: LoginRequest) => {
     try {
-      const response = await AuthService.login(formData);
+      const success = await login(formData);
 
-      if (response.success) {
-        // Redirect to components page after successful login
+      if (success) {
         navigate("/components");
       } else {
-        setErrors({ submit: response.message || "Login failed" });
+        setFieldError("submit", "Login failed");
       }
     } catch (error) {
-      setErrors({ submit: "Login failed. Please try again." });
-    } finally {
-      setIsLoading(false);
+      setFieldError("submit", "Login failed. Please try again.");
     }
   };
 
   return (
-    <div className="grid">
-      <div className="signin-container">
-        <div className="card">
-          <div className="card__header">
-            <h2>Sign In</h2>
-            <p className="caption">Welcome back to SylphScope</p>
-          </div>
+    <AuthCard
+      title="Sign In"
+      subtitle="Welcome back to SylphScope"
+      footerText="Don't have an account?"
+      footerLinkText="Sign up here"
+      footerLinkTo="/signup"
+    >
+      {errors.submit && <Alert message={errors.submit} />}
 
-          <div className="card__body">
-            {errors.submit && (
-              <div className="alert">
-                <div className="alert__message">{errors.submit}</div>
-              </div>
-            )}
+      <form onSubmit={(e) => handleSubmit(e, onSubmit)}>
+        <FormInput
+          id="username"
+          name="username"
+          type="text"
+          label="Username"
+          placeholder="Enter your username"
+          value={values.username}
+          onChange={handleChange}
+          error={errors.username}
+          disabled={isSubmitting}
+        />
 
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="username">Username</label>
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  className={`input ${errors.username ? "input--error" : ""}`}
-                  placeholder="Enter your username"
-                  value={formData.username}
-                  onChange={handleInputChange}
-                  disabled={isLoading}
-                />
-                {errors.username && (
-                  <div className="error-message">{errors.username}</div>
-                )}
-              </div>
+        <FormInput
+          id="password"
+          name="password"
+          label="Password"
+          placeholder="Enter your password"
+          value={values.password}
+          onChange={handleChange}
+          error={errors.password}
+          disabled={isSubmitting}
+          showPasswordToggle
+          showPassword={showPassword}
+          onTogglePassword={togglePassword}
+        />
 
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
-                <div className="input-group">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    name="password"
-                    className={`input ${errors.password ? "input--error" : ""}`}
-                    placeholder="Enter your password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    disabled={isLoading}
-                  />
-                  <button
-                    type="button"
-                    className="btn btn--ghost btn--small"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? "Hide" : "Show"}
-                  </button>
-                </div>
-                {errors.password && (
-                  <div className="error-message">{errors.password}</div>
-                )}
-              </div>
-
-              <button
-                type="submit"
-                className="btn btn--full"
-                disabled={isLoading}
-              >
-                {isLoading ? "Signing In..." : "Sign In"}
-              </button>
-            </form>
-          </div>
-
-          <div className="card__footer">
-            <p className="text-center">
-              Don't have an account?{" "}
-              <Link to="/signup" className="link">
-                Sign up here
-              </Link>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+        <SubmitButton
+          isLoading={isSubmitting}
+          loadingText="Signing In..."
+          defaultText="Sign In"
+        />
+      </form>
+    </AuthCard>
   );
 };
 
