@@ -8,11 +8,13 @@ const Components = () => {
   const [checkboxValue, setCheckboxValue] = useState(false);
   const [radioValue, setRadioValue] = useState("option1");
   const [progressValue, setProgressValue] = useState(65);
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = 10; // Example total pages
 
   return (
     <div className="grid">
       <div style={{ gridColumn: "2 / 12", padding: "4rem 0" }}>
-        <h1>Component Design System</h1>
+        <h2>Component Design System</h2>
         <p>
           A comprehensive showcase of all available components and their
           variants.

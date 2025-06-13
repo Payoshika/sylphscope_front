@@ -2,8 +2,9 @@
 export interface User {
   id: number;
   username: string;
-  email?: string; 
+  email: string; 
   roles: string[];
+  mfaEnabled?: boolean; // Optional, if MFA is not always enabled
 }
 
 export interface CreateUserRequest {
@@ -12,9 +13,10 @@ export interface CreateUserRequest {
   password: string;
   passwordConfirmation: string;
 }
-
-export interface UpdateUserRequest {
-  username?: string;
-  email?: string;
-  roles?: Array<'ROLE_ADMIN' | 'ROLE_ISSUER' | 'ROLE_RECEIVER' | 'ROLE_VERIFIER'>;  
+export interface ProfileUpdateRequest {
+  username: string;
+  email: string;
+}
+export interface UpdateMfaRequest {
+  enableMfa: boolean;
 }

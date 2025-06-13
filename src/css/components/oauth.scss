@@ -1,0 +1,57 @@
+@use "../base" as *;
+
+.google-oauth-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+  border: 2px solid $border-color;
+  color: $text-color;
+  background-color: $background-color;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: $primary-color;
+    background-color: $subtle-color;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .google-icon {
+    flex-shrink: 0;
+  }
+}
+
+.oauth-divider {
+  display: flex;
+  align-items: center;
+  margin: 2rem 0;
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: $border-color;
+  }
+
+  &::before {
+    margin-right: 1rem;
+  }
+
+  &::after {
+    margin-left: 1rem;
+  }
+
+  span {
+    color: $muted-color;
+    font-size: 1.4rem;
+    white-space: nowrap;
+  }
+}

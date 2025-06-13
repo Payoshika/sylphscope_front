@@ -8,6 +8,7 @@ import type { RegisterRequest } from "../../types/auth";
 import AuthCard from "../../components/AuthCard";
 import FormInput from "../../components/FormInput";
 import SubmitButton from "../../components/SubmitButton";
+import GoogleOAuthButton from "../../components/GoogleOAuthButton";
 import Alert from "../../components/Alert";
 
 const validateSignupForm = (
@@ -98,6 +99,11 @@ const Signup: React.FC = () => {
       footerLinkTo="/signin"
     >
       {errors.submit && <Alert message={errors.submit} />}
+
+      <GoogleOAuthButton disabled={isSubmitting} />
+      <div className="oauth-divider">
+        <span>or create account with email</span>
+      </div>
 
       <form onSubmit={(e) => handleSubmit(e, onSubmit)}>
         <FormInput

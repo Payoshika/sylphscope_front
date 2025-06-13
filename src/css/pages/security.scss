@@ -1,0 +1,113 @@
+@use "../base" as *;
+@use "../mixins" as *;
+
+// Security-specific styles
+.danger-zone {
+  border-color: rgba($error-color, 0.3);
+
+  .card__header h3 {
+    color: $error-color;
+  }
+}
+
+.danger-actions {
+  @include ColJustifyStartFlexbox;
+  @include Gap2rem;
+}
+
+.danger-item {
+  @include RowJustifySpaceBetweenFlexbox;
+  @include Gap2rem;
+  @include Padding2rem;
+  border: 1px solid rgba($error-color, 0.2);
+  border-radius: 6px;
+  background-color: rgba($error-color, 0.05);
+
+  h4 {
+    @include MarginBottom1rem;
+    color: $error-color;
+  }
+
+  .caption {
+    color: $secondary-color;
+  }
+
+  @include smartphone {
+    @include ColJustifyStartFlexbox;
+    @include Gap1rem;
+  }
+}
+
+.danger-btn {
+  border-color: $error-color;
+  color: $error-color;
+
+  &:hover:not(:disabled) {
+    background-color: $error-color;
+    color: $background-color;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// MFA Setup Modal
+.mfa-setup-content {
+  @include MarginBottom2rem;
+}
+
+.mfa-step {
+  @include MarginBottom2rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  h4 {
+    @include MarginBottom1rem;
+    color: $text-color;
+  }
+
+  .caption {
+    @include MarginBottom1rem;
+  }
+}
+
+.qr-code-placeholder {
+  @include RowJustifyCenterFlexbox;
+  @include Margin2rem;
+}
+
+.qr-code-mock {
+  width: 20rem;
+  height: 20rem;
+  border: 2px dashed $border-color;
+  @include ColJustifyCenterFlexbox;
+  text-align: center;
+  background-color: $subtle-color;
+  border-radius: 6px;
+
+  p {
+    @include Margin1rem;
+    color: $secondary-color;
+  }
+
+  @include smartphone {
+    width: 16rem;
+    height: 16rem;
+  }
+}
+
+.delete-confirm-content {
+  @include MarginBottom2rem;
+
+  p {
+    @include Margin2rem;
+  }
+
+  .input {
+    @include MarginTop1rem;
+  }
+}

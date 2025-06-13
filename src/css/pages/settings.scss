@@ -1,0 +1,74 @@
+@use "../base" as *;
+@use "../mixins" as *;
+
+// Settings Container - using existing grid pattern
+.settings-container {
+  grid-column: 1 / -1;
+  @include Padding4rem;
+  max-width: 120rem;
+  margin: 0 auto;
+
+  @include smartphone {
+    grid-column: 1 / -1;
+    @include Padding2rem;
+    @include Padding1rem;
+  }
+}
+
+.settings-header {
+  @include MarginBottom3rem;
+
+  h1 {
+    @include MarginBottom1rem;
+  }
+
+  .caption {
+    margin-bottom: 0;
+  }
+}
+
+// Tab Navigation - modified to use existing mixins
+.settings-tabs {
+  @include RowJustifyStartFlexbox;
+  flex-wrap: nowrap;
+  @include MarginBottom3rem;
+  @include Gap0_5rem;
+  @include BorderBottom2pxSolid;
+}
+
+.settings-tab {
+  @include RowJustifyStartFlexbox;
+  @include BoxShadow;
+  @include Box;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+
+  &--active {
+    color: $background-color;
+    border-bottom-color: $text-color;
+    background-color: $text-color;
+  }
+
+  @include smartphone {
+    justify-content: center;
+    border-bottom: none;
+    border-right: 3px solid transparent;
+
+    &--active {
+      border-bottom-color: transparent;
+      border-right-color: $primary-color;
+    }
+  }
+}
+
+.settings-tab-icon {
+  font-size: 1.8rem;
+}
+
+.tab-content {
+  @include ColJustifyCenterFlexbox;
+  @include Gap2rem;
+  .card {
+    width: 100%;
+  }
+}

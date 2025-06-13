@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useForm } from "../../hooks/useForm";
@@ -7,7 +7,9 @@ import type { LoginRequest } from "../../types/auth";
 import AuthCard from "../../components/AuthCard";
 import FormInput from "../../components/FormInput";
 import SubmitButton from "../../components/SubmitButton";
+import GoogleOAuthButton from "../../components/GoogleOAuthButton";
 import Alert from "../../components/Alert";
+import AuthService from "../../services/AuthService";
 
 const validateSigninForm = (values: LoginRequest): Record<string, string> => {
   const errors: Record<string, string> = {};
@@ -25,8 +27,17 @@ const validateSigninForm = (values: LoginRequest): Record<string, string> => {
 
 const Signin: React.FC = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user, mfaRequired } = useAuth();
   const { showPassword, togglePassword } = usePasswordVisibility();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (user) {
+      navigate("/components");
+    } else if (mfaRequired) {
+      navigate("/mfa-verification");
+    }
+  }, [user, mfaRequired, navigate]);
 
   const {
     values,
@@ -45,14 +56,28 @@ const Signin: React.FC = () => {
 
   const onSubmit = async (formData: LoginRequest) => {
     try {
-      const success = await login(formData);
+      const response = await AuthService.login(formData);
 
-      if (success) {
-        navigate("/components");
+      if (response.success) {
+        // Check session status after login
+        const validationResult = await AuthService.validateSession();
+
+        if (validationResult === true) {
+          // Fully authenticated - redirect to main app
+          navigate("/components");
+        } else if (validationResult === "mfa_required") {
+          // MFA required - redirect to verification
+          navigate("/mfa-verification");
+        } else {
+          // Something went wrong
+          setFieldError("submit", "Login failed. Please try again.");
+        }
       } else {
-        setFieldError("submit", "Login failed");
+        const errorMessage = response.message || "Login failed";
+        setFieldError("submit", errorMessage);
       }
     } catch (error) {
+      console.error("Login error:", error);
       setFieldError("submit", "Login failed. Please try again.");
     }
   };
@@ -66,6 +91,11 @@ const Signin: React.FC = () => {
       footerLinkTo="/signup"
     >
       {errors.submit && <Alert message={errors.submit} />}
+
+      <GoogleOAuthButton disabled={isSubmitting} />
+      <div className="oauth-divider">
+        <span>or continue with email</span>
+      </div>
 
       <form onSubmit={(e) => handleSubmit(e, onSubmit)}>
         <FormInput
@@ -93,7 +123,6 @@ const Signin: React.FC = () => {
           showPassword={showPassword}
           onTogglePassword={togglePassword}
         />
-
         <SubmitButton
           isLoading={isSubmitting}
           loadingText="Signing In..."

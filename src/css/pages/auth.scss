@@ -1,0 +1,44 @@
+@use "../mixins" as *;
+@use "../base" as *;
+// Password Toggle Button
+.password-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  @include Padding0_5rem;
+  border-radius: 4px;
+  @include RowJustifyCenterFlexbox;
+  color: $secondary-color;
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    color: $primary-color;
+    background-color: rgba($primary-color, 0.1);
+  }
+
+  &:focus {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: $muted-color;
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(-50%) scale(0.95);
+  }
+}
+
+.password-toggle__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}

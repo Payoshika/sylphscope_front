@@ -70,12 +70,6 @@ class ApiClient {
       ...headers,
     };
 
-    if (env.DEBUG_MODE) {
-      console.log(`🌐 API Request: ${method} ${url}`);
-      console.log("📤 Request Headers:", requestHeaders);
-      if (body) console.log("📤 Request Body:", body);
-    }
-
     try {
       const response = await fetch(url, {
         method,
@@ -83,16 +77,24 @@ class ApiClient {
         ...(body && { body: JSON.stringify(body) }),
       });
 
-      if (env.DEBUG_MODE) {
-        console.log(
-          `📡 Response Status: ${response.status} ${response.statusText}`
-        );
-      }
-
       if (!response.ok) {
         const errorText = await response.text();
-        if (env.DEBUG_MODE) {
-          console.error(`❌ HTTP Error Response:`, errorText);
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch (e) {
+          errorData = { message: errorText };
+        }
+        // Handle 403 MFA required specifically
+        if (
+          response.status === 403 &&
+          errorData.message === "MFA verification required"
+        ) {
+          return {
+            data: null,
+            success: false,
+            message: "MFA verification required",
+          };
         }
         throw new Error(
           `HTTP error! status: ${response.status}, message: ${errorText}`

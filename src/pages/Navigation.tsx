@@ -1,15 +1,16 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import AuthService from "../services/AuthService";
 
 const Navigation: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   const handleLogout = async () => {
     try {
-      await logout();
+      await AuthService.logout();
       navigate("/signin");
     } catch (error) {
       console.error("Logout failed:", error);
@@ -21,7 +22,7 @@ const Navigation: React.FC = () => {
       <div className="card__body">
         <div className="nav-container">
           <div className="nav-brand">
-            <h3 className="no-margin">SylphScope</h3>
+            <h2 className="no-margin">SylphScope</h2>
           </div>
           <div className="nav-links">
             {isAuthenticated ? (

@@ -14,11 +14,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
   disabled = false,
 }) => {
   return (
-    <button
-      type="submit"
-      className="btn btn--full"
-      disabled={isLoading || disabled}
-    >
+    <button type="submit" className="btn" disabled={isLoading || disabled}>
       {isLoading ? loadingText : defaultText}
     </button>
   );

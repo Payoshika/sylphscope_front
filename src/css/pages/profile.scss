@@ -1,0 +1,209 @@
+@use "../base" as *;
+@use "../mixins" as *;
+
+// Profile Container - using existing grid from grid.scss
+.profile-container {
+  grid-column: 2 / 12;
+  @include Padding4rem;
+  max-width: 80rem;
+  margin: 0 auto;
+
+  @include smartphone {
+    grid-column: 1 / -1;
+    @include Padding2rem;
+    @include Padding1rem;
+  }
+}
+
+// Profile Header - using existing flexbox mixins
+.profile-header {
+  @include RowJustifySpaceBetweenFlexbox;
+  @include Gap2rem;
+  @include Padding1rem;
+
+  @include smartphone {
+    @include ColJustifyCenterFlexbox;
+    @include Gap1_5rem;
+    text-align: center;
+  }
+}
+
+.profile-basic-info {
+  flex: 1;
+  min-width: 0;
+
+  h2 {
+    @include MarginBottom1rem;
+  }
+
+  .caption {
+    @include MarginBottom1rem;
+  }
+
+  .user-roles {
+    @include RowJustifyStartFlexbox;
+    @include Gap0_5rem;
+    @include MarginBottom1rem;
+
+    @include smartphone {
+      justify-content: center;
+    }
+  }
+}
+
+.profile-actions {
+  flex-shrink: 0;
+
+  @include smartphone {
+    align-self: stretch;
+
+    .btn {
+      width: 100%;
+    }
+  }
+}
+
+// Account Stats - using existing component patterns
+.account-stats {
+  display: grid;
+  @include Gap1_5rem;
+}
+
+.stat-item {
+  @include RowJustifySpaceBetweenFlexbox;
+  @include Padding1rem;
+  border-bottom: 1px solid $border-color;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  @include smartphone {
+    @include ColJustifyStartFlexbox;
+    @include Gap0_5rem;
+    align-items: flex-start;
+  }
+}
+
+// Settings Sections - reusing existing patterns
+.settings-section {
+  @include MarginBottom3rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  h3 {
+    @include MarginBottom2rem;
+    color: $text-color;
+  }
+}
+
+.settings-section-header {
+  @include RowJustifySpaceBetweenFlexbox;
+  @include Gap2rem;
+  @include MarginBottom2rem;
+
+  @include smartphone {
+    @include ColJustifyStartFlexbox;
+    @include Gap1rem;
+    align-items: flex-start;
+  }
+}
+
+.settings-actions {
+  @include RowJustifySpaceBetweenFlexbox;
+  @include Gap1rem;
+  @include Padding2rem;
+  border-top: 1px solid $border-color;
+
+  @include smartphone {
+    @include ColJustifyStartFlexbox;
+
+    .btn {
+      width: 100%;
+    }
+  }
+}
+
+// Password Change Section
+.password-change-section {
+  background-color: $subtle-color;
+  @include Padding2rem;
+  border-radius: 6px;
+  @include MarginTop2rem;
+  border: 1px solid $border-color;
+}
+
+// Security Items - extending existing alert pattern
+.security-item {
+  @extend .alert !optional; // Reuse existing alert styling
+  @include MarginBottom2rem;
+}
+
+.security-item-header {
+  @include RowJustifySpaceBetweenFlexbox;
+  @include Gap2rem;
+
+  @include smartphone {
+    @include ColJustifyStartFlexbox;
+    @include Gap1_5rem;
+    align-items: flex-start;
+  }
+}
+
+.security-toggle {
+  @include RowJustifyStartFlexbox;
+  @include Gap1rem;
+  flex-shrink: 0;
+}
+
+// Badge Extensions - only new variants
+.badge--success {
+  background-color: $success-color;
+  color: $background-color;
+
+  &.badge--outline {
+    background-color: transparent;
+    border: 1px solid $success-color;
+    color: $success-color;
+  }
+}
+
+// Danger Zone - extending existing alert
+.danger-zone {
+  @extend .alert !optional;
+  border-color: rgba($error-color, 0.3);
+
+  .card__header h3 {
+    color: $error-color;
+  }
+}
+
+.danger-item {
+  @include RowJustifySpaceBetweenFlexbox;
+  @include Gap2rem;
+  @include Padding2rem;
+  border: 1px solid rgba($error-color, 0.2);
+  border-radius: 6px;
+  background-color: rgba($error-color, 0.05);
+
+  @include smartphone {
+    @include ColJustifyStartFlexbox;
+    @include Gap1rem;
+  }
+}
+
+// Modal Actions - reusing existing modal pattern
+.modal-actions {
+  @include RowJustifySpaceBetweenFlexbox;
+  @include Gap1rem;
+
+  @include smartphone {
+    @include ColJustifyStartFlexbox;
+
+    .btn {
+      width: 100%;
+    }
+  }
+}

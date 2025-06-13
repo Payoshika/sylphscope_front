@@ -60,6 +60,12 @@ export const useForm = <T extends Record<string, any>>({
     }));
   };
 
+  const resetForm = () => {
+    setValues(initialValues);
+    setErrors({});
+    setIsSubmitting(false);
+  };
+
   return {
     values,
     errors,
@@ -67,5 +73,6 @@ export const useForm = <T extends Record<string, any>>({
     handleChange,
     handleSubmit,
     setFieldError,
+    resetForm,
   };
 };
