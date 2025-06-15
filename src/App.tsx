@@ -1,3 +1,4 @@
+// Update src/App.tsx
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -13,7 +14,7 @@ import Signin from "./pages/auth/Signin";
 import Settings from "./pages/settings/Settings";
 import OAuth2Redirect from "./pages/auth/Oauth2Redirect";
 import Navigation from "./pages/Navigation";
-import ProtectedRoute from "./pages/ProtectedRoute";
+import ProtectedLayout from "./pages/ProtectedLayout";
 import ToastContainer from "./components/ToastItem";
 import MfaVerification from "./components/MfaVarification";
 
@@ -24,30 +25,19 @@ function App() {
         <Router>
           <Navigation />
           <Routes>
+            {/* Public routes */}
             <Route path="/signin" element={<Signin />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
             <Route path="/mfa-verification" element={<MfaVerification />} />
 
-            {/* Protected routes */}
-            <Route
-              path="/components"
-              element={
-                <ProtectedRoute>
-                  <Components />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <ProtectedRoute>
-                  <Settings />
-                </ProtectedRoute>
-              }
-            />
-            {/* Default redirect */}
-            <Route path="/" element={<Navigate to="/components" replace />} />
+            {/* Protected routes - all nested under ProtectedLayout */}
+            <Route path="/" element={<ProtectedLayout />}>
+              <Route index element={<Navigate to="/components" replace />} />
+              <Route path="components" element={<Components />} />
+              <Route path="settings" element={<Settings />} />
+            </Route>
+
             {/* Catch all - redirect to signin */}
             <Route path="*" element={<Navigate to="/signin" replace />} />
           </Routes>
