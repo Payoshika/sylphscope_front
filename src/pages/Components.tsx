@@ -11,6 +11,7 @@ import Badge from "../components/basicComponents/Badge";
 import Alert from "../components/basicComponents/Alert";
 import ProgressBar from "../components/basicComponents/ProgressBar";
 import Modal from "../components/basicComponents/Modal";
+import DatePicker from "../components/inputComponents/DatePicker";
 
 const Components = () => {
   // State for interactive components
@@ -21,6 +22,13 @@ const Components = () => {
   const [radioValue, setRadioValue] = useState("option1");
   const [progressValue, setProgressValue] = useState(65);
   const [showModal, setShowModal] = useState(false);
+  const [birthDate, setBirthDate] = useState({
+    day: "",
+    month: "",
+    year: "",
+  });
+
+  const [isDateValid, setIsDateValid] = useState(false);
 
   // Configuration data
   const selectOptions = [
@@ -135,6 +143,23 @@ const Components = () => {
                 />
               </div>
             </div>
+
+            <DatePicker
+              id="birth-date"
+              name="birthDate"
+              label="Date of Birth"
+              value={birthDate}
+              onChange={setBirthDate}
+              validation={{
+                required: true,
+                minAge: 13,
+                maxAge: 120,
+              }}
+              onValidationChange={(isValid, errorMessage) => {
+                setIsDateValid(isValid);
+                console.log("Date validation:", isValid, errorMessage);
+              }}
+            />
           </Card>
         </section>
 
