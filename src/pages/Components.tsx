@@ -1,500 +1,262 @@
 import React, { useState } from "react";
+import Button from "../components/basicComponents/Button";
+import Input from "../components/inputComponents/Input";
+import Textarea from "../components/inputComponents/Textarea";
+import Select from "../components/inputComponents/Select";
+import Checkbox from "../components/inputComponents/Checkbox";
+import Radio from "../components/inputComponents/Radio";
+import Card from "../components/basicComponents/Card";
+import List from "../components/basicComponents/List";
+import Badge from "../components/basicComponents/Badge";
+import Alert from "../components/basicComponents/Alert";
+import ProgressBar from "../components/basicComponents/ProgressBar";
+import Modal from "../components/basicComponents/Modal";
 
 const Components = () => {
-  const [showModal, setShowModal] = useState(false);
+  // State for interactive components
   const [inputValue, setInputValue] = useState("");
   const [textareaValue, setTextareaValue] = useState("");
   const [selectValue, setSelectValue] = useState("");
   const [checkboxValue, setCheckboxValue] = useState(false);
   const [radioValue, setRadioValue] = useState("option1");
   const [progressValue, setProgressValue] = useState(65);
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 10; // Example total pages
+  const [showModal, setShowModal] = useState(false);
+
+  // Configuration data
+  const selectOptions = [
+    { value: "option1", label: "Option 1" },
+    { value: "option2", label: "Option 2" },
+    { value: "option3", label: "Option 3" },
+  ];
+
+  const listItems = [
+    "First list item",
+    "Second list item",
+    "Third list item",
+    "Fourth list item",
+  ];
 
   return (
     <div className="grid">
-      <div style={{ gridColumn: "2 / 12", padding: "4rem 0" }}>
-        <h2>Component Design System</h2>
-        <p>
-          A comprehensive showcase of all available components and their
-          variants.
-        </p>
-
-        {/* Typography Section */}
-        <section style={{ marginBottom: "6rem" }}>
-          <h2>Typography</h2>
-          <div className="card">
-            <h1>Heading 1 - Main Title</h1>
-            <h2>Heading 2 - Section Title</h2>
-            <h3>Heading 3 - Subsection</h3>
-            <h4>Heading 4 - Content Title</h4>
-            <h5>Heading 5 - Small Title</h5>
-            <h6>Heading 6 - Smallest Title</h6>
-
-            <p>
-              This is a regular paragraph with <strong>bold text</strong> and{" "}
-              <em>italic text</em>.
-            </p>
-            <p className="body-large">This is large body text for emphasis.</p>
-            <p className="body-small">
-              This is small body text for less important information.
-            </p>
-            <p className="caption">This is caption text for annotations.</p>
-
-            <blockquote>
-              "This is a blockquote example with proper styling and
-              indentation."
-              <cite>Author Name</cite>
-            </blockquote>
-
-            <p>
-              Here's some <code>inline code</code> within a paragraph.
-            </p>
-
-            <pre>
-              <code>
-                {`// Code block example
-const greeting = "Hello, World!";
-console.log(greeting);`}
-              </code>
-            </pre>
-          </div>
-        </section>
-
+      <div className="component-showcase">
         {/* Buttons Section */}
-        <section style={{ marginBottom: "6rem" }}>
+        <section className="component-section">
           <h2>Buttons</h2>
-          <div className="card">
-            <div className="card__header">
-              <h3>Button Variants</h3>
+          <Card title="Button Variants">
+            <div className="button-grid">
+              <Button text="Primary Button" />
+              <Button text="Outline Button" variant="outline" />
+              <Button text="Ghost Button" variant="ghost" />
+              <Button text="Disabled Button" disabled />
+              <Button text="Small Button" size="small" />
+              <Button text="Large Button" size="large" />
+              <Button text="Full Width Button" fullWidth />
             </div>
-            <div className="card__body">
-              <div
-                style={{
-                  display: "flex",
-                  gap: "1rem",
-                  flexWrap: "wrap",
-                  marginBottom: "2rem",
-                }}
-              >
-                <button className="btn">Primary Button</button>
-                <button className="btn btn--outline">Outline Button</button>
-                <button className="btn btn--ghost">Ghost Button</button>
-                <button className="btn" disabled>
-                  Disabled Button
-                </button>
-              </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  gap: "1rem",
-                  flexWrap: "wrap",
-                  marginBottom: "2rem",
-                }}
-              >
-                <button className="btn btn--small">Small Button</button>
-                <button className="btn">Regular Button</button>
-                <button className="btn btn--large">Large Button</button>
-              </div>
-
-              <button className="btn btn--full">Full Width Button</button>
-            </div>
-          </div>
+          </Card>
         </section>
 
         {/* Form Controls Section */}
-        <section style={{ marginBottom: "6rem" }}>
+        <section className="component-section">
           <h2>Form Controls</h2>
-          <div className="card">
-            <div className="card__header">
-              <h3>Input Fields</h3>
+          <Card title="Input Fields">
+            <Input
+              id="text1"
+              name="textInput"
+              label="Regular Input"
+              placeholder="Enter text here..."
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+
+            <div className="form-row">
+              <Input
+                id="text2"
+                name="smallInput"
+                label="Small Input"
+                placeholder="Small input"
+                value=""
+                onChange={() => {}}
+                size="small"
+              />
+              <Input
+                id="text3"
+                name="largeInput"
+                label="Large Input"
+                placeholder="Large input"
+                value=""
+                onChange={() => {}}
+                size="large"
+              />
             </div>
-            <div className="card__body">
-              <div style={{ marginBottom: "2rem" }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "0.5rem",
-                    fontSize: "1.4rem",
-                    fontWeight: "500",
-                  }}
-                >
-                  Regular Input
-                </label>
-                <input
-                  type="text"
-                  className="input"
-                  placeholder="Enter text here..."
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
+
+            <Textarea
+              id="textarea1"
+              name="message"
+              label="Textarea"
+              placeholder="Enter your message here..."
+              value={textareaValue}
+              onChange={(e) => setTextareaValue(e.target.value)}
+            />
+
+            <Select
+              id="select1"
+              name="dropdown"
+              label="Select Dropdown"
+              value={selectValue}
+              onChange={(e) => setSelectValue(e.target.value)}
+              options={selectOptions}
+            />
+
+            <div className="form-row">
+              <Checkbox
+                id="checkbox1"
+                name="checkboxOption"
+                label="Checkbox Option"
+                checked={checkboxValue}
+                onChange={(e) => setCheckboxValue(e.target.checked)}
+              />
+
+              <div>
+                <Radio
+                  id="radio1"
+                  name="radioGroup"
+                  value="option1"
+                  label="Radio Option 1"
+                  checked={radioValue === "option1"}
+                  onChange={(e) => setRadioValue(e.target.value)}
+                />
+                <Radio
+                  id="radio2"
+                  name="radioGroup"
+                  value="option2"
+                  label="Radio Option 2"
+                  checked={radioValue === "option2"}
+                  onChange={(e) => setRadioValue(e.target.value)}
                 />
               </div>
-
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: "2rem",
-                  marginBottom: "2rem",
-                }}
-              >
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      marginBottom: "0.5rem",
-                      fontSize: "1.4rem",
-                      fontWeight: "500",
-                    }}
-                  >
-                    Small Input
-                  </label>
-                  <input
-                    type="text"
-                    className="input input--small"
-                    placeholder="Small input"
-                  />
-                </div>
-                <div>
-                  <label
-                    style={{
-                      display: "block",
-                      marginBottom: "0.5rem",
-                      fontSize: "1.4rem",
-                      fontWeight: "500",
-                    }}
-                  >
-                    Large Input
-                  </label>
-                  <input
-                    type="text"
-                    className="input input--large"
-                    placeholder="Large input"
-                  />
-                </div>
-              </div>
-
-              <div style={{ marginBottom: "2rem" }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "0.5rem",
-                    fontSize: "1.4rem",
-                    fontWeight: "500",
-                  }}
-                >
-                  Textarea
-                </label>
-                <textarea
-                  className="textarea"
-                  placeholder="Enter your message here..."
-                  value={textareaValue}
-                  onChange={(e) => setTextareaValue(e.target.value)}
-                />
-              </div>
-
-              <div style={{ marginBottom: "2rem" }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "0.5rem",
-                    fontSize: "1.4rem",
-                    fontWeight: "500",
-                  }}
-                >
-                  Select Dropdown
-                </label>
-                <select
-                  className="select"
-                  value={selectValue}
-                  onChange={(e) => setSelectValue(e.target.value)}
-                >
-                  <option value="">Choose an option...</option>
-                  <option value="option1">Option 1</option>
-                  <option value="option2">Option 2</option>
-                  <option value="option3">Option 3</option>
-                </select>
-              </div>
-
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: "2rem",
-                }}
-              >
-                <div>
-                  <label className="checkbox">
-                    <input
-                      type="checkbox"
-                      checked={checkboxValue}
-                      onChange={(e) => setCheckboxValue(e.target.checked)}
-                    />
-                    <span className="checkmark"></span>
-                    Checkbox Option
-                  </label>
-                </div>
-                <div>
-                  <label className="radio">
-                    <input
-                      type="radio"
-                      name="radio-group"
-                      value="option1"
-                      checked={radioValue === "option1"}
-                      onChange={(e) => setRadioValue(e.target.value)}
-                    />
-                    <span className="radiomark"></span>
-                    Radio Option 1
-                  </label>
-                  <label className="radio" style={{ marginTop: "1rem" }}>
-                    <input
-                      type="radio"
-                      name="radio-group"
-                      value="option2"
-                      checked={radioValue === "option2"}
-                      onChange={(e) => setRadioValue(e.target.value)}
-                    />
-                    <span className="radiomark"></span>
-                    Radio Option 2
-                  </label>
-                </div>
-              </div>
             </div>
-          </div>
+          </Card>
         </section>
 
         {/* Cards Section */}
-        <section style={{ marginBottom: "6rem" }}>
+        <section className="component-section">
           <h2>Cards</h2>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(30rem, 1fr))",
-              gap: "2rem",
-            }}
-          >
-            <div className="card">
-              <div className="card__header">
-                <h4>Card Title</h4>
-                <p className="caption">Card subtitle or description</p>
-              </div>
-              <div className="card__body">
-                <p>
-                  This is the main content area of the card. It can contain any
-                  type of content including text, images, or other components.
-                </p>
-              </div>
-              <div className="card__footer">
-                <button className="btn btn--small btn--outline">Cancel</button>
-                <button className="btn btn--small">Confirm</button>
-              </div>
-            </div>
+          <div className="card-grid">
+            <Card
+              title="Card Title"
+              subtitle="Card subtitle or description"
+              footer={
+                <>
+                  <Button text="Cancel" variant="outline" size="small" />
+                  <Button text="Confirm" size="small" />
+                </>
+              }
+            >
+              This is the main content area of the card. It can contain any type
+              of content.
+            </Card>
 
-            <div className="card">
-              <div className="card__header">
-                <h4>Simple Card</h4>
-              </div>
-              <div className="card__body">
-                <p>
-                  A simpler card without a footer section. Perfect for
-                  displaying information or content previews.
-                </p>
-              </div>
-            </div>
+            <Card title="Simple Card">
+              A simpler card without a footer section. Perfect for displaying
+              information.
+            </Card>
           </div>
         </section>
 
         {/* Lists Section */}
-        <section style={{ marginBottom: "6rem" }}>
+        <section className="component-section">
           <h2>Lists</h2>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr",
-              gap: "2rem",
-            }}
-          >
+          <div className="list-grid">
             <div>
               <h4>Default List</h4>
-              <ul className="list">
-                <li className="list__item">First list item</li>
-                <li className="list__item">Second list item</li>
-                <li className="list__item">Third list item</li>
-                <li className="list__item">Fourth list item</li>
-              </ul>
+              <List items={listItems} />
             </div>
-
             <div>
               <h4>Bordered List</h4>
-              <ul className="list list--bordered">
-                <li className="list__item">Bordered item 1</li>
-                <li className="list__item">Bordered item 2</li>
-                <li className="list__item">Bordered item 3</li>
-                <li className="list__item">Bordered item 4</li>
-              </ul>
+              <List items={listItems} variant="bordered" />
             </div>
-
             <div>
               <h4>Spaced List</h4>
-              <ul className="list list--spaced">
-                <li className="list__item">Spaced item 1</li>
-                <li className="list__item">Spaced item 2</li>
-                <li className="list__item">Spaced item 3</li>
-                <li className="list__item">Spaced item 4</li>
-              </ul>
+              <List items={listItems} variant="spaced" />
             </div>
           </div>
         </section>
 
         {/* Badges Section */}
-        <section style={{ marginBottom: "6rem" }}>
+        <section className="component-section">
           <h2>Badges</h2>
-          <div className="card">
-            <div className="card__body">
-              <div
-                style={{
-                  display: "flex",
-                  gap: "1rem",
-                  flexWrap: "wrap",
-                  marginBottom: "2rem",
-                }}
-              >
-                <span className="badge">Default Badge</span>
-                <span className="badge badge--outline">Outline Badge</span>
-              </div>
-
-              <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-                <span className="badge badge--small">Small</span>
-                <span className="badge">Regular</span>
-                <span className="badge badge--large">Large Badge</span>
-              </div>
+          <Card>
+            <div className="badge-container">
+              <Badge text="Default Badge" />
+              <Badge text="Outline Badge" variant="outline" />
+              <Badge text="Small" size="small" />
+              <Badge text="Large Badge" size="large" />
             </div>
-          </div>
+          </Card>
         </section>
 
         {/* Alerts Section */}
-        <section style={{ marginBottom: "6rem" }}>
+        <section className="component-section">
           <h2>Alerts</h2>
-          <div className="alert">
-            <div className="alert__title">Information Alert</div>
-            <div className="alert__message">
-              This is an informational message to provide context or updates to
-              the user.
-            </div>
-          </div>
-
-          <div className="alert">
-            <div className="alert__message">
-              Simple alert message without a title.
-            </div>
-          </div>
+          <Alert
+            title="Information Alert"
+            message="This is an informational message to provide context or updates to the user."
+            type="info"
+          />
+          <Alert message="Simple alert message without a title." />
         </section>
 
         {/* Progress Bar Section */}
-        <section style={{ marginBottom: "6rem" }}>
+        <section className="component-section">
           <h2>Progress Bar</h2>
-          <div className="card">
-            <div className="card__body">
-              <label
-                style={{
-                  display: "block",
-                  marginBottom: "1rem",
-                  fontSize: "1.4rem",
-                  fontWeight: "500",
-                }}
-              >
-                Progress: {progressValue}%
-              </label>
-              <div className="progress">
-                <div
-                  className="progress__bar"
-                  style={{ width: `${progressValue}%` }}
-                ></div>
-              </div>
-              <div style={{ marginTop: "2rem" }}>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={progressValue}
-                  onChange={(e) => setProgressValue(parseInt(e.target.value))}
-                  style={{ width: "100%" }}
-                />
-              </div>
+          <Card>
+            <ProgressBar value={progressValue} />
+            <div className="progress-controls">
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={progressValue}
+                onChange={(e) => setProgressValue(parseInt(e.target.value))}
+                className="slider"
+              />
             </div>
-          </div>
-        </section>
-
-        {/* Dividers Section */}
-        <section style={{ marginBottom: "6rem" }}>
-          <h2>Dividers</h2>
-          <div className="card">
-            <div className="card__body">
-              <p>Content above the divider</p>
-              <hr className="divider" />
-              <p>Content below the regular divider</p>
-              <hr className="divider divider--thick" />
-              <p>Content below the thick divider</p>
-            </div>
-          </div>
+          </Card>
         </section>
 
         {/* Modal Section */}
-        <section style={{ marginBottom: "6rem" }}>
+        <section className="component-section">
           <h2>Modal</h2>
-          <div className="card">
-            <div className="card__body">
-              <button className="btn" onClick={() => setShowModal(true)}>
-                Open Modal
-              </button>
-            </div>
-          </div>
+          <Card>
+            <Button text="Open Modal" onClick={() => setShowModal(true)} />
+          </Card>
         </section>
 
         {/* Modal Component */}
-        {showModal && (
-          <div className="modal">
-            <div className="modal__content">
-              <div className="modal__header">
-                <h3>Modal Title</h3>
-                <button
-                  className="modal__close"
-                  onClick={() => setShowModal(false)}
-                >
-                  ×
-                </button>
-              </div>
-              <div style={{ marginBottom: "2rem" }}>
-                <p>
-                  This is the modal content. You can put any content here
-                  including forms, images, or other components.
-                </p>
-                <p>
-                  The modal has a backdrop that can be clicked to close it, and
-                  includes proper focus management.
-                </p>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "1rem",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <button
-                  className="btn btn--outline"
-                  onClick={() => setShowModal(false)}
-                >
-                  Cancel
-                </button>
-                <button className="btn" onClick={() => setShowModal(false)}>
-                  Confirm
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        <Modal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          title="Modal Title"
+          actions={
+            <>
+              <Button
+                text="Cancel"
+                variant="outline"
+                onClick={() => setShowModal(false)}
+              />
+              <Button text="Confirm" onClick={() => setShowModal(false)} />
+            </>
+          }
+        >
+          <h2>
+            This is the modal content. You can put any content here including
+            forms, images, or other components.
+          </h2>
+          <p>
+            The modal has a backdrop that can be clicked to close it, and
+            includes proper focus management.
+          </p>
+        </Modal>
       </div>
     </div>
   );

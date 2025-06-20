@@ -1,0 +1,20 @@
+@use "../../global/base" as *;
+@use "../../global/mixins" as *;
+
+// Divider
+.divider {
+  border: none;
+  height: 1px;
+  background-color: $border-color;
+  margin: 2rem 0;
+
+  &--thick {
+    height: 2px;
+  }
+
+  &--vertical {
+    width: 1px;
+    height: auto;
+    margin: 0 2rem;
+  }
+}

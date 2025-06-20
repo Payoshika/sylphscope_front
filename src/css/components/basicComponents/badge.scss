@@ -1,0 +1,36 @@
+@use "../../global/base" as *;
+@use "../../global/mixins" as *;
+
+// Badges
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.8rem 1.5rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  border-radius: 999px;
+  background-color: $primary-color;
+  color: $background-color;
+
+  &--outline {
+    background-color: transparent;
+    border: 1px solid $primary-color;
+    color: $primary-color;
+  }
+
+  &--small {
+    padding: 0.2rem 0.8rem;
+    font-size: 1rem;
+  }
+
+  &--large {
+    padding: 0.6rem 1.6rem;
+    font-size: 1.4rem;
+  }
+}
+
+.badge-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}

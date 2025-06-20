@@ -1,0 +1,85 @@
+@use "../../global/base" as *;
+@use "../../global/mixins" as *;
+
+// Buttons
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 1.2rem 2.4rem;
+  font-size: 1.6rem;
+  font-weight: 500;
+  font-family: inherit;
+  border: 2px solid $primary-color;
+  border-radius: 6px;
+  background-color: $primary-color;
+  color: $background-color;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  @include ButtonDown;
+
+  &:hover {
+    background-color: $secondary-color;
+    border-color: $secondary-color;
+    transform: translateY(-2px);
+    @include BoxShadow;
+  }
+
+  &:focus {
+    outline: 2px solid rgba($primary-color, 0.3);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    background-color: $muted-color;
+    border-color: $muted-color;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.btn--outline {
+  background-color: transparent;
+  color: $primary-color;
+
+  &:hover {
+    background-color: $primary-color;
+    color: $background-color;
+  }
+}
+
+.btn--ghost {
+  border-color: transparent;
+  background-color: transparent;
+  color: $primary-color;
+
+  &:hover {
+    background-color: $subtle-color;
+    border-color: $border-color;
+  }
+}
+
+.btn--small {
+  padding: 0.8rem 1.6rem;
+  font-size: 1.4rem;
+}
+
+.btn--large {
+  padding: 1.6rem 3.2rem;
+  font-size: 1.8rem;
+}
+
+.btn--full {
+  width: 100%;
+}
+
+// Responsive adjustments
+@include smartphone {
+  .btn {
+    padding: 1rem 2rem;
+    font-size: 1.4rem;
+  }
+}

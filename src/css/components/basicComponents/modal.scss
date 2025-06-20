@@ -1,0 +1,61 @@
+@use "../../global/base" as *;
+@use "../../global/mixins" as *;
+
+// Modal
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba($text-color, 0.5);
+  z-index: 1000;
+  @include RowJustifyCenterFlexbox;
+
+  &__content {
+    background-color: $background-color;
+    border-radius: 8px;
+    padding: 3rem;
+    max-width: 50rem;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    @include BoxShadow;
+  }
+
+  &__header {
+    @include RowJustifySpaceBetweenFlexbox;
+    @include MarginBottom2rem;
+  }
+
+  &__body {
+    @include MarginBottom2rem;
+  }
+
+  &__footer {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    font-size: 2.4rem;
+    cursor: pointer;
+    color: $text-color;
+    padding: 0;
+
+    &:hover {
+      color: $secondary-color;
+    }
+  }
+}
+
+// Responsive adjustments
+@include smartphone {
+  .modal__content {
+    padding: 2rem;
+    width: 95%;
+  }
+}

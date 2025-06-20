@@ -1,5 +1,5 @@
-@use "../mixins" as *;
-@use "../base" as *;
+@use "../global/mixins" as *;
+@use "../global/base" as *;
 // Password Toggle Button
 .password-toggle {
   position: absolute;

@@ -1,0 +1,48 @@
+@use "../../global/base" as *;
+@use "../../global/mixins" as *;
+
+// Lists
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  &__item {
+    padding: 1.2rem 1.6rem;
+    border-bottom: 1px solid $border-color;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: $subtle-color;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+.list--bordered {
+  border: 1px solid $border-color;
+  border-radius: 6px;
+}
+
+.list--spaced {
+  .list__item {
+    @include MarginBottom1rem;
+    padding: 1.6rem;
+    border: 1px solid $border-color;
+    border-radius: 6px;
+    border-bottom: 1px solid $border-color;
+  }
+}
+
+.list-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+
+  @include smartphone {
+    grid-template-columns: 1fr;
+  }
+}

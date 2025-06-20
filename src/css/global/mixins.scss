@@ -1,5 +1,4 @@
 @use "base" as *;
-
 // Responsive Design
 @mixin smartphone {
   @media (max-width: $smartphone-max-width) {
@@ -94,6 +93,10 @@
 
 @mixin MarginBottom5rem {
   margin-bottom: 5rem;
+}
+
+@mixin MarginBottom6rem {
+  margin-bottom: 6rem;
 }
 
 @mixin MarginTop1rem {

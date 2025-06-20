@@ -1,0 +1,39 @@
+@use "../global/base" as *;
+@use "../global/mixins" as *;
+
+.component-showcase {
+  grid-column: 1 / -1;
+  @include Padding4rem;
+
+  @include smartphone {
+    grid-column: 1 / -1;
+    @include Padding2rem;
+  }
+}
+
+.component-section {
+  @include MarginBottom6rem;
+}
+
+.button-grid {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  @include MarginBottom2rem;
+}
+
+// Link styling
+.link {
+  color: $primary-color;
+  text-decoration: underline;
+  font-weight: 500;
+
+  &:hover {
+    color: $secondary-color;
+  }
+}
+
+// Text center utility
+.text-center {
+  text-align: center;
+}

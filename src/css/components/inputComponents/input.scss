@@ -1,0 +1,70 @@
+@use "../../global/base" as *;
+@use "../../global/mixins" as *;
+
+// Input Fields
+.input {
+  width: 100%;
+  padding: 1.2rem 1.6rem;
+  font-size: 1.6rem;
+  font-family: inherit;
+  border: 2px solid $border-color;
+  border-radius: 6px;
+  background-color: $background-color;
+  color: $text-color;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    @include BoxShadow;
+  }
+
+  &:disabled {
+    background-color: $subtle-color;
+    color: $secondary-color;
+    cursor: not-allowed;
+  }
+
+  &::placeholder {
+    color: $muted-color;
+  }
+}
+
+.input--small {
+  padding: 0.8rem 1.2rem;
+  font-size: 1.4rem;
+}
+
+.input--large {
+  padding: 1.6rem 2rem;
+  font-size: 1.8rem;
+}
+
+// Textarea
+.textarea {
+  @extend .input;
+  min-height: 12rem;
+  resize: vertical;
+  font-family: inherit;
+}
+
+// Select
+.select {
+  @extend .input;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: right 1.2rem center;
+  background-size: 1.6rem;
+  padding-right: 4rem;
+  appearance: none;
+}
+
+// Responsive adjustments
+@include smartphone {
+  .input,
+  .textarea,
+  .select {
+    padding: 1rem 1.4rem;
+    font-size: 1.4rem;
+  }
+}

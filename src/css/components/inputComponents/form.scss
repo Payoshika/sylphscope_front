@@ -1,0 +1,67 @@
+@use "../../global/base" as *;
+@use "../../global/mixins" as *;
+
+// Form Groups
+.form-group {
+  @include MarginBottom2rem;
+
+  label {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: $text-color;
+    @include MarginBottom1rem;
+  }
+}
+
+.form-label {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: $text-color;
+  @include MarginBottom1rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  @include MarginBottom2rem;
+
+  @include smartphone {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+// Input Groups (for password toggle)
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+
+  .input {
+    flex: 1;
+  }
+
+  .btn {
+    flex-shrink: 0;
+  }
+}
+
+// Error States
+.input--error {
+  border-color: $error-color;
+
+  &:focus {
+    border-color: $error-color;
+    box-shadow: 0 0 0 2px rgba($error-color, 0.2);
+  }
+}
+
+.error-message {
+  font-size: 1.2rem;
+  color: $error-color;
+  margin-top: 0.4rem;
+}

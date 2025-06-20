@@ -1,12 +1,1 @@
-@import './css/base.scss';
-@import './css/grid.scss';
-@import './css/component.scss';
-@import './css/typography.scss';
-@import './css/mixins.scss';
-@import './css/pages/navigation.scss';
-@import './css/pages/toaster.scss';
-@import './css/pages/settings.scss';
-@import './css/pages/profile.scss';
-@import './css/pages/security.scss';
-@import './css/pages/auth.scss';
-@import './css/components/oauth.scss';
+@import './css/index.scss';

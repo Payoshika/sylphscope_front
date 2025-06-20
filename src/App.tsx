@@ -30,14 +30,12 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
             <Route path="/mfa-verification" element={<MfaVerification />} />
+            <Route path="/components" element={<Components />} />
 
             {/* Protected routes - all nested under ProtectedLayout */}
             <Route path="/" element={<ProtectedLayout />}>
-              <Route index element={<Navigate to="/components" replace />} />
-              <Route path="components" element={<Components />} />
               <Route path="settings" element={<Settings />} />
             </Route>
-
             {/* Catch all - redirect to signin */}
             <Route path="*" element={<Navigate to="/signin" replace />} />
           </Routes>

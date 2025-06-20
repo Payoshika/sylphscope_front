@@ -1,0 +1,78 @@
+@use "../../global/base" as *;
+@use "../../global/mixins" as *;
+
+// Checkbox & Radio
+.checkbox,
+.radio {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  font-size: 1.6rem;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .checkmark,
+  .radiomark {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid $border-color;
+    background-color: $background-color;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .checkmark {
+    border-radius: 4px;
+  }
+
+  .radiomark {
+    border-radius: 50%;
+  }
+
+  &:hover .checkmark,
+  &:hover .radiomark {
+    border-color: $primary-color;
+  }
+
+  input:checked ~ .checkmark,
+  input:checked ~ .radiomark {
+    background-color: $primary-color;
+    border-color: $primary-color;
+  }
+
+  input:checked ~ .checkmark::after {
+    content: "";
+    position: absolute;
+    left: 0.7rem;
+    top: 0.3rem;
+    width: 0.6rem;
+    height: 1rem;
+    border: 2px solid $background-color;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  input:checked ~ .radiomark::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    background: $background-color;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+}

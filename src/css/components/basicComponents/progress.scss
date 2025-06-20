@@ -1,0 +1,29 @@
+@use "../../global/base" as *;
+@use "../../global/mixins" as *;
+
+// Progress Bar
+.progress {
+  width: 100%;
+  height: 0.8rem;
+  background-color: $subtle-color;
+  border-radius: 4px;
+  overflow: hidden;
+
+  &__bar {
+    height: 100%;
+    background-color: $primary-color;
+    transition: width 0.3s ease;
+  }
+}
+
+.progress-container {
+  @include MarginBottom2rem;
+}
+
+.progress-controls {
+  @include MarginTop2rem;
+
+  .slider {
+    width: 100%;
+  }
+}
