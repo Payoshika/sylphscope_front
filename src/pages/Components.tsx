@@ -14,13 +14,16 @@ import Alert from "../components/basicComponents/Alert";
 import ProgressBar from "../components/basicComponents/ProgressBar";
 import Modal from "../components/basicComponents/Modal";
 import DatePicker from "../components/inputComponents/DatePicker";
+import Country from "../components/inputComponents/Country";
 
 const Components = () => {
   // State for interactive components
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [isCountryValid, setIsCountryValid] = useState(false);
+
   const [textInputValue, setTextInputValue] = useState("");
   const [emailValue, setEmailValue] = useState("");
   const [isEmailValid, setIsEmailValid] = useState(false);
-
   const [passwordValue, setPasswordValue] = useState("");
   const [textareaValue, setTextareaValue] = useState("");
   const [selectValue, setSelectValue] = useState("");
@@ -72,6 +75,19 @@ const Components = () => {
         <section className="component-section">
           <h2>Form Controls</h2>
           <Card title="Input Fields">
+            <Country
+              id="citizenship"
+              name="citizenship"
+              label="Country of Citizenship"
+              value={selectedCountry}
+              onChange={setSelectedCountry}
+              required
+              searchable
+              showFlag
+              onValidationChange={(isValid, errorMessage) => {
+                setIsCountryValid(isValid);
+              }}
+            />
             <TextInput
               id="textInput"
               name="textInput"
@@ -91,7 +107,6 @@ const Components = () => {
               required
               onValidationChange={(isValid, errorMessage) => {
                 setIsEmailValid(isValid);
-                console.log("Email validation:", isValid, errorMessage);
               }}
             />
 
