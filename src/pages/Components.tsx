@@ -15,17 +15,21 @@ import ProgressBar from "../components/basicComponents/ProgressBar";
 import Modal from "../components/basicComponents/Modal";
 import DatePicker from "../components/inputComponents/DatePicker";
 import Country from "../components/inputComponents/Country";
+import PhoneNumber from "../components/inputComponents/PhoneNumber";
 
 const Components = () => {
   // State for interactive components
   const [selectedCountry, setSelectedCountry] = useState("");
   const [isCountryValid, setIsCountryValid] = useState(false);
-
   const [textInputValue, setTextInputValue] = useState("");
   const [emailValue, setEmailValue] = useState("");
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
   const [textareaValue, setTextareaValue] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState({
+    countryCode: "UK",
+    number: "",
+  });
   const [selectValue, setSelectValue] = useState("");
   const [checkboxValue, setCheckboxValue] = useState(false);
   const [radioValue, setRadioValue] = useState("option1");
@@ -118,6 +122,14 @@ const Components = () => {
               value={passwordValue}
               onChange={(e) => setPasswordValue(e.target.value)}
               autoComplete="new-password"
+              required
+            />
+            <PhoneNumber
+              id="phone"
+              name="phone"
+              label="Phone Number"
+              value={phoneNumber}
+              onChange={setPhoneNumber}
               required
             />
 
