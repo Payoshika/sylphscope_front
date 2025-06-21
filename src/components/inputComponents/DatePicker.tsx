@@ -73,6 +73,10 @@ const DatePicker: React.FC<DatePickerProps> = ({
     month: string;
     year: string;
   }) => {
+    // If not all fields are filled, do not validate (return valid, no error)
+    if (!dateValue.day && !dateValue.month) {
+      return { isValid: true, errorMessage: "" };
+    }
     if (!validation) return { isValid: true, errorMessage: "" };
 
     // Required validation

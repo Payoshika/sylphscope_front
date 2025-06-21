@@ -1,19 +1,21 @@
 import React from "react";
 
-interface InputProps {
+interface TextInputProps {
   id: string;
   name: string;
   label: string;
-  type?: "text" | "email" | "password";
+  type?: "text"; // Remove email and password types
   placeholder?: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   size?: "small" | "regular" | "large";
   disabled?: boolean;
-  error?: boolean;
+  error?: boolean | string;
+  required?: boolean;
+  autoComplete?: string;
 }
 
-const Input: React.FC<InputProps> = ({
+const TextInput: React.FC<TextInputProps> = ({
   id,
   name,
   label,
@@ -24,6 +26,8 @@ const Input: React.FC<InputProps> = ({
   size = "regular",
   disabled = false,
   error = false,
+  required = false,
+  autoComplete,
 }) => {
   const getInputClass = () => {
     let baseClass = "input";
@@ -37,6 +41,7 @@ const Input: React.FC<InputProps> = ({
     <div className="form-group">
       <label htmlFor={id} className="form-label">
         {label}
+        {required && <span className="required-asterisk">*</span>}
       </label>
       <input
         type={type}
@@ -47,9 +52,14 @@ const Input: React.FC<InputProps> = ({
         value={value}
         onChange={onChange}
         disabled={disabled}
+        required={required}
+        autoComplete={autoComplete}
       />
+      {error && typeof error === "string" && (
+        <div className="error-message">{error}</div>
+      )}
     </div>
   );
 };
 
-export default Input;
+export default TextInput;

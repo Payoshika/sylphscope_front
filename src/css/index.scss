@@ -4,23 +4,24 @@
 @use "./global/grid" as *;
 
 // Import component styles
-@import "./components/inputComponents/form";
-@import "./components/inputComponents/checkbox";
-@import "./components/inputComponents/input";
+@use "./components/inputComponents/form";
+@use "./components/inputComponents/checkbox";
+@use "./components/inputComponents/input";
+@use "./components/inputComponents/datepicker";
 
-@import "./components/basicComponents/button";
-@import "./components/basicComponents/card";
-@import "./components/basicComponents/list";
-@import "./components/basicComponents/badge";
-@import "./components/basicComponents/alert";
-@import "./components/basicComponents/modal";
-@import "./components/basicComponents/progress";
-@import "./components/basicComponents/divider";
+@use "./components/basicComponents/button";
+@use "./components/basicComponents/card";
+@use "./components/basicComponents/list";
+@use "./components/basicComponents/badge";
+@use "./components/basicComponents/alert";
+@use "./components/basicComponents/modal";
+@use "./components/basicComponents/progress";
+@use "./components/basicComponents/divider";
 
-@import "./pages/navigation";
-@import "./pages/toaster";
-@import "./pages/settings";
-@import "./pages/profile";
-@import "./pages/security";
-@import "./pages/auth";
-@import "./pages/component";
+@use "./pages/navigation";
+@use "./pages/toaster";
+@use "./pages/settings";
+@use "./pages/profile";
+@use "./pages/security";
+@use "./pages/auth";
+@use "./pages/component";

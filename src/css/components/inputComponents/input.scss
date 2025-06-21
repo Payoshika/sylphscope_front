@@ -57,6 +57,40 @@
   background-size: 1.6rem;
   padding-right: 4rem;
   appearance: none;
+
+  // Enhanced select styling
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23666' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.2rem;
+  padding-right: 3rem;
+
+  // Custom appearance
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  &:focus {
+    border-color: $primary-color;
+    @include BoxShadow;
+    outline: none;
+  }
+
+  // Limited option styling (browser dependent)
+  option {
+    padding: 0.8rem;
+    background-color: $background-color;
+    color: $text-color;
+
+    &:hover {
+      background-color: $subtle-color;
+    }
+
+    &:checked {
+      background-color: $primary-color;
+      color: $background-color;
+    }
+  }
 }
 
 // Responsive adjustments

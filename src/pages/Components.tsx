@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import Button from "../components/basicComponents/Button";
-import Input from "../components/inputComponents/Input";
 import Textarea from "../components/inputComponents/Textarea";
 import Select from "../components/inputComponents/Select";
 import Checkbox from "../components/inputComponents/Checkbox";
 import Radio from "../components/inputComponents/Radio";
+import Email from "../components/inputComponents/Email";
+import Password from "../components/inputComponents/Password";
+import TextInput from "../components/inputComponents/TextInput";
 import Card from "../components/basicComponents/Card";
 import List from "../components/basicComponents/List";
 import Badge from "../components/basicComponents/Badge";
@@ -15,7 +17,11 @@ import DatePicker from "../components/inputComponents/DatePicker";
 
 const Components = () => {
   // State for interactive components
-  const [inputValue, setInputValue] = useState("");
+  const [textInputValue, setTextInputValue] = useState("");
+  const [emailValue, setEmailValue] = useState("");
+  const [isEmailValid, setIsEmailValid] = useState(false);
+
+  const [passwordValue, setPasswordValue] = useState("");
   const [textareaValue, setTextareaValue] = useState("");
   const [selectValue, setSelectValue] = useState("");
   const [checkboxValue, setCheckboxValue] = useState(false);
@@ -27,7 +33,6 @@ const Components = () => {
     month: "",
     year: "",
   });
-
   const [isDateValid, setIsDateValid] = useState(false);
 
   // Configuration data
@@ -67,35 +72,39 @@ const Components = () => {
         <section className="component-section">
           <h2>Form Controls</h2>
           <Card title="Input Fields">
-            <Input
-              id="text1"
+            <TextInput
+              id="textInput"
               name="textInput"
-              label="Regular Input"
+              label="Text Input"
               placeholder="Enter text here..."
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              value={textInputValue}
+              onChange={(e) => setTextInputValue(e.target.value)}
             />
 
-            <div className="form-row">
-              <Input
-                id="text2"
-                name="smallInput"
-                label="Small Input"
-                placeholder="Small input"
-                value=""
-                onChange={() => {}}
-                size="small"
-              />
-              <Input
-                id="text3"
-                name="largeInput"
-                label="Large Input"
-                placeholder="Large input"
-                value=""
-                onChange={() => {}}
-                size="large"
-              />
-            </div>
+            <Email
+              id="email"
+              name="email"
+              label="Email Address"
+              placeholder="Enter your email address"
+              value={emailValue}
+              onChange={(e) => setEmailValue(e.target.value)}
+              required
+              onValidationChange={(isValid, errorMessage) => {
+                setIsEmailValid(isValid);
+                console.log("Email validation:", isValid, errorMessage);
+              }}
+            />
+
+            <Password
+              id="password"
+              name="password"
+              label="Password"
+              placeholder="Enter your password"
+              value={passwordValue}
+              onChange={(e) => setPasswordValue(e.target.value)}
+              autoComplete="new-password"
+              required
+            />
 
             <Textarea
               id="textarea1"
