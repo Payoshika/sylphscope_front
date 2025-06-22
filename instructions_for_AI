@@ -6,5 +6,6 @@
 4. try to use mixins, typography, component for paddings and margins
 5. do not use px in sizing, always use rem
 6. do not define font related property in other than base.scss and typography.scss
+7. all the design should be mobile responsive
 <!-- suggestion rules -->
-7. when suggesting the code, try to show the necessary part such as modified part and try not to show all the codes
+8. when suggesting the code, try to show the necessary part such as modified part and try not to show all the codes

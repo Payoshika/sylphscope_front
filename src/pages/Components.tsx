@@ -20,6 +20,7 @@ import PhoneNumber from "../components/inputComponents/Phonenumber";
 import Address, {
   type AddressValue,
 } from "../components/inputComponents/Address";
+import University from "../components/inputComponents/University";
 
 const Components = () => {
   // State for interactive components
@@ -52,6 +53,8 @@ const Components = () => {
     year: "",
   });
   const [isDateValid, setIsDateValid] = useState(false);
+  const [university, setUniversity] = useState("");
+  const [isUniversityValid, setIsUniversityValid] = useState(false);
 
   // Configuration data
   const selectOptions = [
@@ -218,6 +221,19 @@ const Components = () => {
               onValidationChange={(isValid, errorMessage) => {
                 setIsDateValid(isValid);
                 console.log("Date validation:", isValid, errorMessage);
+              }}
+            />
+            <University
+              id="university"
+              name="university"
+              label="University"
+              value={university}
+              onChange={setUniversity}
+              required
+              placeholder="Type at least 4 characters to search..."
+              onValidationChange={(isValid, errorMessage) => {
+                setIsUniversityValid(isValid);
+                console.log("University validation:", isValid, errorMessage);
               }}
             />
           </Card>
