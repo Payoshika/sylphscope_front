@@ -15,11 +15,15 @@ import ProgressBar from "../components/basicComponents/ProgressBar";
 import Modal from "../components/basicComponents/Modal";
 import DatePicker from "../components/inputComponents/DatePicker";
 import Country from "../components/inputComponents/Country";
-import PhoneNumber from "../components/inputComponents/PhoneNumber";
+import type { CountryType } from "../data/countries";
+import PhoneNumber from "../components/inputComponents/Phonenumber";
+import Address, {
+  type AddressValue,
+} from "../components/inputComponents/Address";
 
 const Components = () => {
   // State for interactive components
-  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState<string>("GB");
   const [isCountryValid, setIsCountryValid] = useState(false);
   const [textInputValue, setTextInputValue] = useState("");
   const [emailValue, setEmailValue] = useState("");
@@ -30,6 +34,13 @@ const Components = () => {
     countryCode: "UK",
     number: "",
   });
+  const [address, setAddress] = useState<AddressValue>({
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    region: "",
+  });
+  const [isAddressValid, setIsAddressValid] = useState(false);
   const [selectValue, setSelectValue] = useState("");
   const [checkboxValue, setCheckboxValue] = useState(false);
   const [radioValue, setRadioValue] = useState("option1");
@@ -90,6 +101,19 @@ const Components = () => {
               showFlag
               onValidationChange={(isValid, errorMessage) => {
                 setIsCountryValid(isValid);
+              }}
+            />
+            <Address
+              id="address"
+              name="address"
+              label="Address"
+              value={address}
+              onChange={setAddress}
+              countryCode={selectedCountry} // Pass country code as prop
+              required
+              onValidationChange={(isValid, errorMessage) => {
+                setIsAddressValid(isValid);
+                console.log("Address validation:", isValid, errorMessage);
               }}
             />
             <TextInput

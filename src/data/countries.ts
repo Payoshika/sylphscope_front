@@ -1,11 +1,11 @@
-export interface Country {
+export interface CountryType {
   code: string;
   name: string;
   flag: string;
   phoneCode: string; // Add phone code
 }
 
-export const countries: Country[] = [
+export const countries: CountryType[] = [
   { code: "AD", name: "Andorra", flag: "🇦🇩", phoneCode: "+376" },
   { code: "AE", name: "United Arab Emirates", flag: "🇦🇪", phoneCode: "+971" },
   { code: "AF", name: "Afghanistan", flag: "🇦🇫", phoneCode: "+93" },
@@ -258,24 +258,24 @@ export const countries: Country[] = [
 ];
 
 // Helper function to get country by code
-export const getCountryByCode = (code: string): Country | undefined => {
+export const getCountryByCode = (code: string): CountryType | undefined => {
   return countries.find(country => country.code === code);
 };
 
 // Helper function to get country by phone code
-export const getCountryByPhoneCode = (phoneCode: string): Country | undefined => {
+export const getCountryByPhoneCode = (phoneCode: string): CountryType | undefined => {
   return countries.find(country => country.phoneCode === phoneCode);
 };
 
 // Helper function to get country by name
-export const getCountryByName = (name: string): Country | undefined => {
-  return countries.find(country => 
+export const getCountryByName = (name: string): CountryType | undefined => {
+  return countries.find(country =>
     country.name.toLowerCase() === name.toLowerCase()
   );
 };
 
 // Helper function to search countries
-export const searchCountries = (query: string): Country[] => {
+export const searchCountries = (query: string): CountryType[] => {
   const searchTerm = query.toLowerCase();
   return countries.filter(country =>
     country.name.toLowerCase().includes(searchTerm) ||

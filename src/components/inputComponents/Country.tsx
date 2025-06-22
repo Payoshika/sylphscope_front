@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { countries, type Country, searchCountries } from "../../data/coutries";
+import {
+  countries,
+  type CountryType,
+  searchCountries,
+} from "../../data/countries";
 
 interface CountryProps {
   id: string;
@@ -33,7 +37,7 @@ const Country: React.FC<CountryProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCountries, setFilteredCountries] =
-    useState<Country[]>(countries);
+    useState<CountryType[]>(countries);
   const [internalError, setInternalError] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
 

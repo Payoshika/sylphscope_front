@@ -1,0 +1,296 @@
+@use "../../global/base" as *;
+@use "../../global/mixins" as *;
+
+.address-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.address-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  &--flex {
+    flex: 1;
+  }
+}
+
+.address-field-label {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: $text-color;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+
+  .required-asterisk {
+    color: $error-color;
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+
+  .optional-text {
+    font-size: 1.1rem;
+    color: $muted-color;
+    font-weight: 400;
+    font-style: italic;
+  }
+}
+
+// Country indicator in main label
+.address-country-indicator {
+  font-size: 1.2rem;
+  color: $secondary-color;
+  font-weight: 400;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.8rem;
+  background-color: rgba($primary-color, 0.1);
+  border-radius: 4px;
+  border: 1px solid rgba($primary-color, 0.2);
+}
+
+.address-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+
+  @include smartphone {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+// Input styling within address component
+.address-field .input {
+  width: 100%;
+  padding: 1.2rem 1.6rem;
+  font-size: 1.5rem;
+  font-family: inherit;
+  border: 2px solid $border-color;
+  border-radius: 6px;
+  background-color: $background-color;
+  color: $text-color;
+  transition: all 0.3s ease;
+  min-height: 4.8rem;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    @include BoxShadow;
+  }
+
+  &:disabled {
+    background-color: $subtle-color;
+    color: $muted-color;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  &::placeholder {
+    color: $muted-color;
+    font-style: italic;
+  }
+
+  &--error {
+    border-color: $error-color;
+
+    &:focus {
+      border-color: $error-color;
+      box-shadow: 0 0 0 2px rgba($error-color, 0.2);
+    }
+  }
+
+  &:hover:not(:disabled):not(:focus) {
+    border-color: $secondary-color;
+  }
+}
+
+// Field-specific error messages
+.field-error-message {
+  font-size: 1.2rem;
+  color: $error-color;
+  font-weight: 500;
+  margin-top: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &::before {
+    content: "⚠️";
+    font-size: 1.2rem;
+  }
+}
+
+// Main error message styling
+.address-container + .error-message {
+  margin-top: 1rem;
+  font-size: 1.3rem;
+  color: $error-color;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  background-color: rgba($error-color, 0.1);
+  border: 1px solid rgba($error-color, 0.3);
+  border-radius: 6px;
+
+  &::before {
+    content: "⚠️";
+    font-size: 1.4rem;
+  }
+}
+
+// Success state (when all fields are valid)
+.address-container--valid {
+  .input {
+    border-color: $success-color;
+
+    &:focus {
+      border-color: $success-color;
+      box-shadow: 0 0 0 2px rgba($success-color, 0.2);
+    }
+  }
+
+  .address-country-indicator {
+    background-color: rgba($success-color, 0.1);
+    border-color: rgba($success-color, 0.3);
+    color: $success-color;
+  }
+}
+
+// Loading state (for async validation)
+.address-container--loading {
+  .input {
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      rgba($primary-color, 0.1),
+      transparent
+    );
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+}
+
+@keyframes loading {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+// Responsive design
+// @include tablet {
+//   .address-row {
+//     gap: 1.2rem;
+//   }
+
+//   .address-field .input {
+//     padding: 1rem 1.4rem;
+//     font-size: 1.4rem;
+//   }
+
+//   .address-field-label {
+//     font-size: 1.2rem;
+//   }
+
+//   .address-country-indicator {
+//     font-size: 1.1rem;
+//   }
+// }
+
+@include smartphone {
+  .address-container {
+    gap: 1.2rem;
+  }
+
+  .address-row {
+    gap: 1rem;
+  }
+
+  .address-field .input {
+    padding: 1rem 1.2rem;
+    font-size: 1.4rem;
+    min-height: 4.4rem;
+  }
+
+  .address-field-label {
+    font-size: 1.2rem;
+  }
+
+  .field-error-message {
+    font-size: 1.1rem;
+  }
+
+  .address-country-indicator {
+    font-size: 1.1rem;
+    padding: 0.2rem 0.6rem;
+  }
+}
+
+// Compact variant
+.address-container--compact {
+  gap: 1rem;
+
+  .address-row {
+    gap: 1rem;
+  }
+
+  .address-field .input {
+    min-height: 4rem;
+    padding: 0.8rem 1.2rem;
+    font-size: 1.4rem;
+  }
+
+  .address-field-label {
+    font-size: 1.2rem;
+  }
+
+  .field-error-message {
+    font-size: 1.1rem;
+  }
+
+  .address-country-indicator {
+    font-size: 1rem;
+    padding: 0.2rem 0.6rem;
+  }
+}
+
+// Focus flow - tab through fields smoothly
+.address-field .input:focus {
+  z-index: 1;
+  position: relative;
+}
+
+// Print styles
+@media print {
+  .address-container {
+    gap: 0.5rem;
+  }
+
+  .address-field .input {
+    border: 1px solid #000;
+    background: white;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+
+  .field-error-message,
+  .error-message {
+    display: none;
+  }
+
+  .address-country-indicator {
+    background: none;
+    border: 1px solid #000;
+  }
+}

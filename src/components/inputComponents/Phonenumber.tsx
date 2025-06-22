@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   countries,
-  type Country,
+  type CountryType,
   getCountryByCode,
   searchCountries,
-} from "../../data/coutries";
+} from "../../data/countries";
 
 interface PhoneNumberProps {
   id: string;
@@ -40,7 +40,7 @@ const PhoneNumber: React.FC<PhoneNumberProps> = ({
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
   const [countrySearchTerm, setCountrySearchTerm] = useState("");
   const [filteredCountries, setFilteredCountries] =
-    useState<Country[]>(countries);
+    useState<CountryType[]>(countries);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
   const countrySearchRef = useRef<HTMLInputElement>(null);
