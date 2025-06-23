@@ -1,0 +1,298 @@
+@use "../../global/base" as *;
+@use "../../global/mixins" as *;
+
+.university-major-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  @include smartphone {
+    grid-template-columns: 1fr;
+  }
+}
+
+.university-major__degree,
+.university-major__level,
+.university-major__category {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.university-major__label {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: $text-color;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+
+  .required-asterisk {
+    color: $error-color;
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+}
+
+// Level description styling
+.level-description {
+  font-size: 1.1rem;
+  color: $muted-color;
+  font-style: italic;
+  margin-top: 0.3rem;
+  line-height: 1.3;
+}
+
+// Input field styling
+.university-major-container .input {
+  width: 100%;
+  padding: 1.2rem 1.6rem;
+  font-size: 1.5rem;
+  font-family: inherit;
+  border: 2px solid $border-color;
+  border-radius: 6px;
+  background-color: $background-color;
+  color: $text-color;
+  transition: all 0.3s ease;
+  min-height: 4.8rem;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    @include BoxShadow;
+  }
+
+  &:disabled {
+    background-color: $subtle-color;
+    color: $muted-color;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  &:hover:not(:disabled):not(:focus) {
+    border-color: $secondary-color;
+  }
+
+  &::placeholder {
+    color: $muted-color;
+    font-style: italic;
+  }
+
+  &.input--error {
+    border-color: $error-color;
+
+    &:focus {
+      border-color: $error-color;
+      box-shadow: 0 0 0 2px rgba($error-color, 0.2);
+    }
+  }
+}
+
+// Select dropdown styling
+.university-major-container .select {
+  width: 100%;
+  padding: 1.2rem 1.6rem;
+  font-size: 1.5rem;
+  font-family: inherit;
+  border: 2px solid $border-color;
+  border-radius: 6px;
+  background-color: $background-color;
+  color: $text-color;
+  transition: all 0.3s ease;
+  min-height: 4.8rem;
+  box-sizing: border-box;
+
+  // Custom dropdown arrow
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='%23666' d='M8 11L3 6h10z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 1.2rem center;
+  background-size: 1.2rem;
+  appearance: none;
+  cursor: pointer;
+  padding-right: 4rem;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    @include BoxShadow;
+  }
+
+  &:disabled {
+    background-color: $subtle-color;
+    color: $muted-color;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  &:hover:not(:disabled):not(:focus) {
+    border-color: $secondary-color;
+  }
+
+  option {
+    padding: 0.8rem;
+    font-size: 1.4rem;
+    background-color: $background-color;
+    color: $text-color;
+
+    &:hover {
+      background-color: $subtle-color;
+    }
+
+    &:checked {
+      background-color: $primary-color;
+      color: $background-color;
+    }
+  }
+
+  optgroup {
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: $secondary-color;
+    background-color: $subtle-color;
+    padding: 0.5rem;
+
+    option {
+      font-weight: normal;
+      font-size: 1.4rem;
+      padding-left: 1.5rem;
+      background-color: $background-color;
+      color: $text-color;
+    }
+  }
+
+  &.input--error {
+    border-color: $error-color;
+
+    &:focus {
+      border-color: $error-color;
+      box-shadow: 0 0 0 2px rgba($error-color, 0.2);
+    }
+  }
+}
+
+// Info display styling
+.university-major__info {
+  padding: 1rem 1.5rem;
+  background-color: rgba(#0066cc, 0.05);
+  border: 1px solid rgba(#0066cc, 0.2);
+  border-radius: 6px;
+  margin-top: 0.5rem;
+
+  .major-system-info {
+    font-size: 1.2rem;
+    color: $secondary-color;
+    line-height: 1.4;
+
+    strong {
+      color: #0066cc;
+      font-weight: 600;
+    }
+  }
+}
+
+// Animation for info appearing
+.university-major__info {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive design for mobile
+@include smartphone {
+  .university-major-container {
+    gap: 1.2rem;
+
+    .input,
+    .select {
+      padding: 1rem 1.2rem;
+      font-size: 1.4rem;
+      min-height: 4.4rem;
+    }
+
+    .select {
+      padding-right: 3.5rem;
+    }
+  }
+
+  .university-major__label {
+    font-size: 1.2rem;
+  }
+
+  .level-description {
+    font-size: 1rem;
+  }
+
+  .university-major__info {
+    padding: 0.8rem 1.2rem;
+  }
+
+  .major-system-info {
+    font-size: 1.1rem;
+  }
+}
+
+// Focus flow between fields
+.university-major-container .input:focus,
+.university-major-container .select:focus {
+  z-index: 1;
+  position: relative;
+}
+
+// Loading state
+.university-major-container--loading {
+  .input,
+  .select {
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      rgba($primary-color, 0.1),
+      transparent
+    );
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+}
+
+@keyframes loading {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+// Print styles
+@media print {
+  .university-major-container {
+    gap: 0.5rem;
+    grid-template-columns: 1fr;
+  }
+
+  .university-major-container .input,
+  .university-major-container .select {
+    border: 1px solid #000;
+    background: white;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+
+  .university-major__info {
+    background: none;
+    border: 1px solid #000;
+  }
+
+  .level-description {
+    display: none;
+  }
+}

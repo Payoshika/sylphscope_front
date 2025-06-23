@@ -8,12 +8,16 @@
 @use "./components/inputComponents/checkbox";
 @use "./components/inputComponents/input";
 @use "./components/inputComponents/datepicker";
+@use "./components/inputComponents/monthpicker";
 @use "./components/inputComponents/country";
 @use "./components/inputComponents/phonenumber";
 @use "./components/inputComponents/address";
 @use "./components/inputComponents/university";
 @use "./components/inputComponents/ukuniversitygrade";
 @use "./components/inputComponents/gpagrade";
+@use "./components/inputComponents/gcsegrade";
+@use "./components/inputComponents/alevelgrade";
+@use "./components/inputComponents/universitymajor";
 
 @use "./components/basicComponents/button";
 @use "./components/basicComponents/card";

@@ -13,7 +13,14 @@ import Badge from "../components/basicComponents/Badge";
 import Alert from "../components/basicComponents/Alert";
 import ProgressBar from "../components/basicComponents/ProgressBar";
 import Modal from "../components/basicComponents/Modal";
-import DatePicker from "../components/inputComponents/DatePicker";
+import {
+  DOBPicker,
+  AnyDatePicker as DatePicker,
+  MonthPicker,
+  type DateValue,
+  type MonthValue,
+} from "../components/inputComponents/datePickers";
+
 import Country from "../components/inputComponents/Country";
 import type { CountryType } from "../data/countries";
 import PhoneNumber from "../components/inputComponents/Phonenumber";
@@ -21,6 +28,10 @@ import Address, {
   type AddressValue,
 } from "../components/inputComponents/Address";
 import University from "../components/inputComponents/University";
+import UniversityMajor, {
+  type UniversityMajorValue,
+} from "../components/inputComponents/UniversityMajor";
+
 // Import individual grade components
 // Fixed imports - separate component imports from type imports
 import GCSEGrade from "../components/inputComponents/academicGrades/GCSEGrade";
@@ -65,16 +76,43 @@ const Components = () => {
     year: "",
   });
   const [isDateValid, setIsDateValid] = useState(false);
+  // New date picker states
+  const [dobDate, setDobDate] = useState<DateValue>({
+    day: "",
+    month: "",
+    year: "",
+  });
+  const [isDobValid, setIsDobValid] = useState(false);
+
+  const [futureDate, setFutureDate] = useState<DateValue>({
+    day: "",
+    month: "",
+    year: "",
+  });
+  const [isFutureDateValid, setIsFutureDateValid] = useState(false);
+
+  const [selectedMonth, setSelectedMonth] = useState<MonthValue>({
+    month: "",
+    year: "",
+  });
+  const [isMonthValid, setIsMonthValid] = useState(false);
   const [university, setUniversity] = useState("");
   const [isUniversityValid, setIsUniversityValid] = useState(false);
+  const [universityMajor, setUniversityMajor] = useState<UniversityMajorValue>({
+    degreeName: "",
+    level: "",
+    category: "",
+  });
+  const [isUniversityMajorValid, setIsUniversityMajorValid] = useState(false);
 
   // Individual grade component states
   const [gcseGrade, setGcseGrade] = useState<GCSEGradeValue>({
+    subject: "",
     grade: "",
   });
   const [isGcseGradeValid, setIsGcseGradeValid] = useState(false);
-
   const [alevelGrade, setAlevelGrade] = useState<ALevelGradeValue>({
+    subject: "",
     grade: "",
   });
   const [isAlevelGradeValid, setIsAlevelGradeValid] = useState(false);
@@ -123,6 +161,84 @@ const Components = () => {
               <Button text="Large Button" size="large" />
               <Button text="Full Width Button" fullWidth />
             </div>
+          </Card>
+        </section>
+
+        {/* Date Pickers Section */}
+        <section className="component-section">
+          <h2>Date Pickers</h2>
+
+          <Card title="Date of Birth Picker">
+            <DOBPicker
+              id="dob-picker"
+              name="dobPicker"
+              label="Date of Birth"
+              value={dobDate}
+              onChange={setDobDate}
+              validation={{
+                required: true,
+                minAge: 13,
+                maxAge: 120,
+              }}
+              onValidationChange={(isValid, errorMessage) => {
+                setIsDobValid(isValid);
+                console.log("DOB validation:", isValid, errorMessage);
+              }}
+            />
+          </Card>
+
+          <Card title="Any Date Picker">
+            <DatePicker
+              id="any-date-picker"
+              name="anyDatePicker"
+              label="Select Any Date"
+              type="any"
+              value={futureDate}
+              onChange={setFutureDate}
+              validation={{
+                required: true,
+              }}
+              onValidationChange={(isValid, errorMessage) => {
+                setIsFutureDateValid(isValid);
+                console.log("Any date validation:", isValid, errorMessage);
+              }}
+            />
+          </Card>
+
+          <Card title="Future Date Only">
+            <DatePicker
+              id="future-only-picker"
+              name="futureOnlyPicker"
+              label="Select Future Date Only"
+              value={futureDate}
+              onChange={setFutureDate}
+              type="future"
+              validation={{
+                required: true,
+              }}
+              onValidationChange={(isValid, errorMessage) => {
+                setIsFutureDateValid(isValid);
+                console.log("Future date validation:", isValid, errorMessage);
+              }}
+            />
+          </Card>
+
+          <Card title="Month Picker">
+            <MonthPicker
+              id="month-picker"
+              name="monthPicker"
+              label="Select Month & Year"
+              value={selectedMonth}
+              onChange={setSelectedMonth}
+              type="any" // or 'past' or 'any'
+              validation={{
+                required: true,
+              }}
+              onValidationChange={(isValid, errorMessage) => {
+                setIsMonthValid(isValid);
+                console.log("Month validation:", isValid, errorMessage);
+              }}
+            />
           </Card>
         </section>
 
@@ -243,23 +359,6 @@ const Components = () => {
                 />
               </div>
             </div>
-
-            <DatePicker
-              id="birth-date"
-              name="birthDate"
-              label="Date of Birth"
-              value={birthDate}
-              onChange={setBirthDate}
-              validation={{
-                required: true,
-                minAge: 13,
-                maxAge: 120,
-              }}
-              onValidationChange={(isValid, errorMessage) => {
-                setIsDateValid(isValid);
-                console.log("Date validation:", isValid, errorMessage);
-              }}
-            />
             <University
               id="university"
               name="university"
@@ -271,6 +370,21 @@ const Components = () => {
               onValidationChange={(isValid, errorMessage) => {
                 setIsUniversityValid(isValid);
                 console.log("University validation:", isValid, errorMessage);
+              }}
+            />
+            <UniversityMajor
+              id="university-major"
+              name="universityMajor"
+              label="University Degree"
+              value={universityMajor}
+              onChange={setUniversityMajor}
+              onValidationChange={(isValid, errorMessage) => {
+                setIsUniversityMajorValid(isValid);
+                console.log(
+                  "University major validation:",
+                  isValid,
+                  errorMessage
+                );
               }}
             />
           </Card>
@@ -290,7 +404,6 @@ const Components = () => {
               onChange={setGcseGrade}
               onValidationChange={(isValid, errorMessage) => {
                 setIsGcseGradeValid(isValid);
-                console.log("GCSE grade validation:", isValid, errorMessage);
               }}
             />
 

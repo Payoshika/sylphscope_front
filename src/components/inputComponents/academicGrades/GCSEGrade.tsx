@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { gcseGrades, getGCSEGradeLabel } from "../../../data/gcseGrades";
+import { gcseSubjects, getGCSESubjectLabel } from "../../../data/gsceSubjects";
 
 export interface GCSEGradeValue {
+  subject: string;
   grade: string;
 }
 
@@ -36,6 +38,10 @@ const GCSEGrade: React.FC<GCSEGradeProps> = ({
   const validateGrade = (gradeValue: GCSEGradeValue): string => {
     if (!validate) return "";
 
+    if (required && !gradeValue.subject) {
+      return "GCSE subject is required";
+    }
+
     if (required && !gradeValue.grade) {
       return "GCSE grade is required";
     }
@@ -52,9 +58,18 @@ const GCSEGrade: React.FC<GCSEGradeProps> = ({
     }
   }, [value, validate, required, onValidationChange]);
 
+  // Handle subject change
+  const handleSubjectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    onChange({
+      ...value,
+      subject: e.target.value,
+    });
+  };
+
   // Handle grade change
   const handleGradeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     onChange({
+      ...value,
       grade: e.target.value,
     });
   };
@@ -68,6 +83,14 @@ const GCSEGrade: React.FC<GCSEGradeProps> = ({
   const hasError = error || !!internalError;
   const errorMessage = typeof error === "string" ? error : internalError;
 
+  const getSelectedSubjectInfo = () => {
+    if (!value.subject) return null;
+    const selectedSubject = gcseSubjects.find(
+      (subject) => subject.value === value.subject
+    );
+    return selectedSubject;
+  };
+
   const getSelectedGradeInfo = () => {
     if (!value.grade) return null;
     const selectedGrade = gcseGrades.find(
@@ -76,7 +99,28 @@ const GCSEGrade: React.FC<GCSEGradeProps> = ({
     return selectedGrade;
   };
 
+  const selectedSubjectInfo = getSelectedSubjectInfo();
   const selectedGradeInfo = getSelectedGradeInfo();
+
+  // Group subjects by category for better organization
+  const subjectsByCategory = gcseSubjects.reduce((acc, subject) => {
+    if (subject.value === "") return acc; // Skip the placeholder
+    if (!acc[subject.category]) {
+      acc[subject.category] = [];
+    }
+    acc[subject.category].push(subject);
+    return acc;
+  }, {} as Record<string, typeof gcseSubjects>);
+
+  const categoryLabels = {
+    core: "Core Subjects",
+    sciences: "Sciences",
+    humanities: "Humanities",
+    languages: "Languages",
+    arts: "Arts & Creative",
+    practical: "Practical & Technical",
+    business: "Business & Economics",
+  };
 
   return (
     <div className="form-group">
@@ -86,6 +130,37 @@ const GCSEGrade: React.FC<GCSEGradeProps> = ({
       </label>
 
       <div className="gcse-grade-container">
+        {/* Subject Selection */}
+        <div className="gcse-grade__subject">
+          <label htmlFor={`${id}-subject`} className="gcse-grade__label">
+            GCSE Subject
+            {required && <span className="required-asterisk">*</span>}
+          </label>
+          <select
+            id={`${id}-subject`}
+            name={`${name}-subject`}
+            className={getSelectClass()}
+            value={value.subject}
+            onChange={handleSubjectChange}
+            disabled={disabled}
+            required={required}
+          >
+            <option value="">Select GCSE Subject</option>
+            {Object.entries(categoryLabels).map(
+              ([category, categoryLabel]) =>
+                subjectsByCategory[category] && (
+                  <optgroup key={category} label={categoryLabel}>
+                    {subjectsByCategory[category].map((subject) => (
+                      <option key={subject.value} value={subject.value}>
+                        {subject.label}
+                      </option>
+                    ))}
+                  </optgroup>
+                )
+            )}
+          </select>
+        </div>
+
         {/* Grade Selection */}
         <div className="gcse-grade__grade">
           <label htmlFor={`${id}-grade`} className="gcse-grade__label">
