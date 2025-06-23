@@ -1,0 +1,232 @@
+@use "../../global/base" as *;
+@use "../../global/mixins" as *;
+
+.uk-university-grade-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.uk-university-grade__category,
+.uk-university-grade__grade {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.uk-university-grade__label {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: $text-color;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+
+  .required-asterisk {
+    color: $error-color;
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+}
+
+.uk-university-grade-container .select {
+  width: 100%;
+  padding: 1.2rem 1.6rem;
+  font-size: 1.5rem;
+  font-family: inherit;
+  border: 2px solid $border-color;
+  border-radius: 6px;
+  background-color: $background-color;
+  color: $text-color;
+  transition: all 0.3s ease;
+  min-height: 4.8rem;
+  box-sizing: border-box;
+
+  // Custom dropdown arrow
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='%23666' d='M8 11L3 6h10z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 1.2rem center;
+  background-size: 1.2rem;
+  appearance: none;
+  cursor: pointer;
+  padding-right: 4rem;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    @include BoxShadow;
+  }
+
+  &:disabled {
+    background-color: $subtle-color;
+    color: $muted-color;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  &:hover:not(:disabled):not(:focus) {
+    border-color: $secondary-color;
+  }
+
+  option {
+    padding: 0.8rem;
+    font-size: 1.4rem;
+    background-color: $background-color;
+    color: $text-color;
+
+    &:hover {
+      background-color: $subtle-color;
+    }
+
+    &:checked {
+      background-color: $primary-color;
+      color: $background-color;
+    }
+  }
+
+  &.input--error {
+    border-color: $error-color;
+
+    &:focus {
+      border-color: $error-color;
+      box-shadow: 0 0 0 2px rgba($error-color, 0.2);
+    }
+  }
+}
+
+.uk-university-grade__info {
+  padding: 1rem 1.5rem;
+  background-color: rgba(#6600cc, 0.05);
+  border: 1px solid rgba(#6600cc, 0.2);
+  border-radius: 6px;
+  margin-top: 0.5rem;
+
+  .grade-system-info {
+    font-size: 1.2rem;
+    color: $secondary-color;
+    line-height: 1.4;
+
+    strong {
+      color: #6600cc;
+      font-weight: 600;
+    }
+  }
+
+  .grade-description {
+    color: $muted-color;
+    font-style: italic;
+  }
+}
+
+.uk-university-grade__grade {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive design for mobile
+@include smartphone {
+  .uk-university-grade-container {
+    gap: 1.2rem;
+
+    .select {
+      padding: 1rem 1.2rem;
+      font-size: 1.4rem;
+      min-height: 4.4rem;
+      padding-right: 3.5rem;
+    }
+  }
+
+  .uk-university-grade__label {
+    font-size: 1.2rem;
+  }
+
+  .uk-university-grade__info {
+    padding: 0.8rem 1.2rem;
+  }
+
+  .grade-system-info {
+    font-size: 1.1rem;
+  }
+}
+
+// Compact variant
+.uk-university-grade-container--compact {
+  gap: 1rem;
+
+  .select {
+    min-height: 4rem;
+    padding: 0.8rem 1.2rem;
+    font-size: 1.4rem;
+    padding-right: 3rem;
+  }
+
+  .uk-university-grade__label {
+    font-size: 1.2rem;
+  }
+
+  .uk-university-grade__info {
+    padding: 0.6rem 1rem;
+  }
+
+  .grade-system-info {
+    font-size: 1.1rem;
+  }
+}
+
+// Loading state
+.uk-university-grade-container--loading {
+  .select {
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      rgba($primary-color, 0.1),
+      transparent
+    );
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+}
+
+@keyframes loading {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+// Focus flow
+.uk-university-grade-container .select:focus {
+  z-index: 1;
+  position: relative;
+}
+
+// Print styles
+@media print {
+  .uk-university-grade-container {
+    gap: 0.5rem;
+  }
+
+  .uk-university-grade-container .select {
+    border: 1px solid #000;
+    background: white;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+
+  .uk-university-grade__info {
+    background: none;
+    border: 1px solid #000;
+  }
+}

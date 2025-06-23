@@ -21,6 +21,18 @@ import Address, {
   type AddressValue,
 } from "../components/inputComponents/Address";
 import University from "../components/inputComponents/University";
+// Import individual grade components
+// Fixed imports - separate component imports from type imports
+import GCSEGrade from "../components/inputComponents/academicGrades/GCSEGrade";
+import ALevelGrade from "../components/inputComponents/academicGrades/ALevelGrade";
+import GPAGrade from "../components/inputComponents/academicGrades/GPAGrade";
+import UKUniversityGradeInput from "../components/inputComponents/academicGrades/UKUniversityGradeInput";
+
+// Type-only imports
+import type { GCSEGradeValue } from "../components/inputComponents/academicGrades/GCSEGrade";
+import type { ALevelGradeValue } from "../components/inputComponents/academicGrades/ALevelGrade";
+import type { GPAGradeValue } from "../components/inputComponents/academicGrades/GPAGrade";
+import type { UKUniversityGradeValue } from "../components/inputComponents/academicGrades/UKUniversityGradeInput";
 
 const Components = () => {
   // State for interactive components
@@ -32,7 +44,7 @@ const Components = () => {
   const [passwordValue, setPasswordValue] = useState("");
   const [textareaValue, setTextareaValue] = useState("");
   const [phoneNumber, setPhoneNumber] = useState({
-    countryCode: "UK",
+    countryCode: "GB",
     number: "",
   });
   const [address, setAddress] = useState<AddressValue>({
@@ -55,6 +67,31 @@ const Components = () => {
   const [isDateValid, setIsDateValid] = useState(false);
   const [university, setUniversity] = useState("");
   const [isUniversityValid, setIsUniversityValid] = useState(false);
+
+  // Individual grade component states
+  const [gcseGrade, setGcseGrade] = useState<GCSEGradeValue>({
+    grade: "",
+  });
+  const [isGcseGradeValid, setIsGcseGradeValid] = useState(false);
+
+  const [alevelGrade, setAlevelGrade] = useState<ALevelGradeValue>({
+    grade: "",
+  });
+  const [isAlevelGradeValid, setIsAlevelGradeValid] = useState(false);
+
+  const [gpaGrade, setGpaGrade] = useState<GPAGradeValue>({
+    gpaValue: "",
+    gpaScale: "",
+  });
+  const [isGpaGradeValid, setIsGpaGradeValid] = useState(false);
+
+  const [ukUniversityGrade, setUkUniversityGrade] =
+    useState<UKUniversityGradeValue>({
+      category: "honours",
+      grade: "",
+    });
+  const [isUkUniversityGradeValid, setIsUkUniversityGradeValid] =
+    useState(false);
 
   // Configuration data
   const selectOptions = [
@@ -92,7 +129,7 @@ const Components = () => {
         {/* Form Controls Section */}
         <section className="component-section">
           <h2>Form Controls</h2>
-          <Card title="Input Fields">
+          <Card title="Basic Input Fields">
             <Country
               id="citizenship"
               name="citizenship"
@@ -112,7 +149,7 @@ const Components = () => {
               label="Address"
               value={address}
               onChange={setAddress}
-              countryCode={selectedCountry} // Pass country code as prop
+              countryCode={selectedCountry}
               required
               onValidationChange={(isValid, errorMessage) => {
                 setIsAddressValid(isValid);
@@ -234,6 +271,67 @@ const Components = () => {
               onValidationChange={(isValid, errorMessage) => {
                 setIsUniversityValid(isValid);
                 console.log("University validation:", isValid, errorMessage);
+              }}
+            />
+          </Card>
+        </section>
+
+        {/* Academic Grades Section */}
+        <section className="component-section">
+          <h2>Academic Grades</h2>
+
+          {/* Individual Grade Components */}
+          <Card title="Individual Grade Components">
+            <GCSEGrade
+              id="gcse-grade"
+              name="gcseGrade"
+              label="GCSE Grade"
+              value={gcseGrade}
+              onChange={setGcseGrade}
+              onValidationChange={(isValid, errorMessage) => {
+                setIsGcseGradeValid(isValid);
+                console.log("GCSE grade validation:", isValid, errorMessage);
+              }}
+            />
+
+            <ALevelGrade
+              id="alevel-grade"
+              name="alevelGrade"
+              label="A-Level Grade"
+              value={alevelGrade}
+              onChange={setAlevelGrade}
+              showUCASPoints={true}
+              onValidationChange={(isValid, errorMessage) => {
+                setIsAlevelGradeValid(isValid);
+                console.log("A-Level grade validation:", isValid, errorMessage);
+              }}
+            />
+
+            <UKUniversityGradeInput
+              id="uk-university-grade"
+              name="ukUniversityGrade"
+              label="UK University Grade"
+              value={ukUniversityGrade}
+              onChange={setUkUniversityGrade}
+              onValidationChange={(isValid, errorMessage) => {
+                setIsUkUniversityGradeValid(isValid);
+                console.log(
+                  "UK University grade validation:",
+                  isValid,
+                  errorMessage
+                );
+              }}
+            />
+
+            <GPAGrade
+              id="gpa-grade"
+              name="gpaGrade"
+              label="GPA Grade"
+              value={gpaGrade}
+              onChange={setGpaGrade}
+              onValidationChange={(isValid, errorMessage) => {
+                setIsGpaGradeValid(isValid);
+                console.log("GPA grade validation:", isValid, errorMessage);
               }}
             />
           </Card>

@@ -1,0 +1,253 @@
+@use "../../global/base" as *;
+@use "../../global/mixins" as *;
+
+.academic-grade-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.academic-grade__system {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.academic-grade__component {
+  animation: fadeIn 0.3s ease-in-out;
+
+  // Hide the nested form-group label since we handle it at the top level
+  .form-group > .form-label {
+    display: none;
+  }
+}
+
+.academic-grade__system-info {
+  padding: 0.8rem 1.2rem;
+  background-color: rgba($primary-color, 0.03);
+  border: 1px solid rgba($primary-color, 0.15);
+  border-radius: 4px;
+  margin-top: 0.5rem;
+
+  .grade-system-info {
+    font-size: 1.1rem;
+    color: $secondary-color;
+    line-height: 1.3;
+
+    strong {
+      color: $primary-color;
+      font-weight: 600;
+    }
+  }
+}
+
+.academic-grade__label {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: $text-color;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+
+  .required-asterisk {
+    color: $error-color;
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+}
+
+.academic-grade-container .select {
+  width: 100%;
+  padding: 1.2rem 1.6rem;
+  font-size: 1.5rem;
+  font-family: inherit;
+  border: 2px solid $border-color;
+  border-radius: 6px;
+  background-color: $background-color;
+  color: $text-color;
+  transition: all 0.3s ease;
+  min-height: 4.8rem;
+  box-sizing: border-box;
+
+  // Custom dropdown arrow
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='%23666' d='M8 11L3 6h10z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 1.2rem center;
+  background-size: 1.2rem;
+  appearance: none;
+  cursor: pointer;
+  padding-right: 4rem;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    @include BoxShadow;
+  }
+
+  &:disabled {
+    background-color: $subtle-color;
+    color: $muted-color;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  &:hover:not(:disabled):not(:focus) {
+    border-color: $secondary-color;
+  }
+
+  option {
+    padding: 0.8rem;
+    font-size: 1.4rem;
+    background-color: $background-color;
+    color: $text-color;
+
+    &:hover {
+      background-color: $subtle-color;
+    }
+
+    &:checked {
+      background-color: $primary-color;
+      color: $background-color;
+    }
+  }
+
+  &.input--error {
+    border-color: $error-color;
+
+    &:focus {
+      border-color: $error-color;
+      box-shadow: 0 0 0 2px rgba($error-color, 0.2);
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// System-specific styling
+.academic-grade-container[data-system="UK_UNIVERSITY"] {
+  .academic-grade__system-info {
+    background-color: rgba(#6600cc, 0.03);
+    border-color: rgba(#6600cc, 0.15);
+
+    .grade-system-info strong {
+      color: #6600cc;
+    }
+  }
+}
+
+.academic-grade-container[data-system="GPA"] {
+  .academic-grade__system-info {
+    background-color: rgba(#009900, 0.03);
+    border-color: rgba(#009900, 0.15);
+
+    .grade-system-info strong {
+      color: #009900;
+    }
+  }
+}
+
+// Grid layout for desktop
+// @include tablet {
+//   .academic-grade-container {
+//     display: grid;
+//     grid-template-columns: 1fr;
+//     gap: 1.5rem;
+//     align-items: start;
+
+//     .academic-grade__system {
+//       grid-column: 1 / -1;
+//     }
+
+//     .academic-grade__component {
+//       grid-column: 1 / -1;
+//     }
+
+//     .academic-grade__system-info {
+//       grid-column: 1 / -1;
+//     }
+//   }
+// }
+
+// Responsive design for mobile
+@include smartphone {
+  .academic-grade-container {
+    gap: 1.2rem;
+
+    .select {
+      padding: 1rem 1.2rem;
+      font-size: 1.4rem;
+      min-height: 4.4rem;
+      padding-right: 3.5rem;
+    }
+  }
+
+  .academic-grade__label {
+    font-size: 1.2rem;
+  }
+
+  .academic-grade__system-info {
+    padding: 0.8rem 1.2rem;
+  }
+
+  .grade-system-info {
+    font-size: 1.1rem;
+  }
+}
+
+// Compact variant
+.academic-grade-container--compact {
+  gap: 1rem;
+
+  .select {
+    min-height: 4rem;
+    padding: 0.8rem 1.2rem;
+    font-size: 1.4rem;
+    padding-right: 3rem;
+  }
+
+  .academic-grade__label {
+    font-size: 1.2rem;
+  }
+
+  .academic-grade__system-info {
+    padding: 0.6rem 1rem;
+  }
+
+  .grade-system-info {
+    font-size: 1.1rem;
+  }
+}
+
+// Focus flow
+.academic-grade-container .select:focus {
+  z-index: 1;
+  position: relative;
+}
+
+// Print styles
+@media print {
+  .academic-grade-container {
+    gap: 0.5rem;
+  }
+
+  .academic-grade-container .select {
+    border: 1px solid #000;
+    background: white;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+
+  .academic-grade__system-info {
+    background: none;
+    border: 1px solid #000;
+  }
+}
