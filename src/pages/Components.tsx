@@ -13,6 +13,7 @@ import Badge from "../components/basicComponents/Badge";
 import Alert from "../components/basicComponents/Alert";
 import ProgressBar from "../components/basicComponents/ProgressBar";
 import Modal from "../components/basicComponents/Modal";
+import Religion from "../components/inputComponents/personalInfo/Religion";
 import {
   DOBPicker,
   AnyDatePicker as DatePicker,
@@ -20,7 +21,6 @@ import {
   type DateValue,
   type MonthValue,
 } from "../components/inputComponents/datePickers";
-
 import Country from "../components/inputComponents/Country";
 import type { CountryType } from "../data/countries";
 import PhoneNumber from "../components/inputComponents/Phonenumber";
@@ -54,6 +54,9 @@ const Components = () => {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
   const [textareaValue, setTextareaValue] = useState("");
+  const [religion, setReligion] = useState("");
+  const [isReligionValid, setIsReligionValid] = useState(false);
+
   const [phoneNumber, setPhoneNumber] = useState({
     countryCode: "GB",
     number: "",
@@ -162,6 +165,21 @@ const Components = () => {
               <Button text="Full Width Button" fullWidth />
             </div>
           </Card>
+          <Religion
+            id="religion"
+            name="religion"
+            label="Religion"
+            value={religion}
+            onChange={setReligion}
+            required
+            searchable
+            showCategories
+            placeholder="Search and select your religion"
+            onValidationChange={(isValid, errorMessage) => {
+              setIsReligionValid(isValid);
+              console.log("Religion validation:", isValid, errorMessage);
+            }}
+          />
         </section>
 
         {/* Date Pickers Section */}
