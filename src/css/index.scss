@@ -3,6 +3,8 @@
 @use "./global/typography" as *;
 @use "./global/grid" as *;
 
+@use "./components/inputComponents/shared";
+
 // Import component styles
 @use "./components/inputComponents/form";
 @use "./components/inputComponents/checkbox";
@@ -19,6 +21,8 @@
 @use "./components/inputComponents/alevelgrade";
 @use "./components/inputComponents/universitymajor";
 @use "./components/inputComponents/religion";
+@use "./components/inputComponents/ethnicity";
+@use "./components/inputComponents/gender";
 
 @use "./components/basicComponents/button";
 @use "./components/basicComponents/card";

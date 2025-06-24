@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  ethnicities,
-  ethnicityCategories,
-  getEthnicitiesByCategory,
-  getEthnicityByValue,
-  searchEthnicities,
-  type EthnicityType,
-} from "../../../data/ethnicities";
+  genders,
+  genderCategories,
+  getGendersByCategory,
+  getGenderByValue,
+  searchGenders,
+  type GenderType,
+} from "../../../data/genders";
 
-interface EthnicityProps {
+interface GenderProps {
   id: string;
   name: string;
   label: string;
@@ -20,10 +20,13 @@ interface EthnicityProps {
   searchable?: boolean;
   placeholder?: string;
   showCategories?: boolean;
+  allowCustomInput?: boolean; // For "self-describe" option
+  customValue?: string;
+  onCustomChange?: (value: string) => void;
   onValidationChange?: (isValid: boolean, errorMessage: string) => void;
 }
 
-const Ethnicity: React.FC<EthnicityProps> = ({
+const Gender: React.FC<GenderProps> = ({
   id,
   name,
   label,
@@ -33,39 +36,63 @@ const Ethnicity: React.FC<EthnicityProps> = ({
   error = false,
   required = false,
   searchable = true,
-  placeholder = "Search and select your ethnicity",
+  placeholder = "Search and select your gender",
   showCategories = true,
+  allowCustomInput = true,
+  customValue = "",
+  onCustomChange,
   onValidationChange,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredEthnicities, setFilteredEthnicities] =
-    useState<EthnicityType[]>(ethnicities);
+  const [filteredGenders, setFilteredGenders] = useState<GenderType[]>(genders);
   const [internalError, setInternalError] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const [showCustomInput, setShowCustomInput] = useState(
+    value === "self-describe"
+  );
 
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const customInputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const selectedEthnicity = getEthnicityByValue(value);
+  const selectedGender = getGenderByValue(value);
 
   // Validation
   useEffect(() => {
-    if (required && !value) {
-      setInternalError("Ethnicity selection is required");
-      onValidationChange?.(false, "Ethnicity selection is required");
-    } else {
-      setInternalError("");
-      onValidationChange?.(true, "");
-    }
-  }, [value, required, onValidationChange]);
+    let isValid = true;
+    let errorMessage = "";
 
-  // Filter ethnicities based on search term
+    if (required && !value) {
+      isValid = false;
+      errorMessage = "Gender selection is required";
+    } else if (
+      value === "self-describe" &&
+      allowCustomInput &&
+      !customValue.trim()
+    ) {
+      isValid = false;
+      errorMessage = "Please describe your gender";
+    }
+
+    setInternalError(errorMessage);
+    onValidationChange?.(isValid, errorMessage);
+  }, [value, customValue, required, allowCustomInput, onValidationChange]);
+
+  // Show/hide custom input
+  useEffect(() => {
+    setShowCustomInput(value === "self-describe");
+    if (value === "self-describe" && customInputRef.current) {
+      setTimeout(() => customInputRef.current?.focus(), 100);
+    }
+  }, [value]);
+
+  // Filter genders based on search term
   useEffect(() => {
     if (searchTerm.trim() === "") {
-      setFilteredEthnicities(ethnicities);
+      setFilteredGenders(genders);
     } else {
-      setFilteredEthnicities(searchEthnicities(searchTerm));
+      setFilteredGenders(searchGenders(searchTerm));
     }
     setHighlightedIndex(-1);
   }, [searchTerm]);
@@ -92,8 +119,8 @@ const Ethnicity: React.FC<EthnicityProps> = ({
     };
   }, [isOpen]);
 
-  const handleEthnicitySelect = (ethnicityValue: string) => {
-    onChange(ethnicityValue);
+  const handleGenderSelect = (genderValue: string) => {
+    onChange(genderValue);
     setIsOpen(false);
     setSearchTerm("");
     setHighlightedIndex(-1);
@@ -111,6 +138,10 @@ const Ethnicity: React.FC<EthnicityProps> = ({
     }
   };
 
+  const handleCustomInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onCustomChange?.(e.target.value);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!isOpen) return;
 
@@ -118,19 +149,19 @@ const Ethnicity: React.FC<EthnicityProps> = ({
       case "ArrowDown":
         e.preventDefault();
         setHighlightedIndex((prev) =>
-          prev < filteredEthnicities.length - 1 ? prev + 1 : 0
+          prev < filteredGenders.length - 1 ? prev + 1 : 0
         );
         break;
       case "ArrowUp":
         e.preventDefault();
         setHighlightedIndex((prev) =>
-          prev > 0 ? prev - 1 : filteredEthnicities.length - 1
+          prev > 0 ? prev - 1 : filteredGenders.length - 1
         );
         break;
       case "Enter":
         e.preventDefault();
-        if (highlightedIndex >= 0 && filteredEthnicities[highlightedIndex]) {
-          handleEthnicitySelect(filteredEthnicities[highlightedIndex].value);
+        if (highlightedIndex >= 0 && filteredGenders[highlightedIndex]) {
+          handleGenderSelect(filteredGenders[highlightedIndex].value);
         }
         break;
       case "Escape":
@@ -143,15 +174,15 @@ const Ethnicity: React.FC<EthnicityProps> = ({
   };
 
   const getInputClass = () => {
-    let baseClass = "ethnicity-search-input";
-    if (error || internalError) baseClass += " ethnicity-search-input--error";
-    if (disabled) baseClass += " ethnicity-search-input--disabled";
+    let baseClass = "gender-search-input";
+    if (error || internalError) baseClass += " gender-search-input--error";
+    if (disabled) baseClass += " gender-search-input--disabled";
     return baseClass;
   };
 
   const getDropdownClass = () => {
-    let baseClass = "ethnicity-dropdown";
-    if (isOpen) baseClass += " ethnicity-dropdown--open";
+    let baseClass = "gender-dropdown";
+    if (isOpen) baseClass += " gender-dropdown--open";
     return baseClass;
   };
 
@@ -160,28 +191,27 @@ const Ethnicity: React.FC<EthnicityProps> = ({
 
   // Display value in input
   const displayValue =
-    selectedEthnicity && !isOpen && !searchTerm
-      ? selectedEthnicity.label
+    selectedGender && !isOpen && !searchTerm
+      ? selectedGender.label
       : searchTerm;
 
-  // Group ethnicities by category for display
-  const ethnicitiesByCategory = Object.entries(ethnicityCategories).reduce(
+  // Group genders by category for display
+  const gendersByCategory = Object.entries(genderCategories).reduce(
     (acc, [categoryKey, categoryLabel]) => {
-      const categoryEthnicities = filteredEthnicities.filter(
-        (ethnicity) =>
-          ethnicity.category === categoryKey && ethnicity.value !== ""
+      const categoryGenders = filteredGenders.filter(
+        (gender) => gender.category === categoryKey && gender.value !== ""
       );
-      if (categoryEthnicities.length > 0) {
-        acc[categoryKey as EthnicityType["category"]] = {
+      if (categoryGenders.length > 0) {
+        acc[categoryKey as GenderType["category"]] = {
           label: categoryLabel,
-          ethnicities: categoryEthnicities,
+          genders: categoryGenders,
         };
       }
       return acc;
     },
     {} as Record<
-      EthnicityType["category"],
-      { label: string; ethnicities: EthnicityType[] }
+      GenderType["category"],
+      { label: string; genders: GenderType[] }
     >
   );
 
@@ -193,8 +223,8 @@ const Ethnicity: React.FC<EthnicityProps> = ({
       </label>
 
       {searchable ? (
-        <div className="ethnicity-search-container">
-          <div className="ethnicity-search-wrapper">
+        <div className="gender-search-container">
+          <div className="gender-search-wrapper">
             <input
               ref={searchInputRef}
               type="text"
@@ -216,10 +246,10 @@ const Ethnicity: React.FC<EthnicityProps> = ({
 
             <button
               type="button"
-              className="ethnicity-dropdown-toggle"
+              className="gender-dropdown-toggle"
               onClick={() => !disabled && setIsOpen(!isOpen)}
               disabled={disabled}
-              aria-label="Toggle ethnicity dropdown"
+              aria-label="Toggle gender dropdown"
             >
               <span className="dropdown-arrow">{isOpen ? "▲" : "▼"}</span>
             </button>
@@ -227,43 +257,40 @@ const Ethnicity: React.FC<EthnicityProps> = ({
 
           <div className={getDropdownClass()}>
             {isOpen && (
-              <div className="ethnicity-options">
-                {showCategories &&
-                Object.keys(ethnicitiesByCategory).length > 0 ? (
+              <div className="gender-options">
+                {showCategories && Object.keys(gendersByCategory).length > 0 ? (
                   // Categorized display
-                  Object.entries(ethnicitiesByCategory).map(
+                  Object.entries(gendersByCategory).map(
                     ([categoryKey, categoryData]) => (
-                      <div key={categoryKey} className="ethnicity-category">
-                        <div className="ethnicity-category-header">
+                      <div key={categoryKey} className="gender-category">
+                        <div className="gender-category-header">
                           {categoryData.label}
                         </div>
-                        {categoryData.ethnicities.map((ethnicity, index) => {
-                          const globalIndex = filteredEthnicities.findIndex(
-                            (e) => e.value === ethnicity.value
+                        {categoryData.genders.map((gender, index) => {
+                          const globalIndex = filteredGenders.findIndex(
+                            (g) => g.value === gender.value
                           );
                           return (
                             <div
-                              key={ethnicity.value}
-                              className={`ethnicity-option ${
-                                value === ethnicity.value
-                                  ? "ethnicity-option--selected"
+                              key={gender.value}
+                              className={`gender-option ${
+                                value === gender.value
+                                  ? "gender-option--selected"
                                   : ""
                               } ${
                                 globalIndex === highlightedIndex
-                                  ? "ethnicity-option--highlighted"
+                                  ? "gender-option--highlighted"
                                   : ""
                               }`}
-                              onClick={() =>
-                                handleEthnicitySelect(ethnicity.value)
-                              }
+                              onClick={() => handleGenderSelect(gender.value)}
                               onMouseEnter={() =>
                                 setHighlightedIndex(globalIndex)
                               }
                               role="option"
-                              aria-selected={value === ethnicity.value}
+                              aria-selected={value === gender.value}
                             >
-                              <span className="ethnicity-name">
-                                {ethnicity.label}
+                              <span className="gender-name">
+                                {gender.label}
                               </span>
                             </div>
                           );
@@ -272,30 +299,28 @@ const Ethnicity: React.FC<EthnicityProps> = ({
                     )
                   )
                 ) : // Flat display when search results or no categories
-                filteredEthnicities.length > 0 ? (
-                  filteredEthnicities.map((ethnicity, index) => (
+                filteredGenders.length > 0 ? (
+                  filteredGenders.map((gender, index) => (
                     <div
-                      key={ethnicity.value}
-                      className={`ethnicity-option ${
-                        value === ethnicity.value
-                          ? "ethnicity-option--selected"
-                          : ""
+                      key={gender.value}
+                      className={`gender-option ${
+                        value === gender.value ? "gender-option--selected" : ""
                       } ${
                         index === highlightedIndex
-                          ? "ethnicity-option--highlighted"
+                          ? "gender-option--highlighted"
                           : ""
                       }`}
-                      onClick={() => handleEthnicitySelect(ethnicity.value)}
+                      onClick={() => handleGenderSelect(gender.value)}
                       onMouseEnter={() => setHighlightedIndex(index)}
                       role="option"
-                      aria-selected={value === ethnicity.value}
+                      aria-selected={value === gender.value}
                     >
-                      <span className="ethnicity-name">{ethnicity.label}</span>
+                      <span className="gender-name">{gender.label}</span>
                     </div>
                   ))
                 ) : (
-                  <div className="ethnicity-no-results">
-                    No ethnicities found matching "{searchTerm}"
+                  <div className="gender-no-results">
+                    No genders found matching "{searchTerm}"
                   </div>
                 )}
               </div>
@@ -309,32 +334,52 @@ const Ethnicity: React.FC<EthnicityProps> = ({
           name={name}
           className="select"
           value={value}
-          onChange={(e) => handleEthnicitySelect(e.target.value)}
+          onChange={(e) => handleGenderSelect(e.target.value)}
           disabled={disabled}
         >
           {showCategories
-            ? Object.entries(ethnicityCategories).map(
+            ? Object.entries(genderCategories).map(
                 ([categoryKey, categoryLabel]) => {
-                  const categoryEthnicities = getEthnicitiesByCategory(
-                    categoryKey as EthnicityType["category"]
+                  const categoryGenders = getGendersByCategory(
+                    categoryKey as GenderType["category"]
                   );
-                  return categoryEthnicities.length > 0 ? (
+                  return categoryGenders.length > 0 ? (
                     <optgroup key={categoryKey} label={categoryLabel}>
-                      {categoryEthnicities.map((ethnicity) => (
-                        <option key={ethnicity.value} value={ethnicity.value}>
-                          {ethnicity.label}
+                      {categoryGenders.map((gender) => (
+                        <option key={gender.value} value={gender.value}>
+                          {gender.label}
                         </option>
                       ))}
                     </optgroup>
                   ) : null;
                 }
               )
-            : ethnicities.map((ethnicity) => (
-                <option key={ethnicity.value} value={ethnicity.value}>
-                  {ethnicity.label}
+            : genders.map((gender) => (
+                <option key={gender.value} value={gender.value}>
+                  {gender.label}
                 </option>
               ))}
         </select>
+      )}
+
+      {/* Custom Input for Self-Describe */}
+      {showCustomInput && allowCustomInput && (
+        <div className="gender-custom-input">
+          <label htmlFor={`${id}-custom`} className="gender-custom-label">
+            Please describe your gender:
+          </label>
+          <input
+            ref={customInputRef}
+            type="text"
+            id={`${id}-custom`}
+            name={`${name}-custom`}
+            className="input"
+            placeholder="Enter your gender identity"
+            value={customValue}
+            onChange={handleCustomInputChange}
+            disabled={disabled}
+          />
+        </div>
       )}
 
       {hasError && errorMessage && (
@@ -344,4 +389,4 @@ const Ethnicity: React.FC<EthnicityProps> = ({
   );
 };
 
-export default Ethnicity;
+export default Gender;

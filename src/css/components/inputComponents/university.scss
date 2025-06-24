@@ -1,62 +1,20 @@
 @use "../../global/base" as *;
 @use "../../global/mixins" as *;
+@use "./shared" as shared;
 
 .university-search-container {
-  position: relative;
+  @include shared.searchable-container;
 }
 
 .university-search-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
+  @include shared.searchable-wrapper;
 }
 
 .university-search-input {
-  width: 100%;
-  padding: 1.2rem 5rem 1.2rem 1.6rem; // Extra padding for loading indicator and arrow
-  font-size: 1.6rem;
-  font-family: inherit;
-  border: 2px solid $border-color;
-  border-radius: 6px;
-  background-color: $background-color;
-  color: $text-color;
-  transition: all 0.3s ease;
-  min-height: 4.8rem;
-
-  &:focus {
-    outline: none;
-    border-color: $primary-color;
-    @include BoxShadow;
-  }
-
-  &:disabled {
-    background-color: $subtle-color;
-    color: $muted-color;
-    cursor: not-allowed;
-  }
-
-  &::placeholder {
-    color: $muted-color;
-  }
-
-  &--error {
-    border-color: $error-color;
-
-    &:focus {
-      border-color: $error-color;
-      box-shadow: 0 0 0 2px rgba($error-color, 0.2);
-    }
-  }
-
-  &--disabled {
-    background-color: $subtle-color;
-    color: $muted-color;
-    cursor: not-allowed;
-  }
-
-  &:hover:not(:disabled):not(:focus) {
-    border-color: $secondary-color;
-  }
+  padding-right: 5rem; // Extra padding for loading indicator and arrow
+  @include shared.searchable-input;
+  @include shared.mobile-input;
+  @include shared.accessibility-styles;
 }
 
 .university-loading-indicator {
@@ -74,113 +32,23 @@
 }
 
 .university-dropdown-toggle {
-  position: absolute;
-  right: 0.8rem;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: $secondary-color;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.4rem;
-  z-index: 3;
-
-  &:hover {
-    color: $text-color;
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-  }
-}
-
-.dropdown-arrow {
-  font-size: 1rem;
-  transition: transform 0.2s ease;
+  @include shared.dropdown-toggle;
 }
 
 .university-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  background-color: $background-color;
-  border: 2px solid $primary-color;
-  border-top: none;
-  border-radius: 0 0 6px 6px;
-  @include BoxShadow;
-  max-height: 30rem;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(-0.5rem);
-  transition: all 0.2s ease;
-  pointer-events: none;
-
-  &--open {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: all;
-  }
+  @include shared.dropdown-menu;
+  @include shared.mobile-dropdown;
 }
 
 .university-options {
-  max-height: 28rem;
-  overflow-y: auto;
-
-  // Custom scrollbar
-  scrollbar-width: thin;
-  scrollbar-color: $border-color $background-color;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: $background-color;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: $border-color;
-    border-radius: 3px;
-
-    &:hover {
-      background: $secondary-color;
-    }
-  }
+  @include shared.dropdown-options;
 }
 
 .university-option {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
-  padding: 1.2rem 1.6rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  // border-bottom: 1px solid $border-color;
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  &:hover,
-  &--highlighted {
-    background-color: $subtle-color;
-  }
-
-  &--selected {
-    background-color: $primary-color;
-    color: $background-color;
-    font-weight: 500;
-
-    &:hover {
-      background-color: $secondary-color;
-    }
-  }
+  @include shared.dropdown-option;
 }
 
 .university-main {
@@ -216,11 +84,7 @@
 
 .university-message,
 .university-no-results {
-  padding: 1.5rem 1.6rem;
-  text-align: center;
-  color: $muted-color;
-  font-style: italic;
-  font-size: 1.3rem;
+  @include shared.no-results;
 }
 
 .university-loading {
@@ -239,7 +103,7 @@
   }
 }
 
-// Spinning animation for loading indicator
+// University-specific animations
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -249,89 +113,17 @@
   }
 }
 
-// Focus states for better accessibility
-.university-search-input:focus + .university-dropdown-toggle .dropdown-arrow {
-  color: $primary-color;
-}
-
-// Enhanced visual feedback when input has focus and dropdown is open
-.university-search-input:focus {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-.university-dropdown--open + .university-search-input {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-// Responsive design
+// Mobile responsive
 @include smartphone {
-  .university-search-input {
-    padding: 1rem 4.5rem 1rem 1.2rem;
-    font-size: 1.4rem;
-  }
-
   .university-loading-indicator {
     right: 3.5rem;
   }
 
-  .university-dropdown {
-    max-height: 25rem;
-  }
-
-  .university-options {
-    max-height: 23rem;
-  }
-
-  .university-option {
-    padding: 1rem 1.2rem;
-  }
-
   .university-name {
     font-size: 1.4rem;
   }
 
   .university-details {
     font-size: 1.1rem;
-  }
-}
-
-// Compact variant
-.university-search-container--compact {
-  .university-search-input {
-    min-height: 4rem;
-    padding: 0.8rem 4.5rem 0.8rem 1.2rem;
-    font-size: 1.4rem;
-  }
-
-  .university-dropdown {
-    max-height: 20rem;
-  }
-
-  .university-option {
-    padding: 0.8rem 1.2rem;
-  }
-
-  .university-name {
-    font-size: 1.3rem;
-  }
-
-  .university-details {
-    font-size: 1.1rem;
-  }
-}
-
-// Print styles
-@media print {
-  .university-dropdown {
-    display: none;
-  }
-
-  .university-search-input {
-    border: 1px solid #000;
-    background: white;
-    -webkit-print-color-adjust: exact;
-    color-adjust: exact;
   }
 }

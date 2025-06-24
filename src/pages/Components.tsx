@@ -14,6 +14,9 @@ import Alert from "../components/basicComponents/Alert";
 import ProgressBar from "../components/basicComponents/ProgressBar";
 import Modal from "../components/basicComponents/Modal";
 import Religion from "../components/inputComponents/personalInfo/Religion";
+import Ethnicity from "../components/inputComponents/personalInfo/Ethnicity";
+import Gender from "../components/inputComponents/personalInfo/Gender";
+
 import {
   DOBPicker,
   AnyDatePicker as DatePicker,
@@ -56,6 +59,11 @@ const Components = () => {
   const [textareaValue, setTextareaValue] = useState("");
   const [religion, setReligion] = useState("");
   const [isReligionValid, setIsReligionValid] = useState(false);
+  const [ethnicity, setEthnicity] = useState("");
+  const [isEthnicityValid, setIsEthnicityValid] = useState(false);
+  const [gender, setGender] = useState("");
+  const [customGender, setCustomGender] = useState("");
+  const [isGenderValid, setIsGenderValid] = useState(false);
 
   const [phoneNumber, setPhoneNumber] = useState({
     countryCode: "GB",
@@ -178,6 +186,39 @@ const Components = () => {
             onValidationChange={(isValid, errorMessage) => {
               setIsReligionValid(isValid);
               console.log("Religion validation:", isValid, errorMessage);
+            }}
+          />
+          <Ethnicity
+            id="ethnicity"
+            name="ethnicity"
+            label="Ethnicity"
+            value={ethnicity}
+            onChange={setEthnicity}
+            required
+            searchable
+            showCategories
+            placeholder="Search and select your ethnicity"
+            onValidationChange={(isValid, errorMessage) => {
+              setIsEthnicityValid(isValid);
+              console.log("Ethnicity validation:", isValid, errorMessage);
+            }}
+          />
+          <Gender
+            id="gender"
+            name="gender"
+            label="Gender Identity"
+            value={gender}
+            onChange={setGender}
+            customValue={customGender}
+            onCustomChange={setCustomGender}
+            required
+            searchable
+            showCategories
+            allowCustomInput
+            placeholder="Search and select your gender identity"
+            onValidationChange={(isValid, errorMessage) => {
+              setIsGenderValid(isValid);
+              console.log("Gender validation:", isValid, errorMessage);
             }}
           />
         </section>

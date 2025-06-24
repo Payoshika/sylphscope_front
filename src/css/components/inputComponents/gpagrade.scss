@@ -1,105 +1,30 @@
 @use "../../global/base" as *;
 @use "../../global/mixins" as *;
+@use "./shared" as shared;
 
 .gpa-grade-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  @include shared.multi-field-container;
 }
 
 .gpa-grade__scale-selection,
 .gpa-grade__value-input {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  @include shared.field-wrapper;
 }
 
 .gpa-grade__label {
-  font-size: 1.3rem;
-  font-weight: 500;
-  color: $text-color;
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-
-  .required-asterisk {
-    color: $error-color;
-    font-size: 1.4rem;
-    line-height: 1;
-  }
+  @include shared.form-label;
 }
 
 .gpa-grade-container .input,
 .gpa-grade-container .select {
-  width: 100%;
-  padding: 1.2rem 1.6rem;
-  font-size: 1.5rem;
-  font-family: inherit;
-  border: 2px solid $border-color;
-  border-radius: 6px;
-  background-color: $background-color;
-  color: $text-color;
-  transition: all 0.3s ease;
-  min-height: 4.8rem;
-  box-sizing: border-box;
-
-  &:focus {
-    outline: none;
-    border-color: $primary-color;
-    @include BoxShadow;
-  }
-
-  &:disabled {
-    background-color: $subtle-color;
-    color: $muted-color;
-    cursor: not-allowed;
-    opacity: 0.7;
-  }
-
-  &:hover:not(:disabled):not(:focus) {
-    border-color: $secondary-color;
-  }
-
-  &::placeholder {
-    color: $muted-color;
-    font-style: italic;
-  }
-
-  &.input--error {
-    border-color: $error-color;
-
-    &:focus {
-      border-color: $error-color;
-      box-shadow: 0 0 0 2px rgba($error-color, 0.2);
-    }
-  }
+  @include shared.base-input;
+  @include shared.mobile-input;
+  @include shared.accessibility-styles;
 }
 
 // Select specific styling
 .gpa-grade-container .select {
-  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='%23666' d='M8 11L3 6h10z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 1.2rem center;
-  background-size: 1.2rem;
-  appearance: none;
-  cursor: pointer;
-  padding-right: 4rem;
-
-  option {
-    padding: 0.8rem;
-    font-size: 1.4rem;
-    background-color: $background-color;
-    color: $text-color;
-
-    &:hover {
-      background-color: $subtle-color;
-    }
-
-    &:checked {
-      background-color: $primary-color;
-      color: $background-color;
-    }
-  }
+  @include shared.base-select;
 }
 
 .gpa-scale-description {
@@ -116,22 +41,7 @@
 }
 
 .gpa-grade__info {
-  padding: 1rem 1.5rem;
-  background-color: rgba(#009900, 0.05);
-  border: 1px solid rgba(#009900, 0.2);
-  border-radius: 6px;
-  margin-top: 0.5rem;
-
-  .grade-system-info {
-    font-size: 1.2rem;
-    color: $secondary-color;
-    line-height: 1.4;
-
-    strong {
-      color: #009900;
-      font-weight: 600;
-    }
-  }
+  @include shared.info-box(#009900);
 
   .grade-percentage {
     color: $success-color;
@@ -144,108 +54,17 @@
   }
 }
 
-// Animation for value input appearing
 .gpa-grade__value-input {
-  animation: fadeIn 0.3s ease-in-out;
+  @include shared.fade-in-animation;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-// Responsive design for mobile
+// Mobile responsive
 @include smartphone {
-  .gpa-grade-container {
-    gap: 1.2rem;
-
-    .input,
-    .select {
-      padding: 1rem 1.2rem;
-      font-size: 1.4rem;
-      min-height: 4.4rem;
-    }
-
-    .select {
-      padding-right: 3.5rem;
-    }
-  }
-
-  .gpa-grade__label {
-    font-size: 1.2rem;
-  }
-
   .gpa-scale-description {
     font-size: 1.1rem;
   }
 
-  .gpa-grade__info {
-    padding: 0.8rem 1.2rem;
-  }
-
   .grade-system-info {
     font-size: 1.1rem;
-  }
-}
-
-// Compact variant
-.gpa-grade-container--compact {
-  gap: 1rem;
-
-  .input,
-  .select {
-    min-height: 4rem;
-    padding: 0.8rem 1.2rem;
-    font-size: 1.4rem;
-  }
-
-  .select {
-    padding-right: 3rem;
-  }
-
-  .gpa-grade__label {
-    font-size: 1.2rem;
-  }
-
-  .gpa-scale-description {
-    font-size: 1.1rem;
-  }
-
-  .gpa-grade__info {
-    padding: 0.6rem 1rem;
-  }
-
-  .grade-system-info {
-    font-size: 1.1rem;
-  }
-}
-
-// Loading state
-.gpa-grade-container--loading {
-  .input,
-  .select {
-    background-image: linear-gradient(
-      90deg,
-      transparent,
-      rgba($primary-color, 0.1),
-      transparent
-    );
-    background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-  }
-}
-
-@keyframes loading {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
   }
 }

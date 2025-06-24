@@ -2,31 +2,34 @@
 @use "../../global/mixins" as *;
 @use "./shared" as shared;
 
-.religion-search-container {
+.ethnicity-search-container {
   @include shared.searchable-container;
 }
 
-.religion-search-wrapper {
+.ethnicity-search-wrapper {
   @include shared.searchable-wrapper;
 }
 
-.religion-search-input {
+.ethnicity-search-input {
   @include shared.searchable-input;
+  @include shared.mobile-input;
+  @include shared.accessibility-styles;
 }
 
-.religion-dropdown-toggle {
+.ethnicity-dropdown-toggle {
   @include shared.dropdown-toggle;
 }
 
-.religion-dropdown {
+.ethnicity-dropdown {
   @include shared.dropdown-menu;
+  @include shared.mobile-dropdown;
 }
 
-.religion-options {
+.ethnicity-options {
   @include shared.dropdown-options;
 }
 
-.religion-category {
+.ethnicity-category {
   border-bottom: 1px solid $subtle-color;
 
   &:last-child {
@@ -34,33 +37,19 @@
   }
 }
 
-.religion-category-header {
+.ethnicity-category-header {
   @include shared.category-header;
 }
 
-.religion-option {
+.ethnicity-option {
   @include shared.dropdown-option;
 }
 
-.religion-name {
+.ethnicity-name {
   font-size: 1.3rem;
   flex: 1;
 }
 
-.religion-no-results {
+.ethnicity-no-results {
   @include shared.no-results;
-}
-
-// Component-specific responsive styles
-.religion-search-input {
-  @include shared.mobile-input;
-}
-
-.religion-dropdown {
-  @include shared.mobile-dropdown;
-}
-
-// Accessibility
-.religion-search-input {
-  @include shared.accessibility-styles;
 }

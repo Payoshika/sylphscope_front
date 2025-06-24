@@ -1,5 +1,6 @@
 @use "../../global/base" as *;
 @use "../../global/mixins" as *;
+@use "./shared" as shared;
 
 .month-picker {
   display: grid;
@@ -15,9 +16,7 @@
 }
 
 .month-picker__field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  @include shared.field-wrapper;
 }
 
 .month-picker__label {
@@ -28,15 +27,10 @@
   letter-spacing: 0.05rem;
 }
 
-// Ensure select dropdowns in month picker follow the design
 .month-picker .select {
-  @extend .select;
-
-  // Override any specific styling if needed
-  &:focus {
-    border-color: $primary-color;
-    @include BoxShadow;
-  }
+  @include shared.base-select;
+  @include shared.mobile-input;
+  @include shared.accessibility-styles;
 }
 
 // Error state for entire month picker
@@ -55,44 +49,13 @@
   }
 }
 
-// Responsive adjustments for better mobile experience
-@include smartphone {
-  .month-picker__field {
-    width: 100%;
-  }
+.month-picker {
+  @include shared.fade-in-animation;
+}
 
+// Mobile responsive
+@include smartphone {
   .month-picker__label {
     font-size: 1.4rem;
-  }
-}
-
-// Animation for month picker
-.month-picker {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-// Print styles
-@media print {
-  .month-picker {
-    gap: 0.5rem;
-    grid-template-columns: 1fr;
-  }
-
-  .month-picker .select {
-    border: 1px solid #000;
-    background: white;
-    -webkit-print-color-adjust: exact;
-    color-adjust: exact;
   }
 }

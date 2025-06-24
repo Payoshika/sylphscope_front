@@ -1,5 +1,6 @@
 @use "../../global/base" as *;
 @use "../../global/mixins" as *;
+@use "./shared" as shared;
 
 .date-picker {
   display: grid;
@@ -15,9 +16,7 @@
 }
 
 .date-picker__field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  @include shared.field-wrapper;
 }
 
 .date-picker__label {
@@ -28,15 +27,10 @@
   letter-spacing: 0.05rem;
 }
 
-// Ensure select dropdowns in date picker follow the design
 .date-picker .select {
-  @extend .select;
-
-  // Override any specific styling if needed
-  &:focus {
-    border-color: $primary-color;
-    @include BoxShadow;
-  }
+  @include shared.base-select;
+  @include shared.mobile-input;
+  @include shared.accessibility-styles;
 }
 
 // Error state for entire date picker
@@ -55,12 +49,8 @@
   }
 }
 
-// Responsive adjustments for better mobile experience
+// Mobile responsive
 @include smartphone {
-  .date-picker__field {
-    width: 100%;
-  }
-
   .date-picker__label {
     font-size: 1.4rem;
   }

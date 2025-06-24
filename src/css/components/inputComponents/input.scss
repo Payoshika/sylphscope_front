@@ -1,33 +1,12 @@
 @use "../../global/base" as *;
 @use "../../global/mixins" as *;
+@use "./shared" as shared;
 
-// Input Fields
+// Base input classes using shared mixins
 .input {
-  width: 100%;
-  padding: 1.2rem 1.6rem;
-  font-size: 1.6rem;
-  font-family: inherit;
-  border: 2px solid $border-color;
-  border-radius: 6px;
-  background-color: $background-color;
-  color: $text-color;
-  transition: all 0.3s ease;
-
-  &:focus {
-    outline: none;
-    border-color: $primary-color;
-    @include BoxShadow;
-  }
-
-  &:disabled {
-    background-color: $subtle-color;
-    color: $secondary-color;
-    cursor: not-allowed;
-  }
-
-  &::placeholder {
-    color: $muted-color;
-  }
+  @include shared.base-input;
+  @include shared.mobile-input;
+  @include shared.accessibility-styles;
 }
 
 .input--small {
@@ -40,7 +19,6 @@
   font-size: 1.8rem;
 }
 
-// Textarea
 .textarea {
   @extend .input;
   min-height: 12rem;
@@ -48,57 +26,8 @@
   font-family: inherit;
 }
 
-// Select
 .select {
-  @extend .input;
-  cursor: pointer;
-  background-repeat: no-repeat;
-  background-position: right 1.2rem center;
-  background-size: 1.6rem;
-  padding-right: 4rem;
-  appearance: none;
-
-  // Enhanced select styling
-  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23666' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 1.2rem;
-  padding-right: 3rem;
-
-  // Custom appearance
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-
-  &:focus {
-    border-color: $primary-color;
-    @include BoxShadow;
-    outline: none;
-  }
-
-  // Limited option styling (browser dependent)
-  option {
-    padding: 0.8rem;
-    background-color: $background-color;
-    color: $text-color;
-
-    &:hover {
-      background-color: $subtle-color;
-    }
-
-    &:checked {
-      background-color: $primary-color;
-      color: $background-color;
-    }
-  }
-}
-
-// Responsive adjustments
-@include smartphone {
-  .input,
-  .textarea,
-  .select {
-    padding: 1rem 1.4rem;
-    font-size: 1.4rem;
-  }
+  @include shared.base-select;
+  @include shared.mobile-input;
+  @include shared.accessibility-styles;
 }

@@ -1,0 +1,86 @@
+@use "../../global/base" as *;
+@use "../../global/mixins" as *;
+@use "./shared" as shared;
+
+.gender-search-container {
+  @include shared.searchable-container;
+}
+
+.gender-search-wrapper {
+  @include shared.searchable-wrapper;
+}
+
+.gender-search-input {
+  @include shared.searchable-input;
+  @include shared.mobile-input;
+  @include shared.accessibility-styles;
+}
+
+.gender-dropdown-toggle {
+  @include shared.dropdown-toggle;
+}
+
+.gender-dropdown {
+  @include shared.dropdown-menu;
+  @include shared.mobile-dropdown;
+}
+
+.gender-options {
+  @include shared.dropdown-options;
+}
+
+.gender-category {
+  border-bottom: 1px solid $subtle-color;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.gender-category-header {
+  @include shared.category-header;
+}
+
+.gender-option {
+  @include shared.dropdown-option;
+
+  // Gender-specific: selected state icon
+  &--selected {
+    position: relative;
+
+    &::after {
+      content: "✓";
+      position: absolute;
+      right: 1.6rem;
+      color: inherit;
+      font-weight: bold;
+    }
+  }
+}
+
+.gender-name {
+  font-size: 1.3rem;
+  flex: 1;
+}
+
+.gender-no-results {
+  @include shared.no-results;
+}
+
+// Custom input for self-describe (gender-specific)
+.gender-custom-input {
+  margin-top: 1rem;
+  padding: 1.2rem;
+  background-color: rgba($primary-color, 0.03);
+  border: 1px solid rgba($primary-color, 0.2);
+  border-radius: 6px;
+  @include shared.fade-in-animation;
+}
+
+.gender-custom-label {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: $secondary-color;
+  margin-bottom: 0.8rem;
+}
