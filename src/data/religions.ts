@@ -4,6 +4,7 @@ export interface ReligionType {
   category: 'major' | 'eastern' | 'indigenous' | 'other' | 'non-religious';
 }
 
+
 export const religions: ReligionType[] = [
   { value: "", label: "Select Religion", category: 'other' },
   
