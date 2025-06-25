@@ -31,7 +31,7 @@ const Radio: React.FC<RadioProps> = ({
         disabled={disabled}
       />
       <span className="radiomark"></span>
-      {label}
+      <span className="radio-label">{label}</span>
     </label>
   );
 };

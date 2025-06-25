@@ -8,6 +8,7 @@
 // Import component styles
 @use "./components/inputComponents/form";
 @use "./components/inputComponents/checkbox";
+@use "./components/inputComponents/radio";
 @use "./components/inputComponents/input";
 @use "./components/inputComponents/datepicker";
 @use "./components/inputComponents/monthpicker";
@@ -23,6 +24,7 @@
 @use "./components/inputComponents/religion";
 @use "./components/inputComponents/ethnicity";
 @use "./components/inputComponents/gender";
+@use "./components/inputComponents/tuitionfeestatus";
 
 @use "./components/basicComponents/button";
 @use "./components/basicComponents/card";

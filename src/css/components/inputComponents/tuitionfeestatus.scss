@@ -1,0 +1,134 @@
+@use "../../global/base" as *;
+@use "../../global/mixins" as *;
+@use "./shared" as shared;
+
+.tuition-fee-status {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2rem;
+
+  @include smartphone {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  &--disabled {
+    .tuition-fee-status__option {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+  }
+
+  &--error {
+    .radio .radiomark {
+      border-color: $error-color;
+    }
+  }
+}
+
+.tuition-fee-status__option {
+  flex: 1;
+  min-width: 280px;
+  transition: all 0.2s ease;
+
+  &:hover:not(.tuition-fee-status--disabled &) {
+    transform: translateY(-1px);
+  }
+}
+
+.tuition-fee-status__radio-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1.5rem;
+  border: 2px solid $border-color;
+  border-radius: 8px;
+  background-color: $background-color;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  height: 100%;
+
+  &:hover {
+    border-color: $text-color;
+    background-color: rgba($text-color, 0.02);
+    box-shadow: 0 2px 8px rgba($text-color, 0.1);
+  }
+
+  // Use standard radio styling - no overrides needed
+  .radio {
+    margin-bottom: 0;
+  }
+}
+
+.tuition-fee-status__description {
+  font-size: 1.3rem;
+  color: $muted-color;
+  line-height: 1.4;
+  margin-left: 3.2rem; // Align with radio label
+  transition: color 0.3s ease;
+
+  @include smartphone {
+    margin-left: 0;
+    font-size: 1.2rem;
+  }
+}
+
+// Selected state - enhance description color when radio is selected
+.tuition-fee-status__radio-wrapper:has(.radio input:checked) {
+  .tuition-fee-status__description {
+    color: $secondary-color;
+    font-weight: 500;
+  }
+}
+
+// Focus management for keyboard navigation
+.tuition-fee-status__radio-wrapper:focus-within {
+  outline: 2px solid $primary-color;
+  outline-offset: 2px;
+  border-color: $primary-color;
+}
+
+// Mobile responsive
+@include smartphone {
+  .tuition-fee-status {
+    gap: 1.2rem;
+  }
+
+  .tuition-fee-status__option {
+    min-width: auto;
+  }
+
+  .tuition-fee-status__radio-wrapper {
+    padding: 1.2rem;
+    gap: 0.6rem;
+  }
+}
+
+// Print styles
+@media print {
+  .tuition-fee-status__radio-wrapper {
+    border: 1px solid #000;
+    background: white;
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .tuition-fee-status__radio-wrapper {
+    border-width: 3px;
+  }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  .tuition-fee-status__option,
+  .tuition-fee-status__radio-wrapper,
+  .tuition-fee-status__description {
+    transition: none !important;
+  }
+
+  .tuition-fee-status__option:hover {
+    transform: none !important;
+  }
+}
