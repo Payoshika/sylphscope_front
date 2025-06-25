@@ -16,6 +16,9 @@ import Modal from "../components/basicComponents/Modal";
 import Religion from "../components/inputComponents/personalInfo/Religion";
 import Ethnicity from "../components/inputComponents/personalInfo/Ethnicity";
 import Gender from "../components/inputComponents/personalInfo/Gender";
+import TuitionfeeStatus, {
+  type TuitionfeeStatusValue,
+} from "../components/inputComponents/personalInfo/TuitionfeeStatus";
 
 import {
   DOBPicker,
@@ -115,6 +118,9 @@ const Components = () => {
     category: "",
   });
   const [isUniversityMajorValid, setIsUniversityMajorValid] = useState(false);
+  const [tuitionFeeStatus, setTuitionFeeStatus] =
+    useState<TuitionfeeStatusValue>("");
+  const [isTuitionFeeStatusValid, setIsTuitionFeeStatusValid] = useState(false);
 
   // Individual grade component states
   const [gcseGrade, setGcseGrade] = useState<GCSEGradeValue>({
@@ -219,6 +225,22 @@ const Components = () => {
             onValidationChange={(isValid, errorMessage) => {
               setIsGenderValid(isValid);
               console.log("Gender validation:", isValid, errorMessage);
+            }}
+          />
+          <TuitionfeeStatus
+            id="tuition-fee-status"
+            name="tuitionFeeStatus"
+            label="Tuition Fee Status"
+            value={tuitionFeeStatus}
+            onChange={setTuitionFeeStatus}
+            required
+            onValidationChange={(isValid, errorMessage) => {
+              setIsTuitionFeeStatusValid(isValid);
+              console.log(
+                "Tuition fee status validation:",
+                isValid,
+                errorMessage
+              );
             }}
           />
         </section>

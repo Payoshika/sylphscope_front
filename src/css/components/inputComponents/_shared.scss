@@ -134,7 +134,6 @@
   left: 0;
   right: 0;
   background: $background-color;
-  border: 2px solid $border-color;
   border-top: none;
   border-radius: 0 0 6px 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -195,7 +194,7 @@
   transition: all 0.2s ease;
   border-bottom: 1px solid rgba($border-color, 0.3);
   display: flex;
-  align-items: center;
+  align-items: start;
   justify-content: space-between;
 
   &:last-child {
