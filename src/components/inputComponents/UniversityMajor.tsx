@@ -5,6 +5,8 @@ import {
   getDegreeCategoryLabel,
   getDegreeLevelLabel,
 } from "../../data/degreecategories";
+import TextInput from "./TextInput";
+import Select, { type SelectOptGroup } from "./Select";
 
 export interface UniversityMajorValue {
   degreeName: string;
@@ -91,18 +93,6 @@ const UniversityMajor: React.FC<UniversityMajorProps> = ({
     });
   };
 
-  const getInputClass = () => {
-    let baseClass = "input";
-    if (error || internalError) baseClass += " input--error";
-    return baseClass;
-  };
-
-  const getSelectClass = () => {
-    let baseClass = "select";
-    if (error || internalError) baseClass += " input--error";
-    return baseClass;
-  };
-
   const hasError = error || !!internalError;
   const errorMessage = typeof error === "string" ? error : internalError;
 
@@ -150,6 +140,23 @@ const UniversityMajor: React.FC<UniversityMajorProps> = ({
     professional: "Professional",
   };
 
+  // Prepare optgroups for level select
+  const levelOptGroups: SelectOptGroup[] = Object.entries(levelTypeLabels)
+    .map(([type, typeLabel]) => ({
+      label: typeLabel,
+      options: levelsByType[type as keyof typeof levelsByType].map((level) => ({
+        value: level.value,
+        label: level.label,
+      })),
+    }))
+    .filter((group) => group.options.length > 0);
+
+  // Prepare options for category select
+  const categoryOptions = degreeCategories.map((category) => ({
+    value: category.value,
+    label: category.label,
+  }));
+
   return (
     <div className="form-group">
       <label className="form-label">
@@ -160,77 +167,54 @@ const UniversityMajor: React.FC<UniversityMajorProps> = ({
       <div className="university-major-container">
         {/* Degree Name Input */}
         <div className="university-major__degree">
-          <label htmlFor={`${id}-degree`} className="university-major__label">
-            Degree Name
-            {required && <span className="required-asterisk">*</span>}
-          </label>
-          <input
-            type="text"
+          <TextInput
             id={`${id}-degree`}
             name={`${name}-degree`}
-            className={getInputClass()}
+            label="Degree Name"
             placeholder="e.g., Computer Science, History, Business Administration"
             value={value.degreeName}
             onChange={handleDegreeNameChange}
             disabled={disabled}
             required={required}
+            error={hasError}
           />
         </div>
 
         {/* Degree Level Selection */}
         <div className="university-major__level">
-          <label htmlFor={`${id}-level`} className="university-major__label">
-            Degree Level
-            {required && <span className="required-asterisk">*</span>}
-          </label>
-          <select
+          <Select
             id={`${id}-level`}
             name={`${name}-level`}
-            className={getSelectClass()}
+            label="Degree Level"
             value={value.level}
             onChange={handleLevelChange}
+            optGroups={levelOptGroups}
+            placeholder="Select Degree Level"
             disabled={disabled}
             required={required}
-          >
-            <option value="">Select Degree Level</option>
-            {Object.entries(levelTypeLabels).map(
-              ([type, typeLabel]) =>
-                levelsByType[type as keyof typeof levelsByType].length > 0 && (
-                  <optgroup key={type} label={typeLabel}>
-                    {levelsByType[type as keyof typeof levelsByType].map(
-                      (level) => (
-                        <option key={level.value} value={level.value}>
-                          {level.label}
-                        </option>
-                      )
-                    )}
-                  </optgroup>
-                )
-            )}
-          </select>
+            error={hasError}
+          />
+          {selectedLevelInfo && (
+            <div className="level-description">
+              {selectedLevelInfo.description}
+            </div>
+          )}
         </div>
 
         {/* Category Selection */}
         <div className="university-major__category">
-          <label htmlFor={`${id}-category`} className="university-major__label">
-            Degree Category
-            {required && <span className="required-asterisk">*</span>}
-          </label>
-          <select
+          <Select
             id={`${id}-category`}
             name={`${name}-category`}
-            className={getSelectClass()}
+            label="Degree Category"
             value={value.category}
             onChange={handleCategoryChange}
+            options={categoryOptions}
+            placeholder="Select Degree Category"
             disabled={disabled}
             required={required}
-          >
-            {degreeCategories.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+            error={hasError}
+          />
         </div>
       </div>
 

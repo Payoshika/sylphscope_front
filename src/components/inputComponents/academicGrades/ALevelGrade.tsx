@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {
-  alevelGrades,
-  getALevelGradeLabel,
-  getUCASPoints,
-} from "../../../data/alevelGrades";
-import {
-  alevelSubjects,
-  getALevelSubjectLabel,
-} from "../../../data/alevelSubjects";
+import { alevelGrades, getUCASPoints } from "../../../data/alevelGrades";
+import { alevelSubjects } from "../../../data/alevelSubjects";
+import Select, { type SelectOptGroup } from "../Select";
 
 export interface ALevelGradeValue {
   subject: string;
@@ -38,7 +32,7 @@ const ALevelGrade: React.FC<ALevelGradeProps> = ({
   error = false,
   required = false,
   validate = true,
-  showUCASPoints = true,
+  showUCASPoints = false,
   onValidationChange,
 }) => {
   const [internalError, setInternalError] = useState("");
@@ -81,12 +75,6 @@ const ALevelGrade: React.FC<ALevelGradeProps> = ({
       ...value,
       grade: e.target.value,
     });
-  };
-
-  const getSelectClass = () => {
-    let baseClass = "select";
-    if (error || internalError) baseClass += " input--error";
-    return baseClass;
   };
 
   const hasError = error || !!internalError;
@@ -133,6 +121,23 @@ const ALevelGrade: React.FC<ALevelGradeProps> = ({
     practical: "Practical & Applied",
   };
 
+  // Prepare optgroups for subject select
+  const subjectOptGroups: SelectOptGroup[] = Object.entries(categoryLabels)
+    .map(([category, categoryLabel]) => ({
+      label: categoryLabel,
+      options: (subjectsByCategory[category] || []).map((subject) => ({
+        value: subject.value,
+        label: subject.label,
+      })),
+    }))
+    .filter((group) => group.options.length > 0);
+
+  // Prepare options for grade select
+  const gradeOptions = alevelGrades.map((grade) => ({
+    value: grade.value,
+    label: grade.label,
+  }));
+
   return (
     <div className="form-group">
       <label className="form-label">
@@ -143,58 +148,43 @@ const ALevelGrade: React.FC<ALevelGradeProps> = ({
       <div className="alevel-grade-container">
         {/* Subject Selection */}
         <div className="alevel-grade__subject">
-          <label htmlFor={`${id}-subject`} className="alevel-grade__label">
-            A-Level Subject
-            {required && <span className="required-asterisk">*</span>}
-          </label>
-          <select
+          <Select
             id={`${id}-subject`}
             name={`${name}-subject`}
-            className={getSelectClass()}
+            label="A-Level Subject"
             value={value.subject}
             onChange={handleSubjectChange}
+            optGroups={subjectOptGroups}
+            placeholder="Select A-Level Subject"
             disabled={disabled}
             required={required}
-          >
-            <option value="">Select A-Level Subject</option>
-            {Object.entries(categoryLabels).map(
-              ([category, categoryLabel]) =>
-                subjectsByCategory[category] && (
-                  <optgroup key={category} label={categoryLabel}>
-                    {subjectsByCategory[category].map((subject) => (
-                      <option key={subject.value} value={subject.value}>
-                        {subject.label}
-                      </option>
-                    ))}
-                  </optgroup>
-                )
-            )}
-          </select>
+            error={hasError}
+          />
         </div>
 
         {/* Grade Selection */}
         <div className="alevel-grade__grade">
-          <label htmlFor={`${id}-grade`} className="alevel-grade__label">
-            A-Level Grade (A*-U)
-            {required && <span className="required-asterisk">*</span>}
-          </label>
-          <select
+          <Select
             id={`${id}-grade`}
             name={`${name}-grade`}
-            className={getSelectClass()}
+            label="A-Level Grade (A*-U)"
             value={value.grade}
             onChange={handleGradeChange}
+            options={gradeOptions}
+            placeholder="Select Grade"
             disabled={disabled}
             required={required}
-          >
-            {alevelGrades.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+            error={hasError}
+          />
         </div>
       </div>
+
+      {/* Display UCAS Points if enabled and grade is selected */}
+      {showUCASPoints && value.grade && (
+        <div className="alevel-grade__ucas-points">
+          <strong>UCAS Points: {ucasPoints}</strong>
+        </div>
+      )}
 
       {hasError && errorMessage && (
         <div className="error-message">{errorMessage}</div>
