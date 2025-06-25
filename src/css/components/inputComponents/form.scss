@@ -6,7 +6,9 @@
   @include MarginBottom2rem;
 
   label {
-    display: block;
+    display: flex;
+    justify-content: start;
+    align-items: center;
     font-size: 1.4rem;
     font-weight: 500;
     color: $text-color;

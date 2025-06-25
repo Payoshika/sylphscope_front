@@ -435,7 +435,7 @@ const Components = () => {
               options={selectOptions}
             />
 
-            <div className="form-row">
+            <div className="form-group">
               <Checkbox
                 id="checkbox1"
                 name="checkboxOption"
