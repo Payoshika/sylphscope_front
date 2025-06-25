@@ -176,9 +176,32 @@ const Components = () => {
               <Button text="Disabled Button" disabled />
               <Button text="Small Button" size="small" />
               <Button text="Large Button" size="large" />
-              <Button text="Full Width Button" fullWidth />
             </div>
           </Card>
+          <h2>Radio Components</h2>
+          <div className="component-section">
+            <Card title="Enhanced Radio Components">
+              <div className="radio-group">
+                <Radio
+                  id="radio-default-1"
+                  name="radioDefault"
+                  value="option1"
+                  label="Default Radio Option 1"
+                  checked={radioValue === "option1"}
+                  onChange={(e) => setRadioValue(e.target.value)}
+                />
+                <Radio
+                  id="radio-default-2"
+                  name="radioDefault"
+                  value="option2"
+                  label="Default Radio Option 2"
+                  description="Description can be added"
+                  checked={radioValue === "option2"}
+                  onChange={(e) => setRadioValue(e.target.value)}
+                />
+              </div>
+            </Card>
+          </div>
           <Religion
             id="religion"
             name="religion"
@@ -420,25 +443,6 @@ const Components = () => {
                 checked={checkboxValue}
                 onChange={(e) => setCheckboxValue(e.target.checked)}
               />
-
-              <div>
-                <Radio
-                  id="radio1"
-                  name="radioGroup"
-                  value="option1"
-                  label="Radio Option 1"
-                  checked={radioValue === "option1"}
-                  onChange={(e) => setRadioValue(e.target.value)}
-                />
-                <Radio
-                  id="radio2"
-                  name="radioGroup"
-                  value="option2"
-                  label="Radio Option 2"
-                  checked={radioValue === "option2"}
-                  onChange={(e) => setRadioValue(e.target.value)}
-                />
-              </div>
             </div>
             <University
               id="university"

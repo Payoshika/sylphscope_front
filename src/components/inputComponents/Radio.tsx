@@ -8,6 +8,11 @@ interface RadioProps {
   checked: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
+  size?: "small" | "regular" | "large";
+  variant?: "default" | "card" | "inline";
+  description?: string;
+  error?: boolean;
+  className?: string;
 }
 
 const Radio: React.FC<RadioProps> = ({
@@ -18,9 +23,26 @@ const Radio: React.FC<RadioProps> = ({
   checked,
   onChange,
   disabled = false,
+  size = "regular",
+  variant = "default",
+  description,
+  error = false,
+  className = "",
 }) => {
+  const getRadioClass = () => {
+    let baseClass = "radio";
+    if (size === "small") baseClass += " radio--small";
+    if (size === "large") baseClass += " radio--large";
+    if (variant === "card") baseClass += " radio--card";
+    if (variant === "inline") baseClass += " radio--inline";
+    if (error) baseClass += " radio--error";
+    if (disabled) baseClass += " radio--disabled";
+    if (className) baseClass += ` ${className}`;
+    return baseClass;
+  };
+
   return (
-    <label className="radio">
+    <label className={getRadioClass()}>
       <input
         type="radio"
         id={id}
@@ -31,7 +53,12 @@ const Radio: React.FC<RadioProps> = ({
         disabled={disabled}
       />
       <span className="radiomark"></span>
-      <span className="radio-label">{label}</span>
+      <div className="radio-content">
+        <span className="radio-label">{label}</span>
+        {description && (
+          <span className="radio-description">{description}</span>
+        )}
+      </div>
     </label>
   );
 };

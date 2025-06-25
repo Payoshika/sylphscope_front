@@ -18,6 +18,7 @@ interface TuitionfeeStatusProps {
   disabled?: boolean;
   error?: boolean | string;
   required?: boolean;
+  showDescriptions?: boolean;
   onValidationChange?: (isValid: boolean, errorMessage: string) => void;
 }
 
@@ -25,14 +26,20 @@ const tuitionfeeStatusOptions: TuitionfeeStatusOption[] = [
   {
     value: "uk",
     label: "UK Student",
+    description:
+      "UK citizens and those with settled status (eligible for home fee rates)",
   },
   {
     value: "eu",
     label: "EU Student",
+    description:
+      "EU/EEA citizens (fee status may vary depending on residency and course start date)",
   },
   {
     value: "international",
     label: "International Student",
+    description:
+      "Students from outside the UK/EU (subject to international fee rates)",
   },
 ];
 
@@ -68,13 +75,6 @@ const TuitionfeeStatus: React.FC<TuitionfeeStatusProps> = ({
     onChange(e.target.value as TuitionfeeStatusValue);
   };
 
-  const getContainerClass = () => {
-    let baseClass = "tuition-fee-status";
-    if (disabled) baseClass += " tuition-fee-status--disabled";
-    if (error || internalError) baseClass += " tuition-fee-status--error";
-    return baseClass;
-  };
-
   const hasError = error || !!internalError;
   const errorMessage = typeof error === "string" ? error : internalError;
 
@@ -85,21 +85,21 @@ const TuitionfeeStatus: React.FC<TuitionfeeStatusProps> = ({
         {required && <span className="required-asterisk">*</span>}
       </label>
 
-      <div className={getContainerClass()}>
+      <div className="radio-group">
         {tuitionfeeStatusOptions.map((option) => (
-          <div key={option.value} className="tuition-fee-status__option">
-            <div className="tuition-fee-status__radio-wrapper">
-              <Radio
-                id={`${id}-${option.value}`}
-                name={name}
-                value={option.value}
-                label={option.label}
-                checked={value === option.value}
-                onChange={handleChange}
-                disabled={disabled}
-              />
-            </div>
-          </div>
+          <Radio
+            key={option.value}
+            id={`${id}-${option.value}`}
+            name={name}
+            value={option.value}
+            label={option.label}
+            description={showDescriptions ? option.description : undefined}
+            checked={value === option.value}
+            onChange={handleChange}
+            disabled={disabled}
+            variant="default"
+            error={hasError}
+          />
         ))}
       </div>
 
@@ -118,6 +118,13 @@ export const getTuitionfeeStatusLabel = (
 ): string => {
   const option = tuitionfeeStatusOptions.find((opt) => opt.value === value);
   return option ? option.label : "";
+};
+
+export const getTuitionfeeStatusDescription = (
+  value: TuitionfeeStatusValue
+): string => {
+  const option = tuitionfeeStatusOptions.find((opt) => opt.value === value);
+  return option ? option.description : "";
 };
 
 export const getTuitionfeeStatusByValue = (
