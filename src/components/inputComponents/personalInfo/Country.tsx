@@ -1,12 +1,12 @@
 import React from "react";
 import SearchableDropdown, {
   type SearchableOption,
-} from "./SearchableDropdown";
+} from "../SearchableDropdown";
 import {
   countries,
   searchCountries,
   type CountryType,
-} from "../../data/countries";
+} from "../../../data/countries";
 
 interface CountryProps {
   id: string;

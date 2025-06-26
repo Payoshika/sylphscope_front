@@ -28,7 +28,7 @@ import {
   type DateValue,
   type MonthValue,
 } from "../components/inputComponents/datePickers";
-import Country from "../components/inputComponents/Country";
+import Country from "../components/inputComponents/personalInfo/Country";
 import type { CountryType } from "../data/countries";
 import PhoneNumber from "../components/inputComponents/Phonenumber";
 import Address, {
