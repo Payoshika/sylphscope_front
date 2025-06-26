@@ -1,0 +1,384 @@
+@use "../../global/base" as *;
+@use "../../global/mixins" as *;
+@use "./shared" as shared;
+
+// YesNoChoice Component - Square Radio Buttons with SVG Checkmarks
+.yes-no-choice {
+  width: 100%;
+
+  &__question {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: $text-color;
+    margin-bottom: 1.2rem;
+    line-height: 1.4;
+  }
+
+  &__options {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+
+    @include smartphone {
+      gap: 1.5rem;
+    }
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0.8rem 1.2rem;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    background-color: transparent;
+    min-width: 8rem;
+    justify-content: center;
+
+    // &:hover:not(.yes-no-choice--disabled &) {
+    //   background-color: rgba($primary-color, 0.05);
+    //   border-color: rgba($primary-color, 0.2);
+    // }
+
+    .yes-no-choice--disabled & {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+
+  &__input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    // Remove default browser focus
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
+    &:focus:not(:focus-visible) {
+      outline: none;
+    }
+
+    // Keyboard focus
+    &:focus-visible ~ .yes-no-choice__checkbox {
+      outline: 2px solid $primary-color;
+      outline-offset: 2px;
+    }
+  }
+
+  &__checkbox {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border: 2px solid $border-color;
+    background-color: $background-color;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+
+    // When parent option is hovered
+    .yes-no-choice__option:hover & {
+      border-color: $primary-color;
+    }
+
+    // When input is checked
+    .yes-no-choice__input:checked ~ & {
+      background-color: $primary-color;
+      border-color: $primary-color;
+    }
+  }
+
+  &__checkmark-icon {
+    color: $background-color;
+    opacity: 1;
+    transition: all 0.2s ease;
+    animation: checkmarkSlideIn 0.3s ease-out;
+  }
+
+  &__label {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: $text-color;
+    transition: color 0.3s ease;
+    user-select: none;
+
+    // When input is checked
+    .yes-no-choice__input:checked ~ .yes-no-choice__checkbox ~ & {
+      color: $primary-color;
+      font-weight: 600;
+    }
+
+    .yes-no-choice--disabled & {
+      color: $muted-color;
+    }
+  }
+
+  // Size variants
+  &--small {
+    .yes-no-choice__question {
+      font-size: 1.3rem;
+    }
+
+    .yes-no-choice__options {
+      gap: 1.5rem;
+    }
+
+    .yes-no-choice__option {
+      padding: 0.6rem 1rem;
+      gap: 0.6rem;
+      min-width: 7rem;
+    }
+
+    .yes-no-choice__checkbox {
+      width: 1.8rem;
+      height: 1.8rem;
+    }
+
+    .yes-no-choice__label {
+      font-size: 1.3rem;
+    }
+  }
+
+  &--large {
+    .yes-no-choice__question {
+      font-size: 1.7rem;
+    }
+
+    .yes-no-choice__options {
+      gap: 2.5rem;
+    }
+
+    .yes-no-choice__option {
+      padding: 1rem 1.5rem;
+      gap: 1rem;
+      min-width: 9rem;
+    }
+
+    .yes-no-choice__checkbox {
+      width: 2.6rem;
+      height: 2.6rem;
+    }
+
+    .yes-no-choice__label {
+      font-size: 1.7rem;
+    }
+  }
+
+  // Error state
+  &--error {
+    .yes-no-choice__checkbox {
+      border-color: $error-color;
+
+      .yes-no-choice__input:checked ~ & {
+        background-color: $error-color;
+        border-color: $error-color;
+      }
+    }
+
+    .yes-no-choice__option:hover .yes-no-choice__checkbox {
+      border-color: $error-color;
+    }
+
+    .yes-no-choice__input:focus-visible ~ .yes-no-choice__checkbox {
+      outline-color: $error-color;
+    }
+  }
+
+  // Disabled state
+  &--disabled {
+    .yes-no-choice__checkbox {
+      background-color: $subtle-color;
+      border-color: $muted-color;
+
+      .yes-no-choice__input:checked ~ & {
+        background-color: $muted-color;
+        border-color: $muted-color;
+      }
+    }
+
+    .yes-no-choice__checkmark-icon {
+      color: $background-color;
+      opacity: 0.7;
+    }
+  }
+}
+
+// Mobile responsive
+@include smartphone {
+  .yes-no-choice {
+    &__question {
+      font-size: 1.4rem;
+    }
+
+    &__options {
+      gap: 1rem;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__option {
+      padding: 1rem;
+      justify-content: flex-start;
+      min-width: auto;
+      width: 100%;
+    }
+
+    &__checkbox {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    &__label {
+      font-size: 1.4rem;
+    }
+
+    // Size variants on mobile
+    &--small {
+      .yes-no-choice__question {
+        font-size: 1.2rem;
+      }
+
+      .yes-no-choice__option {
+        padding: 0.8rem;
+      }
+
+      .yes-no-choice__checkbox {
+        width: 1.8rem;
+        height: 1.8rem;
+      }
+
+      .yes-no-choice__label {
+        font-size: 1.2rem;
+      }
+    }
+
+    &--large {
+      .yes-no-choice__question {
+        font-size: 1.6rem;
+      }
+
+      .yes-no-choice__option {
+        padding: 1.2rem;
+      }
+
+      .yes-no-choice__checkbox {
+        width: 2.2rem;
+        height: 2.2rem;
+      }
+
+      .yes-no-choice__label {
+        font-size: 1.5rem;
+      }
+    }
+  }
+}
+
+// Checkmark slide-in animation
+@keyframes checkmarkSlideIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .yes-no-choice {
+    &__checkbox {
+      border-width: 3px;
+    }
+
+    &__input:checked ~ .yes-no-choice__checkbox {
+      outline: 2px solid $background-color;
+      outline-offset: -2px;
+    }
+
+    &__checkmark-icon {
+      stroke-width: 3;
+    }
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .yes-no-choice {
+    &__option,
+    &__checkbox,
+    &__checkmark-icon,
+    &__label {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+
+  .yes-no-choice__checkmark-icon {
+    animation: none !important;
+  }
+}
+
+// Print styles
+@media print {
+  .yes-no-choice {
+    &__input:checked ~ .yes-no-choice__checkbox {
+      background-color: #000 !important;
+      border-color: #000 !important;
+      -webkit-print-color-adjust: exact;
+      color-adjust: exact;
+    }
+
+    &__checkmark-icon {
+      color: white !important;
+      -webkit-print-color-adjust: exact;
+      color-adjust: exact;
+    }
+
+    &__option {
+      border: 1px solid #000;
+      background: white;
+    }
+  }
+}
+
+// Focus management for accessibility
+.yes-no-choice {
+  &__input:focus-visible ~ .yes-no-choice__checkbox {
+    outline: 2px solid rgba($primary-color, 0.5);
+    outline-offset: 2px;
+  }
+}
+
+// Hover states for better UX
+.yes-no-choice__option {
+  &:hover:not(.yes-no-choice--disabled &) {
+    .yes-no-choice__label {
+      color: $primary-color;
+    }
+  }
+}
+
+// Icon-specific styling for crisp rendering
+.checkmark-icon {
+  display: block;
+  shape-rendering: geometricPrecision;
+
+  // Ensure crisp rendering at different sizes
+  &.yes-no-choice__checkmark-icon {
+    flex-shrink: 0;
+  }
+}

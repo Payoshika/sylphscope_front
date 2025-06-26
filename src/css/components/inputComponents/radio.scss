@@ -16,6 +16,23 @@
     opacity: 0;
     width: 0;
     height: 0;
+
+    // Remove default browser focus outline completely
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
+    // Remove focus outline but keep it for keyboard navigation only
+    &:focus:not(:focus-visible) {
+      outline: none;
+    }
+
+    // Only show focus for keyboard users, not mouse clicks
+    &:focus-visible ~ .radiomark {
+      outline: 2px solid $primary-color;
+      outline-offset: 2px;
+    }
   }
 
   .radiomark {
@@ -28,14 +45,19 @@
     border: 2px solid $border-color;
     background-color: $background-color;
     border-radius: 50%;
-    transition: all 0.3s ease;
+    transition: border-color 0.3s ease; // Only animate border color, not transform
     flex-shrink: 0;
     margin-top: 0.1rem; // Align with text baseline
+
+    // Remove any default focus styles
+    &:focus {
+      outline: none;
+    }
   }
 
   &:hover:not(.radio--disabled) .radiomark {
     border-color: $primary-color;
-    transform: scale(1.05);
+    // Removed: transform: scale(1.05);
   }
 
   // When checked, only show the inner dot - no outer circle changes
@@ -52,10 +74,11 @@
     opacity: 1;
   }
 
-  input:focus ~ .radiomark {
-    outline: 2px solid $primary-color;
-    outline-offset: 2px;
-  }
+  // Remove the old focus rule since we're handling it above
+  // input:focus ~ .radiomark {
+  //   outline: 2px solid $primary-color;
+  //   outline-offset: 2px;
+  // }
 
   input:disabled ~ .radiomark {
     background-color: $subtle-color;
@@ -135,14 +158,14 @@
   border: 2px solid $border-color;
   border-radius: 8px;
   background-color: $background-color;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease, background-color 0.3s ease; // Removed transform transition
   margin-bottom: 0.5rem;
 
   &:hover:not(.radio--disabled) {
     border-color: $primary-color;
     background-color: rgba($primary-color, 0.02);
     box-shadow: 0 2px 8px rgba($primary-color, 0.1);
-    transform: translateY(-1px);
+    // Removed: transform: translateY(-1px);
   }
 
   &:focus-within {
@@ -198,7 +221,8 @@
     background: $error-color;
   }
 
-  input:focus ~ .radiomark {
+  // Update focus for error state too
+  input:focus-visible ~ .radiomark {
     outline-color: $error-color;
   }
 
@@ -209,6 +233,7 @@
       border-color: $error-color;
       background-color: rgba($error-color, 0.02);
       box-shadow: 0 2px 8px rgba($error-color, 0.1);
+      // Removed transform here too
     }
   }
 }
@@ -310,7 +335,7 @@
   }
 }
 
-// Focus visible for keyboard navigation
+// Focus visible for keyboard navigation - Updated to match new pattern
 .radio {
   input:focus-visible ~ .radiomark {
     outline: 2px solid $primary-color;

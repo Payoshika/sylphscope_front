@@ -9,11 +9,29 @@
   cursor: pointer;
   font-size: 1.6rem;
   @include RowJustifyCenterFlexbox;
+
   input {
     position: absolute;
     opacity: 0;
     width: 0;
     height: 0;
+
+    // Remove default browser focus outline completely
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
+    // Remove focus outline but keep it for keyboard navigation only
+    &:focus:not(:focus-visible) {
+      outline: none;
+    }
+
+    // Only show focus for keyboard users, not mouse clicks
+    &:focus-visible ~ .checkmark {
+      outline: 2px solid $primary-color;
+      outline-offset: 2px;
+    }
   }
 
   .checkmark {
@@ -26,8 +44,13 @@
     border: 2px solid $border-color;
     background-color: $background-color;
     border-radius: 4px;
-    transition: all 0.3s ease;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
     flex-shrink: 0;
+
+    // Remove any default focus styles
+    &:focus {
+      outline: none;
+    }
   }
 
   &:hover .checkmark {
@@ -51,10 +74,11 @@
     transform: rotate(45deg);
   }
 
-  input:focus ~ .checkmark {
-    outline: 2px solid $primary-color;
-    outline-offset: 2px;
-  }
+  // Remove the old focus rule since we're handling it above
+  // input:focus ~ .checkmark {
+  //   outline: 2px solid $primary-color;
+  //   outline-offset: 2px;
+  // }
 
   input:disabled ~ .checkmark {
     background-color: $subtle-color;
@@ -113,7 +137,8 @@
     border-color: $error-color;
   }
 
-  input:focus ~ .checkmark {
+  // Update focus for error state too
+  input:focus-visible ~ .checkmark {
     outline-color: $error-color;
   }
 }

@@ -4,6 +4,11 @@ import Textarea from "../components/inputComponents/Textarea";
 import Select from "../components/inputComponents/Select";
 import Checkbox from "../components/inputComponents/Checkbox";
 import Radio from "../components/inputComponents/Radio";
+import YesNoChoice, {
+  type YesNoChoiceValue,
+} from "../components/inputComponents/YesNoChoice";
+import Url from "../components/inputComponents/Url";
+
 import SearchableDropdown from "../components/inputComponents/SearchableDropdown";
 import Email from "../components/inputComponents/Email";
 import Password from "../components/inputComponents/Password";
@@ -54,12 +59,10 @@ import type { UKUniversityGradeValue } from "../components/inputComponents/acade
 
 const Components = () => {
   // State for interactive components
-  const [toggleRadio, setToggleRadio] = useState<ToggleValue>("");
-  const [toggleSwitch, setToggleSwitch] = useState<ToggleValue>("");
-  const [toggleButtons, setToggleButtons] = useState<ToggleValue>("");
-  const [isToggleValid, setIsToggleValid] = useState(false);
   const [twoFactorAuth, setTwoFactorAuth] = useState<ToggleValue>("");
-
+  const [agreementChoice, setAgreementChoice] = useState<YesNoChoiceValue>("");
+  const [websiteUrl, setWebsiteUrl] = useState("");
+  const [isWebsiteUrlValid, setIsWebsiteUrlValid] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<string>("GB");
   const [isCountryValid, setIsCountryValid] = useState(false);
   const [textInputValue, setTextInputValue] = useState("");
@@ -185,6 +188,33 @@ const Components = () => {
               <Button text="Large Button" size="large" />
             </div>
           </Card>
+          <Card title="Square Radio Button Choice">
+            <YesNoChoice
+              id="terms-agreement"
+              name="termsAgreement"
+              question="Do you agree to our Terms and Conditions?"
+              value={agreementChoice}
+              onChange={setAgreementChoice}
+              required
+              onValidationChange={(isValid, errorMessage) => {
+                console.log("Agreement validation:", isValid, errorMessage);
+              }}
+            />
+          </Card>
+          <Url
+            id="website-url"
+            name="websiteUrl"
+            label="Website URL"
+            placeholder="Enter your website URL"
+            value={websiteUrl}
+            onChange={(e) => setWebsiteUrl(e.target.value)}
+            required
+            onValidationChange={(isValid, errorMessage) => {
+              setIsWebsiteUrlValid(isValid);
+              console.log("Website URL validation:", isValid, errorMessage);
+            }}
+          />
+
           <h2>Radio Components</h2>
           <div className="component-section">
             <Card title="Enhanced Radio Components">
@@ -298,7 +328,6 @@ const Components = () => {
         {/* Date Pickers Section */}
         <section className="component-section">
           <h2>Date Pickers</h2>
-
           <Card title="Date of Birth Picker">
             <DOBPicker
               id="dob-picker"
