@@ -4,9 +4,9 @@ import {
   degreeLevels,
   getDegreeCategoryLabel,
   getDegreeLevelLabel,
-} from "../../data/degreecategories";
-import TextInput from "./TextInput";
-import Select, { type SelectOptGroup } from "./Select";
+} from "../../../data/degreecategories";
+import TextInput from "../TextInput";
+import Select, { type SelectOptGroup } from "../Select";
 
 export interface UniversityMajorValue {
   degreeName: string;

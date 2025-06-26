@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
+import SearchableDropdown, {
+  type SearchableOption,
+  type SearchableCategory,
+} from "../SearchableDropdown";
 import {
   ethnicities,
   ethnicityCategories,
-  getEthnicitiesByCategory,
-  getEthnicityByValue,
   searchEthnicities,
   type EthnicityType,
 } from "../../../data/ethnicities";
@@ -23,324 +25,58 @@ interface EthnicityProps {
   onValidationChange?: (isValid: boolean, errorMessage: string) => void;
 }
 
-const Ethnicity: React.FC<EthnicityProps> = ({
-  id,
-  name,
-  label,
-  value,
-  onChange,
-  disabled = false,
-  error = false,
-  required = false,
-  searchable = true,
-  placeholder = "Search and select your ethnicity",
-  showCategories = true,
-  onValidationChange,
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredEthnicities, setFilteredEthnicities] =
-    useState<EthnicityType[]>(ethnicities);
-  const [internalError, setInternalError] = useState("");
-  const [highlightedIndex, setHighlightedIndex] = useState(-1);
+const Ethnicity: React.FC<EthnicityProps> = (props) => {
+  // Convert ethnicity data to SearchableOption format
+  const ethnicityOptions: SearchableOption[] = ethnicities.map((ethnicity) => ({
+    value: ethnicity.value,
+    label: ethnicity.label,
+    category: ethnicity.category,
+  }));
 
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const selectedEthnicity = getEthnicityByValue(value);
-
-  // Validation
-  useEffect(() => {
-    if (required && !value) {
-      setInternalError("Ethnicity selection is required");
-      onValidationChange?.(false, "Ethnicity selection is required");
-    } else {
-      setInternalError("");
-      onValidationChange?.(true, "");
-    }
-  }, [value, required, onValidationChange]);
-
-  // Filter ethnicities based on search term
-  useEffect(() => {
-    if (searchTerm.trim() === "") {
-      setFilteredEthnicities(ethnicities);
-    } else {
-      setFilteredEthnicities(searchEthnicities(searchTerm));
-    }
-    setHighlightedIndex(-1);
-  }, [searchTerm]);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-        setSearchTerm("");
-        setHighlightedIndex(-1);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
-
-  const handleEthnicitySelect = (ethnicityValue: string) => {
-    onChange(ethnicityValue);
-    setIsOpen(false);
-    setSearchTerm("");
-    setHighlightedIndex(-1);
+  // Search function for ethnicities
+  const searchEthnicitiesFunction = (
+    query: string,
+    options: SearchableOption[]
+  ) => {
+    if (!query.trim()) return options;
+    const searchTerm = query.toLowerCase().trim();
+    return options.filter(
+      (option) =>
+        option.label.toLowerCase().includes(searchTerm) ||
+        option.value.toLowerCase().includes(searchTerm)
+    );
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-    setIsOpen(true);
-  };
-
-  const handleInputFocus = () => {
-    setIsOpen(true);
-    if (searchInputRef.current) {
-      searchInputRef.current.select();
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!isOpen) return;
-
-    switch (e.key) {
-      case "ArrowDown":
-        e.preventDefault();
-        setHighlightedIndex((prev) =>
-          prev < filteredEthnicities.length - 1 ? prev + 1 : 0
+  // Categorize ethnicities
+  const getCategorizedEthnicities = (
+    options: SearchableOption[]
+  ): SearchableCategory => {
+    return Object.entries(ethnicityCategories).reduce(
+      (acc, [categoryKey, categoryLabel]) => {
+        const categoryEthnicities = options.filter(
+          (option) => option.category === categoryKey && option.value !== ""
         );
-        break;
-      case "ArrowUp":
-        e.preventDefault();
-        setHighlightedIndex((prev) =>
-          prev > 0 ? prev - 1 : filteredEthnicities.length - 1
-        );
-        break;
-      case "Enter":
-        e.preventDefault();
-        if (highlightedIndex >= 0 && filteredEthnicities[highlightedIndex]) {
-          handleEthnicitySelect(filteredEthnicities[highlightedIndex].value);
+        if (categoryEthnicities.length > 0) {
+          acc[categoryKey] = {
+            label: categoryLabel,
+            options: categoryEthnicities,
+          };
         }
-        break;
-      case "Escape":
-        e.preventDefault();
-        setIsOpen(false);
-        setSearchTerm("");
-        setHighlightedIndex(-1);
-        break;
-    }
+        return acc;
+      },
+      {} as SearchableCategory
+    );
   };
-
-  const getInputClass = () => {
-    let baseClass = "ethnicity-search-input";
-    if (error || internalError) baseClass += " ethnicity-search-input--error";
-    if (disabled) baseClass += " ethnicity-search-input--disabled";
-    return baseClass;
-  };
-
-  const getDropdownClass = () => {
-    let baseClass = "ethnicity-dropdown";
-    if (isOpen) baseClass += " ethnicity-dropdown--open";
-    return baseClass;
-  };
-
-  const hasError = error || !!internalError;
-  const errorMessage = typeof error === "string" ? error : internalError;
-
-  // Display value in input
-  const displayValue =
-    selectedEthnicity && !isOpen && !searchTerm
-      ? selectedEthnicity.label
-      : searchTerm;
-
-  // Group ethnicities by category for display
-  const ethnicitiesByCategory = Object.entries(ethnicityCategories).reduce(
-    (acc, [categoryKey, categoryLabel]) => {
-      const categoryEthnicities = filteredEthnicities.filter(
-        (ethnicity) =>
-          ethnicity.category === categoryKey && ethnicity.value !== ""
-      );
-      if (categoryEthnicities.length > 0) {
-        acc[categoryKey as EthnicityType["category"]] = {
-          label: categoryLabel,
-          ethnicities: categoryEthnicities,
-        };
-      }
-      return acc;
-    },
-    {} as Record<
-      EthnicityType["category"],
-      { label: string; ethnicities: EthnicityType[] }
-    >
-  );
 
   return (
-    <div className="form-group" ref={dropdownRef}>
-      <label htmlFor={id} className="form-label">
-        {label}
-        {required && <span className="required-asterisk">*</span>}
-      </label>
-
-      {searchable ? (
-        <div className="ethnicity-search-container">
-          <div className="ethnicity-search-wrapper">
-            <input
-              ref={searchInputRef}
-              type="text"
-              id={id}
-              name={name}
-              className={getInputClass()}
-              placeholder={placeholder}
-              value={displayValue}
-              onChange={handleSearchChange}
-              onFocus={handleInputFocus}
-              onKeyDown={handleKeyDown}
-              disabled={disabled}
-              autoComplete="off"
-              role="combobox"
-              aria-expanded={isOpen}
-              aria-haspopup="listbox"
-              aria-autocomplete="list"
-            />
-
-            <button
-              type="button"
-              className="ethnicity-dropdown-toggle"
-              onClick={() => !disabled && setIsOpen(!isOpen)}
-              disabled={disabled}
-              aria-label="Toggle ethnicity dropdown"
-            >
-              <span className="dropdown-arrow">{isOpen ? "▲" : "▼"}</span>
-            </button>
-          </div>
-
-          <div className={getDropdownClass()}>
-            {isOpen && (
-              <div className="ethnicity-options">
-                {showCategories &&
-                Object.keys(ethnicitiesByCategory).length > 0 ? (
-                  // Categorized display
-                  Object.entries(ethnicitiesByCategory).map(
-                    ([categoryKey, categoryData]) => (
-                      <div key={categoryKey} className="ethnicity-category">
-                        <div className="ethnicity-category-header">
-                          {categoryData.label}
-                        </div>
-                        {categoryData.ethnicities.map((ethnicity, index) => {
-                          const globalIndex = filteredEthnicities.findIndex(
-                            (e) => e.value === ethnicity.value
-                          );
-                          return (
-                            <div
-                              key={ethnicity.value}
-                              className={`ethnicity-option ${
-                                value === ethnicity.value
-                                  ? "ethnicity-option--selected"
-                                  : ""
-                              } ${
-                                globalIndex === highlightedIndex
-                                  ? "ethnicity-option--highlighted"
-                                  : ""
-                              }`}
-                              onClick={() =>
-                                handleEthnicitySelect(ethnicity.value)
-                              }
-                              onMouseEnter={() =>
-                                setHighlightedIndex(globalIndex)
-                              }
-                              role="option"
-                              aria-selected={value === ethnicity.value}
-                            >
-                              <span className="ethnicity-name">
-                                {ethnicity.label}
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )
-                  )
-                ) : // Flat display when search results or no categories
-                filteredEthnicities.length > 0 ? (
-                  filteredEthnicities.map((ethnicity, index) => (
-                    <div
-                      key={ethnicity.value}
-                      className={`ethnicity-option ${
-                        value === ethnicity.value
-                          ? "ethnicity-option--selected"
-                          : ""
-                      } ${
-                        index === highlightedIndex
-                          ? "ethnicity-option--highlighted"
-                          : ""
-                      }`}
-                      onClick={() => handleEthnicitySelect(ethnicity.value)}
-                      onMouseEnter={() => setHighlightedIndex(index)}
-                      role="option"
-                      aria-selected={value === ethnicity.value}
-                    >
-                      <span className="ethnicity-name">{ethnicity.label}</span>
-                    </div>
-                  ))
-                ) : (
-                  <div className="ethnicity-no-results">
-                    No ethnicities found matching "{searchTerm}"
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      ) : (
-        // Simple dropdown without search
-        <select
-          id={id}
-          name={name}
-          className="select"
-          value={value}
-          onChange={(e) => handleEthnicitySelect(e.target.value)}
-          disabled={disabled}
-        >
-          {showCategories
-            ? Object.entries(ethnicityCategories).map(
-                ([categoryKey, categoryLabel]) => {
-                  const categoryEthnicities = getEthnicitiesByCategory(
-                    categoryKey as EthnicityType["category"]
-                  );
-                  return categoryEthnicities.length > 0 ? (
-                    <optgroup key={categoryKey} label={categoryLabel}>
-                      {categoryEthnicities.map((ethnicity) => (
-                        <option key={ethnicity.value} value={ethnicity.value}>
-                          {ethnicity.label}
-                        </option>
-                      ))}
-                    </optgroup>
-                  ) : null;
-                }
-              )
-            : ethnicities.map((ethnicity) => (
-                <option key={ethnicity.value} value={ethnicity.value}>
-                  {ethnicity.label}
-                </option>
-              ))}
-        </select>
-      )}
-
-      {hasError && errorMessage && (
-        <div className="error-message">{errorMessage}</div>
-      )}
-    </div>
+    <SearchableDropdown
+      {...props}
+      options={ethnicityOptions}
+      searchFunction={searchEthnicitiesFunction}
+      getCategorizedOptions={getCategorizedEthnicities}
+      className="ethnicity"
+      placeholder={props.placeholder || "Search and select your ethnicity"}
+    />
   );
 };
 

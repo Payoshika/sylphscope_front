@@ -8,9 +8,9 @@ export const ethnicities: EthnicityType[] = [
   { value: "", label: "Select Ethnicity", category: 'other' },
   
   // Asian
-  { value: "asian-east", label: "East Asian (Chinese, Japanese, Korean)", category: 'asian' },
-  { value: "asian-south", label: "South Asian (Indian, Pakistani, Bangladeshi)", category: 'asian' },
-  { value: "asian-southeast", label: "Southeast Asian (Filipino, Vietnamese, Thai)", category: 'asian' },
+  { value: "asian-east", label: "East Asian", category: 'asian' },
+  { value: "asian-south", label: "South Asian", category: 'asian' },
+  { value: "asian-southeast", label: "Southeast Asian", category: 'asian' },
   { value: "asian-other", label: "Other Asian", category: 'asian' },
   
   // Black or African
