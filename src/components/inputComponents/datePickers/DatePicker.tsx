@@ -7,6 +7,7 @@ import {
   getDefaultYear,
 } from "./utils";
 import type { DatePickerProps, DatePickerType } from "./types";
+import Select from "../Select";
 
 interface ExtendedDatePickerProps extends DatePickerProps {
   type?: DatePickerType; // 'dob', 'future', or 'any'
@@ -150,66 +151,57 @@ const DatePicker: React.FC<ExtendedDatePickerProps> = ({
       </label>
       <div className={`date-picker ${hasError ? "date-picker--error" : ""}`}>
         <div className="date-picker__field">
-          <label htmlFor={`${id}-day`} className="date-picker__label">
-            Day
-          </label>
-          <select
+          <Select
             id={`${id}-day`}
             name={`${name}-day`}
-            className={getSelectClass()}
+            label="Day"
             value={value.day}
             onChange={handleDayChange}
+            options={days.map((day) => ({
+              value: day.value,
+              label: day.label,
+            }))}
+            placeholder="Day"
             disabled={disabled}
-          >
-            <option value="">Day</option>
-            {days.map((day) => (
-              <option key={day.value} value={day.value}>
-                {day.label}
-              </option>
-            ))}
-          </select>
+            error={hasError}
+            size="small"
+          />
         </div>
 
         <div className="date-picker__field">
-          <label htmlFor={`${id}-month`} className="date-picker__label">
-            Month
-          </label>
-          <select
+          <Select
             id={`${id}-month`}
             name={`${name}-month`}
-            className={getSelectClass()}
+            label="Month"
             value={value.month}
             onChange={handleMonthChange}
+            options={months.map((month) => ({
+              value: month.value,
+              label: month.label,
+            }))}
+            placeholder="Month"
             disabled={disabled}
-          >
-            <option value="">Month</option>
-            {months.map((month) => (
-              <option key={month.value} value={month.value}>
-                {month.label}
-              </option>
-            ))}
-          </select>
+            error={hasError}
+            size="small"
+          />
         </div>
 
         <div className="date-picker__field">
-          <label htmlFor={`${id}-year`} className="date-picker__label">
-            Year
-          </label>
-          <select
+          <Select
             id={`${id}-year`}
             name={`${name}-year`}
-            className={getSelectClass()}
+            label="Year"
             value={value.year}
             onChange={handleYearChange}
+            options={years.map((year) => ({
+              value: year.toString(),
+              label: year.toString(),
+            }))}
+            placeholder="Year"
             disabled={disabled}
-          >
-            <option value="">Year</option>
-            {years.map((year) => (
-              <option key={year} value={year.toString()}>
-                {year}
-              </option>
-            ))}
-          </select>
+            error={hasError}
+            size="small"
+          />
         </div>
       </div>
 

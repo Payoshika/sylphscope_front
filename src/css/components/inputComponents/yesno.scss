@@ -1,0 +1,355 @@
+@use "../../global/base" as *;
+@use "../../global/mixins" as *;
+@use "./shared" as shared;
+
+// YesNo Toggle Component - Enhanced
+.yes-no-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  width: 100%;
+
+  &__track {
+    position: relative;
+    width: 12rem;
+    height: 4rem;
+    background-color: $subtle-color;
+    border: 2px solid $border-color;
+    border-radius: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover:not(.yes-no-toggle--disabled) {
+      border-color: $primary-color;
+    }
+
+    .yes-no-toggle--disabled & {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+
+  &__slider {
+    position: absolute;
+    top: 0.2rem;
+    left: 0.2rem;
+    width: 5.6rem;
+    height: 3.2rem;
+    background-color: $background-color;
+    border: 2px solid $border-color;
+    border-radius: 1.6rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: $text-color;
+    box-shadow: 0 2px 4px rgba($shadow-color, 0.1);
+
+    // Yes position (right side) - Primary color
+    &--yes {
+      transform: translateX(5.6rem);
+      background-color: $primary-color;
+      border-color: $primary-color;
+      color: $background-color;
+    }
+
+    // No position (left side) - Shallow/muted color
+    &--no {
+      transform: translateX(0);
+      background-color: $muted-color;
+      border-color: $muted-color;
+      color: $background-color;
+    }
+
+    &--error {
+      border-color: $error-color;
+    }
+
+    &--disabled {
+      background-color: $subtle-color;
+      color: $muted-color;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+
+  &__labels {
+    display: flex;
+    justify-content: space-between;
+    width: 12rem;
+    font-size: 1.3rem;
+    font-weight: 500;
+  }
+
+  &__option {
+    transition: color 0.3s ease;
+
+    // No option styling (left side) - shallow color
+    &--no {
+      color: $muted-color;
+
+      &.yes-no-toggle__option--active {
+        color: $muted-color;
+        font-weight: 600;
+      }
+    }
+
+    // Yes option styling (right side) - primary color
+    &--yes {
+      color: $muted-color;
+
+      &.yes-no-toggle__option--active {
+        color: $primary-color;
+        font-weight: 600;
+      }
+    }
+  }
+
+  // Size variants
+  &--small {
+    .yes-no-toggle__track {
+      width: 9rem;
+      height: 3rem;
+    }
+
+    .yes-no-toggle__slider {
+      width: 4rem;
+      height: 2.4rem;
+      font-size: 1rem;
+
+      &--yes {
+        transform: translateX(4.2rem);
+      }
+    }
+
+    .yes-no-toggle__labels {
+      width: 9rem;
+      font-size: 1.1rem;
+    }
+  }
+
+  &--large {
+    .yes-no-toggle__track {
+      width: 15rem;
+      height: 5rem;
+    }
+
+    .yes-no-toggle__slider {
+      width: 7rem;
+      height: 4.2rem;
+      font-size: 1.4rem;
+
+      &--yes {
+        transform: translateX(7.2rem);
+      }
+    }
+
+    .yes-no-toggle__labels {
+      width: 15rem;
+      font-size: 1.5rem;
+    }
+  }
+
+  // Color scheme variants
+  &--success-danger {
+    .yes-no-toggle__slider {
+      &--yes {
+        background-color: $success-color;
+        border-color: $success-color;
+      }
+
+      &--no {
+        background-color: $error-color;
+        border-color: $error-color;
+      }
+    }
+
+    .yes-no-toggle__option {
+      &--yes.yes-no-toggle__option--active {
+        color: $success-color;
+      }
+
+      &--no.yes-no-toggle__option--active {
+        color: $error-color;
+      }
+    }
+  }
+
+  &--primary-secondary {
+    .yes-no-toggle__slider {
+      &--yes {
+        background-color: $primary-color;
+        border-color: $primary-color;
+      }
+
+      &--no {
+        background-color: $secondary-color;
+        border-color: $secondary-color;
+      }
+    }
+
+    .yes-no-toggle__option {
+      &--yes.yes-no-toggle__option--active {
+        color: $primary-color;
+      }
+
+      &--no.yes-no-toggle__option--active {
+        color: $secondary-color;
+      }
+    }
+  }
+
+  // Error state
+  &--error {
+    .yes-no-toggle__track {
+      border-color: $error-color;
+    }
+  }
+}
+
+// Help text styling
+.help-text {
+  font-size: 1.2rem;
+  color: $muted-color;
+  margin-bottom: 0.8rem;
+  line-height: 1.4;
+}
+
+// Mobile responsive adjustments
+@include smartphone {
+  .yes-no-toggle {
+    &__track {
+      width: 10rem;
+      height: 3.6rem;
+    }
+
+    &__slider {
+      width: 4.6rem;
+      height: 2.8rem;
+      font-size: 1.1rem;
+
+      &--yes {
+        transform: translateX(4.6rem);
+      }
+    }
+
+    &__labels {
+      width: 10rem;
+      font-size: 1.2rem;
+    }
+
+    // Size variants on mobile
+    &--small {
+      .yes-no-toggle__track {
+        width: 8rem;
+        height: 3rem;
+      }
+
+      .yes-no-toggle__slider {
+        width: 3.6rem;
+        height: 2.4rem;
+        font-size: 1rem;
+
+        &--yes {
+          transform: translateX(3.8rem);
+        }
+      }
+
+      .yes-no-toggle__labels {
+        width: 8rem;
+        font-size: 1.1rem;
+      }
+    }
+
+    &--large {
+      .yes-no-toggle__track {
+        width: 12rem;
+        height: 4rem;
+      }
+
+      .yes-no-toggle__slider {
+        width: 5.6rem;
+        height: 3.2rem;
+        font-size: 1.3rem;
+
+        &--yes {
+          transform: translateX(5.6rem);
+        }
+      }
+
+      .yes-no-toggle__labels {
+        width: 12rem;
+        font-size: 1.3rem;
+      }
+    }
+  }
+
+  .help-text {
+    font-size: 1.1rem;
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .yes-no-toggle {
+    &__track {
+      border-width: 3px;
+    }
+
+    &__slider {
+      border-width: 3px;
+    }
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .yes-no-toggle {
+    &__track,
+    &__slider,
+    &__option {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+}
+
+// Print styles
+@media print {
+  .yes-no-toggle {
+    &__track {
+      display: none;
+    }
+
+    &::after {
+      content: "Selected: " attr(data-value);
+      font-weight: bold;
+      color: black;
+    }
+  }
+}
+
+// Focus management for accessibility
+.yes-no-toggle {
+  &__track:focus-visible {
+    outline: 2px solid rgba($primary-color, 0.5);
+    outline-offset: 2px;
+  }
+}
+
+// Keyboard support
+.yes-no-toggle__track {
+  &:focus {
+    outline: none;
+  }
+
+  &[tabindex="0"] {
+    &:focus-visible {
+      outline: 2px solid rgba($primary-color, 0.5);
+      outline-offset: 2px;
+    }
+  }
+}

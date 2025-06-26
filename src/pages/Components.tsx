@@ -4,7 +4,7 @@ import Textarea from "../components/inputComponents/Textarea";
 import Select from "../components/inputComponents/Select";
 import Checkbox from "../components/inputComponents/Checkbox";
 import Radio from "../components/inputComponents/Radio";
-import SearchableDropdown from "../components/inputComponents/searchableDropdown";
+import SearchableDropdown from "../components/inputComponents/SearchableDropdown";
 import Email from "../components/inputComponents/Email";
 import Password from "../components/inputComponents/Password";
 import TextInput from "../components/inputComponents/TextInput";
@@ -20,6 +20,7 @@ import Gender from "../components/inputComponents/personalInfo/Gender";
 import TuitionfeeStatus, {
   type TuitionfeeStatusValue,
 } from "../components/inputComponents/personalInfo/TuitionfeeStatus";
+import YesNo, { type YesNoValue } from "../components/inputComponents/YesNo";
 
 import {
   DOBPicker,
@@ -53,6 +54,12 @@ import type { UKUniversityGradeValue } from "../components/inputComponents/acade
 
 const Components = () => {
   // State for interactive components
+  const [yesNoRadio, setYesNoRadio] = useState<YesNoValue>("");
+  const [yesNoToggle, setYesNoToggle] = useState<YesNoValue>("");
+  const [yesNoButtons, setYesNoButtons] = useState<YesNoValue>("");
+  const [isYesNoValid, setIsYesNoValid] = useState(false);
+  const [termsAgreement, setTermsAgreement] = useState<YesNoValue>("");
+
   const [selectedCountry, setSelectedCountry] = useState<string>("GB");
   const [isCountryValid, setIsCountryValid] = useState(false);
   const [textInputValue, setTextInputValue] = useState("");
@@ -266,6 +273,27 @@ const Components = () => {
               );
             }}
           />
+        </section>
+
+        <section className="component-section">
+          <h2>Yes/No Components</h2>
+          <Card title="Yes/No Variants">
+            <YesNo
+              id="terms-agreement"
+              name="termsAgreement"
+              label="Terms and Conditions"
+              question="Do you agree to our Terms and Conditions?"
+              value={termsAgreement}
+              onChange={setTermsAgreement}
+              required
+              yesLabel="I Agree"
+              noLabel="I Decline"
+              helpText="By agreeing, you accept our terms of service and privacy policy."
+              onValidationChange={(isValid, errorMessage) => {
+                console.log("Terms validation:", isValid, errorMessage);
+              }}
+            />
+          </Card>
         </section>
 
         {/* Date Pickers Section */}
