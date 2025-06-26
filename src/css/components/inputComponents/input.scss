@@ -12,11 +12,13 @@
 .input--small {
   padding: 0.8rem 1.2rem;
   font-size: 1.4rem;
+  min-height: 4rem;
 }
 
 .input--large {
   padding: 1.6rem 2rem;
   font-size: 1.8rem;
+  min-height: 5.6rem;
 }
 
 .textarea {
@@ -24,10 +26,33 @@
   min-height: 12rem;
   resize: vertical;
   font-family: inherit;
+  line-height: 1.5;
 }
 
-.select {
-  @include shared.base-select;
-  @include shared.mobile-input;
-  @include shared.accessibility-styles;
+// Input validation states
+.input--valid {
+  border-color: $success-color;
+
+  &:focus {
+    border-color: $success-color;
+    box-shadow: 0 0 0 2px rgba($success-color, 0.2);
+  }
+}
+
+.input--warning {
+  border-color: $warning-color;
+
+  &:focus {
+    border-color: $warning-color;
+    box-shadow: 0 0 0 2px rgba($warning-color, 0.2);
+  }
+}
+
+.input--error {
+  border-color: $error-color;
+
+  &:focus {
+    border-color: $error-color;
+    box-shadow: 0 0 0 2px rgba($error-color, 0.2);
+  }
 }

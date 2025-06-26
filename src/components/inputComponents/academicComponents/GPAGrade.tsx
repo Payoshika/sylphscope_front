@@ -7,6 +7,7 @@ import {
   getGPAScaleDescription,
   getCommonRegions,
 } from "../../../data/gpaGrades";
+import Select from "../Select"; // Add Select import
 
 export interface GPAGradeValue {
   gpaValue: string;
@@ -82,7 +83,7 @@ const GPAGrade: React.FC<GPAGradeProps> = ({
     }
   };
 
-  // Handle GPA scale change
+  // Handle GPA scale change - Updated to work with Select component
   const handleGPAScaleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newScale = e.target.value;
     onChange({
@@ -94,12 +95,6 @@ const GPAGrade: React.FC<GPAGradeProps> = ({
 
   const getInputClass = () => {
     let baseClass = "input";
-    if (error || internalError) baseClass += " input--error";
-    return baseClass;
-  };
-
-  const getSelectClass = () => {
-    let baseClass = "select";
     if (error || internalError) baseClass += " input--error";
     return baseClass;
   };
@@ -123,6 +118,12 @@ const GPAGrade: React.FC<GPAGradeProps> = ({
   const scaleDescription = getGPAScaleDescription(value.gpaScale);
   const commonRegions = getCommonRegions(value.gpaScale);
 
+  // Prepare options for Select component
+  const scaleOptions = gpaScales.map((scale) => ({
+    value: scale.value,
+    label: scale.label,
+  }));
+
   return (
     <div className="form-group">
       {label && (
@@ -133,27 +134,33 @@ const GPAGrade: React.FC<GPAGradeProps> = ({
       )}
 
       <div className="gpa-grade-container">
-        {/* GPA Scale Selection */}
+        {/* GPA Scale Selection - Updated to use Select component */}
         <div className="gpa-grade__scale-selection">
-          <label htmlFor={`${id}-gpa-scale`} className="gpa-grade__label">
-            GPA Scale
-            {required && <span className="required-asterisk">*</span>}
-          </label>
-          <select
+          <Select
             id={`${id}-gpa-scale`}
             name={`${name}-gpa-scale`}
-            className={getSelectClass()}
+            label="GPA Scale"
             value={value.gpaScale}
             onChange={handleGPAScaleChange}
+            options={scaleOptions}
+            placeholder="Select GPA Scale"
             disabled={disabled}
             required={required}
-          >
-            {gpaScales.map((scale) => (
-              <option key={scale.value} value={scale.value}>
-                {scale.label}
-              </option>
-            ))}
-          </select>
+            error={hasError}
+          />
+
+          {/* Display scale description */}
+          {scaleDescription && (
+            <div className="gpa-scale-description">
+              {scaleDescription}
+              {commonRegions.length > 0 && (
+                <span className="common-regions">
+                  {" "}
+                  • Common in: {commonRegions.join(", ")}
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* GPA Value Input */}
@@ -174,6 +181,23 @@ const GPAGrade: React.FC<GPAGradeProps> = ({
               disabled={disabled}
               required={required}
             />
+
+            {/* Display additional GPA information */}
+            {value.gpaValue && selectedScale && (
+              <div className="gpa-grade__info">
+                <div className="grade-system-info">
+                  <span className="grade-percentage">
+                    Percentage: {getGradePercentage()}
+                  </span>
+                  {gradeQuality && (
+                    <span className="grade-quality">
+                      {" "}
+                      • Quality: {gradeQuality}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

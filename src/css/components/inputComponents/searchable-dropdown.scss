@@ -53,10 +53,10 @@
 
   // Options
   &__option {
-    @include shared.dropdown-option;
     display: flex;
     align-items: center;
     gap: 0.8rem;
+    @include shared.dropdown-option;
 
     &--selected {
       background-color: $primary-color;
