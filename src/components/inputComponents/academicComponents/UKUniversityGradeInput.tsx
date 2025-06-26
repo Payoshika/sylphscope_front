@@ -4,18 +4,19 @@ import {
   getUKUniversityGradeLabel,
   type UKUniversityGrade,
 } from "../../../data/ukuniversityGrades";
+import Select from "../Select";
 
 export type UniversityGradeCategory = "honours" | "ordinary" | "postgraduate";
 
 export interface UKUniversityGradeValue {
-  category: UniversityGradeCategory;
+  category: UniversityGradeCategory | "";
   grade: string;
 }
 
 interface UniversityGradeProps {
   id: string;
   name: string;
-  label: string;
+  label?: string;
   value: UKUniversityGradeValue;
   onChange: (value: UKUniversityGradeValue) => void;
   disabled?: boolean;
@@ -42,13 +43,15 @@ const UKUniversityGradeInput: React.FC<UniversityGradeProps> = ({
   // Get current grade options based on category
   const getCurrentGradeOptions = () => {
     if (value.category) {
-      return getUKUniversityGradesByCategory(value.category);
+      return getUKUniversityGradesByCategory(value.category).map((grade) => ({
+        value: grade.value,
+        label: grade.label,
+      }));
     }
     return [
       {
         value: "",
         label: "Select Degree Type First",
-        category: "honours" as const,
       },
     ];
   };
@@ -94,12 +97,6 @@ const UKUniversityGradeInput: React.FC<UniversityGradeProps> = ({
     });
   };
 
-  const getSelectClass = () => {
-    let baseClass = "select";
-    if (error || internalError) baseClass += " input--error";
-    return baseClass;
-  };
-
   const hasError = error || !!internalError;
   const errorMessage = typeof error === "string" ? error : internalError;
 
@@ -109,7 +106,7 @@ const UKUniversityGradeInput: React.FC<UniversityGradeProps> = ({
     const selectedGrade = gradeOptions.find(
       (grade) => grade.value === value.grade
     );
-    return selectedGrade as UKUniversityGrade;
+    return selectedGrade;
   };
 
   const selectedGradeInfo = getSelectedGradeInfo();
@@ -129,6 +126,13 @@ const UKUniversityGradeInput: React.FC<UniversityGradeProps> = ({
     }
   };
 
+  // Category options
+  const categoryOptions = [
+    { value: "honours", label: "Honours Degree" },
+    { value: "ordinary", label: "Ordinary Degree" },
+    { value: "postgraduate", label: "Postgraduate" },
+  ];
+
   return (
     <div className="form-group">
       {label && (
@@ -141,54 +145,35 @@ const UKUniversityGradeInput: React.FC<UniversityGradeProps> = ({
       <div className="uk-university-grade-container">
         {/* Degree Type Selection */}
         <div className="uk-university-grade__category">
-          <label
-            htmlFor={`${id}-category`}
-            className="uk-university-grade__label"
-          >
-            Degree Type
-            {required && <span className="required-asterisk">*</span>}
-          </label>
-          <select
+          <Select
             id={`${id}-category`}
             name={`${name}-category`}
-            className={getSelectClass()}
+            label="Degree Type"
             value={value.category || ""}
             onChange={handleCategoryChange}
+            options={categoryOptions}
+            placeholder="Select Degree Type"
             disabled={disabled}
             required={required}
-          >
-            <option value="">Select Degree Type</option>
-            <option value="honours">Honours Degree</option>
-            <option value="ordinary">Ordinary Degree</option>
-            <option value="postgraduate">Postgraduate</option>
-          </select>
+            error={hasError}
+          />
         </div>
 
         {/* Grade Selection */}
         {value.category && (
           <div className="uk-university-grade__grade">
-            <label
-              htmlFor={`${id}-grade`}
-              className="uk-university-grade__label"
-            >
-              University Classification
-              {required && <span className="required-asterisk">*</span>}
-            </label>
-            <select
+            <Select
               id={`${id}-grade`}
               name={`${name}-grade`}
-              className={getSelectClass()}
+              label="University Classification"
               value={value.grade}
               onChange={handleGradeChange}
+              options={getCurrentGradeOptions()}
+              placeholder="Select Grade"
               disabled={disabled}
               required={required}
-            >
-              {getCurrentGradeOptions().map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+              error={hasError}
+            />
           </div>
         )}
       </div>

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { gcseGrades, getGCSEGradeLabel } from "../../../data/gcseGrades";
-import { gcseSubjects, getGCSESubjectLabel } from "../../../data/gsceSubjects";
+import { gcseGrades } from "../../../data/gcseGrades";
+import { gcseSubjects } from "../../../data/gcseSubjects";
+
+import Select, { type SelectOptGroup } from "../Select";
 
 export interface GCSEGradeValue {
   subject: string;
@@ -74,12 +76,6 @@ const GCSEGrade: React.FC<GCSEGradeProps> = ({
     });
   };
 
-  const getSelectClass = () => {
-    let baseClass = "select";
-    if (error || internalError) baseClass += " input--error";
-    return baseClass;
-  };
-
   const hasError = error || !!internalError;
   const errorMessage = typeof error === "string" ? error : internalError;
 
@@ -113,14 +109,31 @@ const GCSEGrade: React.FC<GCSEGradeProps> = ({
   }, {} as Record<string, typeof gcseSubjects>);
 
   const categoryLabels = {
-    core: "Core Subjects",
     sciences: "Sciences",
+    mathematics: "Mathematics",
     humanities: "Humanities",
     languages: "Languages",
     arts: "Arts & Creative",
     practical: "Practical & Technical",
     business: "Business & Economics",
   };
+
+  // Prepare optgroups for subject select
+  const subjectOptGroups: SelectOptGroup[] = Object.entries(categoryLabels)
+    .map(([category, categoryLabel]) => ({
+      label: categoryLabel,
+      options: (subjectsByCategory[category] || []).map((subject) => ({
+        value: subject.value,
+        label: subject.label,
+      })),
+    }))
+    .filter((group) => group.options.length > 0);
+
+  // Prepare options for grade select
+  const gradeOptions = gcseGrades.map((grade) => ({
+    value: grade.value,
+    label: grade.label,
+  }));
 
   return (
     <div className="form-group">
@@ -132,56 +145,34 @@ const GCSEGrade: React.FC<GCSEGradeProps> = ({
       <div className="gcse-grade-container">
         {/* Subject Selection */}
         <div className="gcse-grade__subject">
-          <label htmlFor={`${id}-subject`} className="gcse-grade__label">
-            GCSE Subject
-            {required && <span className="required-asterisk">*</span>}
-          </label>
-          <select
+          <Select
             id={`${id}-subject`}
             name={`${name}-subject`}
-            className={getSelectClass()}
+            label="GCSE Subject"
             value={value.subject}
             onChange={handleSubjectChange}
+            optGroups={subjectOptGroups}
+            placeholder="Select GCSE Subject"
             disabled={disabled}
             required={required}
-          >
-            <option value="">Select GCSE Subject</option>
-            {Object.entries(categoryLabels).map(
-              ([category, categoryLabel]) =>
-                subjectsByCategory[category] && (
-                  <optgroup key={category} label={categoryLabel}>
-                    {subjectsByCategory[category].map((subject) => (
-                      <option key={subject.value} value={subject.value}>
-                        {subject.label}
-                      </option>
-                    ))}
-                  </optgroup>
-                )
-            )}
-          </select>
+            error={hasError}
+          />
         </div>
 
         {/* Grade Selection */}
         <div className="gcse-grade__grade">
-          <label htmlFor={`${id}-grade`} className="gcse-grade__label">
-            GCSE Grade (9-1 Scale)
-            {required && <span className="required-asterisk">*</span>}
-          </label>
-          <select
+          <Select
             id={`${id}-grade`}
             name={`${name}-grade`}
-            className={getSelectClass()}
+            label="GCSE Grade (9-1 Scale)"
             value={value.grade}
             onChange={handleGradeChange}
+            options={gradeOptions}
+            placeholder="Select Grade"
             disabled={disabled}
             required={required}
-          >
-            {gcseGrades.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+            error={hasError}
+          />
         </div>
       </div>
 

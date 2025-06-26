@@ -4,6 +4,7 @@ import Textarea from "../components/inputComponents/Textarea";
 import Select from "../components/inputComponents/Select";
 import Checkbox from "../components/inputComponents/Checkbox";
 import Radio from "../components/inputComponents/Radio";
+import SearchableDropdown from "../components/inputComponents/searchableDropdown";
 import Email from "../components/inputComponents/Email";
 import Password from "../components/inputComponents/Password";
 import TextInput from "../components/inputComponents/TextInput";
@@ -27,29 +28,28 @@ import {
   type DateValue,
   type MonthValue,
 } from "../components/inputComponents/datePickers";
-import Country from "../components/inputComponents/Country";
+import Country from "../components/inputComponents/personalInfo/Country";
 import type { CountryType } from "../data/countries";
 import PhoneNumber from "../components/inputComponents/Phonenumber";
 import Address, {
   type AddressValue,
 } from "../components/inputComponents/Address";
-import University from "../components/inputComponents/University";
+import University from "../components/inputComponents/academicComponents/University";
 import UniversityMajor, {
   type UniversityMajorValue,
-} from "../components/inputComponents/UniversityMajor";
+} from "../components/inputComponents/academicComponents/UniversityMajor";
 
 // Import individual grade components
 // Fixed imports - separate component imports from type imports
-import GCSEGrade from "../components/inputComponents/academicGrades/GCSEGrade";
-import ALevelGrade from "../components/inputComponents/academicGrades/ALevelGrade";
-import GPAGrade from "../components/inputComponents/academicGrades/GPAGrade";
-import UKUniversityGradeInput from "../components/inputComponents/academicGrades/UKUniversityGradeInput";
-
+import GCSEGrade from "../components/inputComponents/academicComponents/GCSEGrade";
+import ALevelGrade from "../components/inputComponents/academicComponents/ALevelGrade";
+import GPAGrade from "../components/inputComponents/academicComponents/GPAGrade";
+import UKUniversityGradeInput from "../components/inputComponents/academicComponents/UKUniversityGradeInput";
 // Type-only imports
-import type { GCSEGradeValue } from "../components/inputComponents/academicGrades/GCSEGrade";
-import type { ALevelGradeValue } from "../components/inputComponents/academicGrades/ALevelGrade";
-import type { GPAGradeValue } from "../components/inputComponents/academicGrades/GPAGrade";
-import type { UKUniversityGradeValue } from "../components/inputComponents/academicGrades/UKUniversityGradeInput";
+import type { GCSEGradeValue } from "../components/inputComponents/academicComponents/GCSEGrade";
+import type { ALevelGradeValue } from "../components/inputComponents/academicComponents/ALevelGrade";
+import type { GPAGradeValue } from "../components/inputComponents/academicComponents/GPAGrade";
+import type { UKUniversityGradeValue } from "../components/inputComponents/academicComponents/UKUniversityGradeInput";
 
 const Components = () => {
   // State for interactive components
@@ -176,19 +176,42 @@ const Components = () => {
               <Button text="Disabled Button" disabled />
               <Button text="Small Button" size="small" />
               <Button text="Large Button" size="large" />
-              <Button text="Full Width Button" fullWidth />
             </div>
           </Card>
+          <h2>Radio Components</h2>
+          <div className="component-section">
+            <Card title="Enhanced Radio Components">
+              <div className="radio-group">
+                <Radio
+                  id="radio-default-1"
+                  name="radioDefault"
+                  value="option1"
+                  label="Default Radio Option 1"
+                  checked={radioValue === "option1"}
+                  onChange={(e) => setRadioValue(e.target.value)}
+                />
+                <Radio
+                  id="radio-default-2"
+                  name="radioDefault"
+                  value="option2"
+                  label="Default Radio Option 2"
+                  description="Description can be added"
+                  checked={radioValue === "option2"}
+                  onChange={(e) => setRadioValue(e.target.value)}
+                />
+              </div>
+            </Card>
+          </div>
           <Religion
             id="religion"
             name="religion"
             label="Religion"
+            searchable={true}
+            showCategories={true}
+            placeholder="Find your religion"
             value={religion}
             onChange={setReligion}
             required
-            searchable
-            showCategories
-            placeholder="Search and select your religion"
             onValidationChange={(isValid, errorMessage) => {
               setIsReligionValid(isValid);
               console.log("Religion validation:", isValid, errorMessage);
@@ -198,12 +221,12 @@ const Components = () => {
             id="ethnicity"
             name="ethnicity"
             label="Ethnicity"
+            searchable={true}
+            showCategories={true}
+            placeholder="Search and select your ethnicity"
             value={ethnicity}
             onChange={setEthnicity}
             required
-            searchable
-            showCategories
-            placeholder="Search and select your ethnicity"
             onValidationChange={(isValid, errorMessage) => {
               setIsEthnicityValid(isValid);
               console.log("Ethnicity validation:", isValid, errorMessage);
@@ -412,7 +435,7 @@ const Components = () => {
               options={selectOptions}
             />
 
-            <div className="form-row">
+            <div className="form-group">
               <Checkbox
                 id="checkbox1"
                 name="checkboxOption"
@@ -420,25 +443,6 @@ const Components = () => {
                 checked={checkboxValue}
                 onChange={(e) => setCheckboxValue(e.target.checked)}
               />
-
-              <div>
-                <Radio
-                  id="radio1"
-                  name="radioGroup"
-                  value="option1"
-                  label="Radio Option 1"
-                  checked={radioValue === "option1"}
-                  onChange={(e) => setRadioValue(e.target.value)}
-                />
-                <Radio
-                  id="radio2"
-                  name="radioGroup"
-                  value="option2"
-                  label="Radio Option 2"
-                  checked={radioValue === "option2"}
-                  onChange={(e) => setRadioValue(e.target.value)}
-                />
-              </div>
             </div>
             <University
               id="university"

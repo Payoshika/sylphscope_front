@@ -28,7 +28,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
         disabled={disabled}
       />
       <span className="checkmark"></span>
-      {label}
+      <span>{label}</span>
     </label>
   );
 };
