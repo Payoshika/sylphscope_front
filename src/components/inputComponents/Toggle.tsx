@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 
-export type YesNoValue = "yes" | "no" | "";
+export type ToggleValue = "yes" | "no" | "";
 
-interface YesNoProps {
+interface ToggleProps {
   id: string;
   name: string;
   label: string;
   question?: string;
-  value: YesNoValue;
-  onChange: (value: YesNoValue) => void;
+  value: ToggleValue;
+  onChange: (value: ToggleValue) => void;
   disabled?: boolean;
   error?: boolean | string;
   required?: boolean;
@@ -23,7 +23,7 @@ interface YesNoProps {
   className?: string;
 }
 
-const YesNo: React.FC<YesNoProps> = ({
+const Toggle: React.FC<ToggleProps> = ({
   id,
   name,
   label,
@@ -60,7 +60,7 @@ const YesNo: React.FC<YesNoProps> = ({
 
   const handleToggleChange = () => {
     if (disabled) return;
-    const newValue: YesNoValue = value === "yes" ? "no" : "yes";
+    const newValue: ToggleValue = value === "yes" ? "no" : "yes";
     onChange(newValue);
   };
 
@@ -100,9 +100,7 @@ const YesNo: React.FC<YesNoProps> = ({
               hasError ? "yes-no-toggle__slider--error" : ""
             } ${disabled ? "yes-no-toggle__slider--disabled" : ""}`}
           >
-            <span className="yes-no-toggle__label">
-              {value === "yes" ? yesLabel : value === "no" ? noLabel : ""}
-            </span>
+            {/* Removed the label span - just empty slider */}
           </div>
         </div>
 
@@ -133,10 +131,10 @@ const YesNo: React.FC<YesNoProps> = ({
   );
 };
 
-export default YesNo;
+export default Toggle;
 
 // Helper functions for external use
-export const getYesNoLabel = (value: YesNoValue): string => {
+export const getToggleLabel = (value: ToggleValue): string => {
   switch (value) {
     case "yes":
       return "Yes";
@@ -147,11 +145,11 @@ export const getYesNoLabel = (value: YesNoValue): string => {
   }
 };
 
-export const isYesSelected = (value: YesNoValue): boolean => value === "yes";
-export const isNoSelected = (value: YesNoValue): boolean => value === "no";
+export const isYesSelected = (value: ToggleValue): boolean => value === "yes";
+export const isNoSelected = (value: ToggleValue): boolean => value === "no";
 
-// Factory function to create YesNo configurations
-export const createYesNoConfig = (config: {
+// Factory function to create Toggle configurations
+export const createToggleConfig = (config: {
   id: string;
   name: string;
   label: string;

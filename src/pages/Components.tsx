@@ -20,7 +20,7 @@ import Gender from "../components/inputComponents/personalInfo/Gender";
 import TuitionfeeStatus, {
   type TuitionfeeStatusValue,
 } from "../components/inputComponents/personalInfo/TuitionfeeStatus";
-import YesNo, { type YesNoValue } from "../components/inputComponents/YesNo";
+import Toggle, { type ToggleValue } from "../components/inputComponents/Toggle";
 
 import {
   DOBPicker,
@@ -54,11 +54,11 @@ import type { UKUniversityGradeValue } from "../components/inputComponents/acade
 
 const Components = () => {
   // State for interactive components
-  const [yesNoRadio, setYesNoRadio] = useState<YesNoValue>("");
-  const [yesNoToggle, setYesNoToggle] = useState<YesNoValue>("");
-  const [yesNoButtons, setYesNoButtons] = useState<YesNoValue>("");
-  const [isYesNoValid, setIsYesNoValid] = useState(false);
-  const [termsAgreement, setTermsAgreement] = useState<YesNoValue>("");
+  const [toggleRadio, setToggleRadio] = useState<ToggleValue>("");
+  const [toggleSwitch, setToggleSwitch] = useState<ToggleValue>("");
+  const [toggleButtons, setToggleButtons] = useState<ToggleValue>("");
+  const [isToggleValid, setIsToggleValid] = useState(false);
+  const [twoFactorAuth, setTwoFactorAuth] = useState<ToggleValue>("");
 
   const [selectedCountry, setSelectedCountry] = useState<string>("GB");
   const [isCountryValid, setIsCountryValid] = useState(false);
@@ -276,19 +276,18 @@ const Components = () => {
         </section>
 
         <section className="component-section">
-          <h2>Yes/No Components</h2>
-          <Card title="Yes/No Variants">
-            <YesNo
-              id="terms-agreement"
-              name="termsAgreement"
-              label="Terms and Conditions"
-              question="Do you agree to our Terms and Conditions?"
-              value={termsAgreement}
-              onChange={setTermsAgreement}
-              required
-              yesLabel="I Agree"
-              noLabel="I Decline"
-              helpText="By agreeing, you accept our terms of service and privacy policy."
+          <h2>Toggle Components</h2>
+          <Card title="Toggle Variants">
+            <Toggle
+              id="two-factor-authentication"
+              name="two-factor-authentication"
+              label="Two Factor Authentication"
+              question="Enable 2 Factor Authentication?"
+              value={twoFactorAuth}
+              onChange={setTwoFactorAuth}
+              yesLabel="Yes"
+              noLabel="No"
+              helpText="Two Factor Authentication"
               onValidationChange={(isValid, errorMessage) => {
                 console.log("Terms validation:", isValid, errorMessage);
               }}
