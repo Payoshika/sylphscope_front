@@ -1,0 +1,319 @@
+/* box sizing */
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* base font */ /* 1 rem = 10px; 10px/16px = 62.5% */
+  font-size: 62.5%;
+  font-family: "Helvetica", "Inter";
+}
+
+body {
+  /* base color */
+  background-color: #fffdfa;
+  color: #3a3e46;
+}
+body img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 100%;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes loading {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.yes-no-choice {
+  width: 100%;
+}
+.yes-no-choice__question {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #3a3e46;
+  margin-bottom: 1.2rem;
+  line-height: 1.4;
+}
+.yes-no-choice__options {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+@media (max-width: 768px) {
+  .yes-no-choice__options {
+    gap: 1.5rem;
+  }
+}
+.yes-no-choice__option {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0.8rem 1.2rem;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-color: transparent;
+  min-width: 8rem;
+  justify-content: center;
+}
+.yes-no-choice--disabled .yes-no-choice__option {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.yes-no-choice__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.yes-no-choice__input:focus {
+  outline: none;
+  box-shadow: none;
+}
+.yes-no-choice__input:focus:not(:focus-visible) {
+  outline: none;
+}
+.yes-no-choice__input:focus-visible ~ .yes-no-choice__checkbox {
+  outline: 2px solid #3a3e46;
+  outline-offset: 2px;
+}
+.yes-no-choice__checkbox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 2px solid rgba(58, 62, 70, 0.2);
+  background-color: #fffdfa;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+.yes-no-choice__option:hover .yes-no-choice__checkbox {
+  border-color: #3a3e46;
+}
+.yes-no-choice__input:checked ~ .yes-no-choice__checkbox {
+  background-color: #3a3e46;
+  border-color: #3a3e46;
+}
+.yes-no-choice__checkmark-icon {
+  color: #fffdfa;
+  opacity: 1;
+  transition: all 0.2s ease;
+  animation: checkmarkSlideIn 0.3s ease-out;
+}
+.yes-no-choice__label {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #3a3e46;
+  transition: color 0.3s ease;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+.yes-no-choice__input:checked ~ .yes-no-choice__checkbox ~ .yes-no-choice__label {
+  color: #3a3e46;
+  font-weight: 600;
+}
+.yes-no-choice--disabled .yes-no-choice__label {
+  color: rgba(58, 62, 70, 0.4);
+}
+.yes-no-choice--small .yes-no-choice__question {
+  font-size: 1.3rem;
+}
+.yes-no-choice--small .yes-no-choice__options {
+  gap: 1.5rem;
+}
+.yes-no-choice--small .yes-no-choice__option {
+  padding: 0.6rem 1rem;
+  gap: 0.6rem;
+  min-width: 7rem;
+}
+.yes-no-choice--small .yes-no-choice__checkbox {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+.yes-no-choice--small .yes-no-choice__label {
+  font-size: 1.3rem;
+}
+.yes-no-choice--large .yes-no-choice__question {
+  font-size: 1.7rem;
+}
+.yes-no-choice--large .yes-no-choice__options {
+  gap: 2.5rem;
+}
+.yes-no-choice--large .yes-no-choice__option {
+  padding: 1rem 1.5rem;
+  gap: 1rem;
+  min-width: 9rem;
+}
+.yes-no-choice--large .yes-no-choice__checkbox {
+  width: 2.6rem;
+  height: 2.6rem;
+}
+.yes-no-choice--large .yes-no-choice__label {
+  font-size: 1.7rem;
+}
+.yes-no-choice--error .yes-no-choice__checkbox {
+  border-color: #c62828;
+}
+.yes-no-choice__input:checked ~ .yes-no-choice--error .yes-no-choice__checkbox {
+  background-color: #c62828;
+  border-color: #c62828;
+}
+.yes-no-choice--error .yes-no-choice__option:hover .yes-no-choice__checkbox {
+  border-color: #c62828;
+}
+.yes-no-choice--error .yes-no-choice__input:focus-visible ~ .yes-no-choice__checkbox {
+  outline-color: #c62828;
+}
+.yes-no-choice--disabled .yes-no-choice__checkbox {
+  background-color: rgba(58, 62, 70, 0.1);
+  border-color: rgba(58, 62, 70, 0.4);
+}
+.yes-no-choice__input:checked ~ .yes-no-choice--disabled .yes-no-choice__checkbox {
+  background-color: rgba(58, 62, 70, 0.4);
+  border-color: rgba(58, 62, 70, 0.4);
+}
+.yes-no-choice--disabled .yes-no-choice__checkmark-icon {
+  color: #fffdfa;
+  opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+  .yes-no-choice__question {
+    font-size: 1.4rem;
+  }
+  .yes-no-choice__options {
+    gap: 1rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .yes-no-choice__option {
+    padding: 1rem;
+    justify-content: flex-start;
+    min-width: auto;
+    width: 100%;
+  }
+  .yes-no-choice__checkbox {
+    width: 2rem;
+    height: 2rem;
+  }
+  .yes-no-choice__label {
+    font-size: 1.4rem;
+  }
+  .yes-no-choice--small .yes-no-choice__question {
+    font-size: 1.2rem;
+  }
+  .yes-no-choice--small .yes-no-choice__option {
+    padding: 0.8rem;
+  }
+  .yes-no-choice--small .yes-no-choice__checkbox {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+  .yes-no-choice--small .yes-no-choice__label {
+    font-size: 1.2rem;
+  }
+  .yes-no-choice--large .yes-no-choice__question {
+    font-size: 1.6rem;
+  }
+  .yes-no-choice--large .yes-no-choice__option {
+    padding: 1.2rem;
+  }
+  .yes-no-choice--large .yes-no-choice__checkbox {
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+  .yes-no-choice--large .yes-no-choice__label {
+    font-size: 1.5rem;
+  }
+}
+@keyframes checkmarkSlideIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (prefers-contrast: high) {
+  .yes-no-choice__checkbox {
+    border-width: 3px;
+  }
+  .yes-no-choice__input:checked ~ .yes-no-choice__checkbox {
+    outline: 2px solid #fffdfa;
+    outline-offset: -2px;
+  }
+  .yes-no-choice__checkmark-icon {
+    stroke-width: 3;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .yes-no-choice__option, .yes-no-choice__checkbox, .yes-no-choice__checkmark-icon, .yes-no-choice__label {
+    transition: none !important;
+    animation: none !important;
+  }
+  .yes-no-choice__checkmark-icon {
+    animation: none !important;
+  }
+}
+@media print {
+  .yes-no-choice__input:checked ~ .yes-no-choice__checkbox {
+    background-color: #000 !important;
+    border-color: #000 !important;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+  .yes-no-choice__checkmark-icon {
+    color: white !important;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+  .yes-no-choice__option {
+    border: 1px solid #000;
+    background: white;
+  }
+}
+.yes-no-choice__input:focus-visible ~ .yes-no-choice__checkbox {
+  outline: 2px solid rgba(58, 62, 70, 0.5);
+  outline-offset: 2px;
+}
+
+.yes-no-choice__option:hover:not(.yes-no-choice--disabled .yes-no-choice__option) .yes-no-choice__label {
+  color: #3a3e46;
+}
+
+.checkmark-icon {
+  display: block;
+  shape-rendering: geometricPrecision;
+}
+.checkmark-icon.yes-no-choice__checkmark-icon {
+  flex-shrink: 0;
+}/*# sourceMappingURL=yesnochoice.css.map */

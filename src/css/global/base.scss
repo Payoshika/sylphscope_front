@@ -1,6 +1,17 @@
 // Core Color Variables - Minimal Color Palette
 $background-color: #fffdfa;
 $text-color: #3a3e46;
+$provider-color: #578e7e;
+$student-color: #3674b5;
+
+.provider-color{
+  background-color : $provider-color;
+  color : $background-color;
+}
+.student-color{
+  background-color : $student-color;
+  color : $background-color;
+}
 
 // Semantic Colors (derived from base colors)
 $primary-color: $text-color;

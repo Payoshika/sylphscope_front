@@ -1,0 +1,243 @@
+@charset "UTF-8";
+/* box sizing */
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* base font */ /* 1 rem = 10px; 10px/16px = 62.5% */
+  font-size: 62.5%;
+  font-family: "Helvetica", "Inter";
+}
+
+body {
+  /* base color */
+  background-color: #fffdfa;
+  color: #3a3e46;
+}
+body img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 100%;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes loading {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.address-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.address-container--valid .input {
+  border-color: #2d7d32;
+}
+.address-container--valid .input:focus {
+  border-color: #2d7d32;
+  box-shadow: 0 0 0 2px rgba(45, 125, 50, 0.2);
+}
+.address-container--valid .address-country-indicator {
+  background-color: rgba(45, 125, 50, 0.1);
+  border-color: rgba(45, 125, 50, 0.3);
+  color: #2d7d32;
+}
+.address-container--loading .input {
+  background-image: linear-gradient(90deg, transparent, rgba(58, 62, 70, 0.1), transparent);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+.address-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.address-field--flex {
+  flex: 1;
+}
+
+.address-field-label {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #3a3e46;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.address-field-label .required-asterisk {
+  color: #c62828;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+.address-field-label .optional-text {
+  font-size: 1.1rem;
+  color: rgba(58, 62, 70, 0.4);
+  font-weight: 400;
+  font-style: italic;
+}
+
+.address-country-indicator {
+  font-size: 1.2rem;
+  color: rgba(58, 62, 70, 0.6);
+  font-weight: 400;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.8rem;
+  background-color: rgba(58, 62, 70, 0.1);
+  border-radius: 4px;
+  border: 1px solid rgba(58, 62, 70, 0.2);
+}
+
+.address-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+@media (max-width: 768px) {
+  .address-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.address-field .input {
+  width: 100%;
+  padding: 1.2rem 1.6rem;
+  font-size: 1.5rem;
+  font-family: inherit;
+  border: 2px solid rgba(58, 62, 70, 0.2);
+  border-radius: 6px;
+  background-color: #fffdfa;
+  color: #3a3e46;
+  transition: all 0.3s ease;
+  min-height: 4.8rem;
+  box-sizing: border-box;
+}
+.address-field .input::-moz-placeholder {
+  color: rgba(58, 62, 70, 0.4);
+  font-style: italic;
+}
+.address-field .input::placeholder {
+  color: rgba(58, 62, 70, 0.4);
+  font-style: italic;
+}
+.address-field .input:focus {
+  outline: none;
+  border-color: #3a3e46;
+  box-shadow: 0 0 7px rgba(58, 62, 70, 0.4);
+}
+.address-field .input:disabled {
+  background-color: rgba(58, 62, 70, 0.1);
+  color: rgba(58, 62, 70, 0.4);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.address-field .input:hover:not(:disabled):not(:focus) {
+  border-color: rgba(58, 62, 70, 0.6);
+}
+.address-field .input--error {
+  border-color: #c62828;
+}
+.address-field .input--error:focus {
+  border-color: #c62828;
+  box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.2);
+}
+@media (max-width: 768px) {
+  .address-field .input {
+    padding: 1rem 1.2rem;
+    font-size: 1.4rem;
+    min-height: 4.4rem;
+  }
+  .address-field .input.has-dropdown {
+    padding-right: 3.5rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .address-field .input {
+    transition: none !important;
+    animation: none !important;
+  }
+  .address-field .input, .address-field .input::before, .address-field .input::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+@media (prefers-contrast: high) {
+  .address-field .input {
+    border-width: 3px;
+  }
+}
+@media print {
+  .address-field .input {
+    border: 1px solid #000;
+    background: white;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+}
+
+.field-error-message {
+  font-size: 1.2rem;
+  color: #c62828;
+  font-weight: 500;
+  margin-top: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.field-error-message::before {
+  content: "⚠️";
+  font-size: 1.2rem;
+}
+
+.address-container + .error-message {
+  margin-top: 1rem;
+  font-size: 1.3rem;
+  color: #c62828;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  background-color: rgba(198, 40, 40, 0.1);
+  border: 1px solid rgba(198, 40, 40, 0.3);
+  border-radius: 6px;
+}
+.address-container + .error-message::before {
+  content: "⚠️";
+  font-size: 1.4rem;
+}
+
+@media (max-width: 768px) {
+  .address-field-label {
+    font-size: 1.2rem;
+  }
+  .field-error-message {
+    font-size: 1.1rem;
+  }
+  .address-country-indicator {
+    font-size: 1.1rem;
+    padding: 0.2rem 0.6rem;
+  }
+}/*# sourceMappingURL=address.css.map */

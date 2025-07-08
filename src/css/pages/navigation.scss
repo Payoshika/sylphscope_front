@@ -11,6 +11,14 @@
 }
 
 .nav-brand {
+  @include RowJustifyStartFlexbox;
+  align-items: center;
+  gap: 1rem;
+  .user-type {
+    margin-bottom: 0;
+    border-radius : 8px;
+    @include Padding0_5rem;   
+  }
   h3 {
     color: $text-color;
   }

@@ -1,0 +1,66 @@
+/* box sizing */
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* base font */ /* 1 rem = 10px; 10px/16px = 62.5% */
+  font-size: 62.5%;
+  font-family: "Helvetica", "Inter";
+}
+
+body {
+  /* base color */
+  background-color: #fffdfa;
+  color: #3a3e46;
+}
+body img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 100%;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.list__item {
+  padding: 1.2rem 1.6rem;
+  border-bottom: 1px solid rgba(58, 62, 70, 0.2);
+  transition: background-color 0.2s ease;
+}
+.list__item:hover {
+  background-color: rgba(58, 62, 70, 0.1);
+}
+.list__item:last-child {
+  border-bottom: none;
+}
+
+.list--bordered {
+  border: 1px solid rgba(58, 62, 70, 0.2);
+  border-radius: 6px;
+}
+
+.list--spaced .list__item {
+  margin-bottom: 1rem;
+  padding: 1.6rem;
+  border: 1px solid rgba(58, 62, 70, 0.2);
+  border-radius: 6px;
+  border-bottom: 1px solid rgba(58, 62, 70, 0.2);
+}
+
+.list-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+@media (max-width: 768px) {
+  .list-grid {
+    grid-template-columns: 1fr;
+  }
+}/*# sourceMappingURL=list.css.map */

@@ -17,12 +17,19 @@ const Navigation: React.FC = () => {
     }
   };
 
+  const role = user?.roles?.[0]
+    ? user.roles[0].replace(/^ROLE_/, "").toLowerCase()
+    : "";
+
   return (
     <nav className="card">
       <div className="card__body">
         <div className="nav-container">
           <div className="nav-brand">
-            <h2 className="no-margin">SylphScope</h2>
+            <h2 className="no-margin">Fast & Rigorous</h2>
+            {user && role && (
+              <p className={`user-type ${role}-color`}>for {role}</p>
+            )}
           </div>
           <div className="nav-links">
             {isAuthenticated ? (
