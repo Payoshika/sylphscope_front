@@ -19,6 +19,7 @@ export interface RegisterRequest {
   email: string;
   password: string;
   confirmPassword: string;
+  userRole: string;
 }
 
 export interface MfaSetupInfo {

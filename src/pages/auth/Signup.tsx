@@ -7,6 +7,8 @@ import { useToast } from "../../contexts/ToastContext";
 import type { RegisterRequest } from "../../types/auth";
 import AuthCard from "../../components/AuthCard";
 import FormInput from "../../components/FormInput";
+import Radio from "../../components/inputComponents/Radio";
+
 import SubmitButton from "../../components/SubmitButton";
 import GoogleOAuthButton from "../../components/GoogleOAuthButton";
 import Alert from "../../components/Alert";
@@ -64,6 +66,7 @@ const Signup: React.FC = () => {
       email: "",
       password: "",
       confirmPassword: "",
+      userRole: "",
     } as RegisterRequest,
     validate: validateSignupForm,
   });
@@ -71,7 +74,6 @@ const Signup: React.FC = () => {
   const onSubmit = async (formData: RegisterRequest) => {
     try {
       const response = await AuthService.register(formData);
-
       if (response.success) {
         showSuccess(
           "Your account has been created successfully!",
@@ -157,7 +159,32 @@ const Signup: React.FC = () => {
           showPassword={showConfirmPassword}
           onTogglePassword={toggleConfirmPassword}
         />
-
+        <div className="form-group">
+          <label className="form-label">Choose your role</label>
+          <div className="radio-group">
+            <Radio
+              id="role-student"
+              name="userRole"
+              value="STUDENT"
+              label="Student"
+              checked={values.userRole === "STUDENT"}
+              onChange={handleChange}
+              disabled={isSubmitting}
+              error={errors.role}
+            />
+            <Radio
+              id="role-provider"
+              name="userRole"
+              value="PROVIDER"
+              label="Provider"
+              checked={values.userRole === "PROVIDER"}
+              onChange={handleChange}
+              disabled={isSubmitting}
+              error={errors.role}
+            />
+          </div>
+          {errors.userRole && <div className="error-message">{errors.userRole}</div>}
+        </div>
         <SubmitButton
           isLoading={isSubmitting}
           loadingText="Creating Account..."
