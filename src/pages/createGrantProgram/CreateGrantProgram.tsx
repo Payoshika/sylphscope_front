@@ -24,7 +24,7 @@ const initialGrantProgram: GrantProgram = {
     schedule: {} as Schedule,
     questionIds: [],
     questionGroupsIds: [],
-};
+}; 
 
 const CreateGrantProgram = () => {
     const [grantProgram, setGrantProgram] = useState<GrantProgram>(initialGrantProgram);
