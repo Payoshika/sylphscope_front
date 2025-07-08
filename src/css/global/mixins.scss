@@ -12,6 +12,7 @@
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+  gap: 2rem;
 }
 
 @mixin RowJustifyStartFlexbox {
@@ -19,6 +20,7 @@
   justify-content: start;
   align-items: center;
   flex-wrap: wrap;
+  gap: 2rem;
 }
 
 @mixin RowJustifySpaceBetweenFlexbox {
@@ -26,6 +28,7 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  gap: 2rem;
 }
 
 @mixin ColJustifyCenterFlexbox {
@@ -34,14 +37,16 @@
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+  gap: 2rem;
 }
 
 @mixin ColJustifyStartFlexbox {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: start;
+  justify-content: start;
+  align-items: center;
   flex-wrap: wrap;
+  gap: 2rem;
 }
 
 // Box Shadows (using semantic colors)

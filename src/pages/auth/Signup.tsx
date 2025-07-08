@@ -170,7 +170,7 @@ const Signup: React.FC = () => {
               checked={values.userRole === "STUDENT"}
               onChange={handleChange}
               disabled={isSubmitting}
-              error={errors.role}
+              error={!!errors.userRole}
             />
             <Radio
               id="role-provider"
@@ -180,7 +180,7 @@ const Signup: React.FC = () => {
               checked={values.userRole === "PROVIDER"}
               onChange={handleChange}
               disabled={isSubmitting}
-              error={errors.role}
+              error={!!errors.userRole}
             />
           </div>
           {errors.userRole && <div className="error-message">{errors.userRole}</div>}

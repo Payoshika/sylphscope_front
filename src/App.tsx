@@ -17,6 +17,7 @@ import Navigation from "./pages/Navigation";
 import ProtectedLayout from "./pages/ProtectedLayout";
 import ToastContainer from "./components/ToastItem";
 import MfaVerification from "./components/MfaVarification";
+import CreateGrantProgram from "./pages/createGrantProgram/CreateGrantProgram"
 
 function App() {
   return (
@@ -34,6 +35,9 @@ function App() {
             {/* Protected routes - all nested under ProtectedLayout */}
             <Route path="/" element={<ProtectedLayout />}>
               <Route path="settings" element={<Settings />} />
+            </Route>
+            <Route path="/grant" element={<ProtectedLayout />}>
+              <Route path="create/*" element={<CreateGrantProgram />} />
             </Route>
             {/* Catch all - redirect to signin */}
             <Route path="*" element={<Navigate to="/signin" replace />} />

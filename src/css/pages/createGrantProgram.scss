@@ -1,0 +1,56 @@
+@use "../global/base" as *;
+@use "../global/mixins" as *;
+
+.grant-create-layout {
+  min-height: 100vh;
+  @include RowJustifyStartFlexbox;
+  align-items: stretch;
+}
+
+.grant-nav {
+  @include ColJustifyStartFlexbox;
+  @include Padding2rem;
+  @include Box;
+  @include BoxShadow;
+}
+
+.grant-nav__item {
+  padding: 1rem 1.5rem;
+  border-radius: 6px;
+  color: #3a3e46;
+  text-decoration: none;
+  transition: 0.2s;
+  p {
+    margin-bottom: 0;
+  }
+  &--active {
+    background: $text-color;
+    color: $background-color;
+  }
+}
+
+.grant-create-content {
+  flex: 1;
+  padding: 2rem 3rem;
+  @include Box;
+  @include BoxShadow;
+}
+
+@include smartphone {
+  .grant-create-layout {
+    flex-direction: column;
+  }
+  .grant-nav {
+    flex-direction: row;
+    min-width: 0;
+    border-right: none;
+    border-bottom: 1px solid #eee;
+    padding: 1rem 0.5rem;
+    gap: 0.5rem;
+    justify-content: space-around;
+  }
+  .grant-create-content {
+    padding: 1rem;
+  }
+
+}
