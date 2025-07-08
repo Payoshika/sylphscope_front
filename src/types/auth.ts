@@ -9,8 +9,9 @@ export interface LoginResponse {
   type: string;         
   id: string;
   username: string;
-  email?: string;       // Optional, if email is not always provided
+  email?: string;       
   roles: string[];
+  mfaEnabled: boolean;
 }
 
 export interface RegisterRequest {
