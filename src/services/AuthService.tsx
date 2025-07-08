@@ -56,7 +56,7 @@ class AuthService {
           username: response.data.username,
           email: response.data.email || "",
           roles: response.data.roles,
-          mfaEnabled: response.data.mfaEnabled, // Add this if available
+          mfaEnabled: response.data.mfaEnabled,
         };
         console.log("👤 Created user object:", user);
         tokenManager.setUser(user);
@@ -288,9 +288,9 @@ class AuthService {
         const user: User = {
           id: parseInt(response.data.id),
           username: response.data.username,
-          email: response.data.email,
+          email: response.data.email || "",
           roles: response.data.roles,
-          mfaEnabled: true, // User has MFA enabled
+          mfaEnabled: true,
         };
 
         tokenManager.setUser(user);
