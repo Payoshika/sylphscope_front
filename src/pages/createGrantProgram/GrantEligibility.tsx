@@ -5,7 +5,7 @@ import type { GrantProgram } from "../../types/grantProgram";
 import { useNavigate } from "react-router-dom";
 import TitleAndHeadLine from "./TitleAndHeadLine";
 
-interface GrantDescriptionProps {
+interface GrantEligibilityProps {
   id: string;
   name: string;
   grantProgram: GrantProgram;
@@ -15,7 +15,7 @@ interface GrantDescriptionProps {
   required?: boolean;
 }
 
-const GrantDescription: React.FC<GrantDescriptionProps> = ({
+const GrantEligibility: React.FC<GrantEligibilityProps> = ({
   id,
   name,
   grantProgram,
@@ -30,7 +30,7 @@ const GrantDescription: React.FC<GrantDescriptionProps> = ({
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onGrantProgramChange({ ...grantProgram, description: e.target.value });
+    onGrantProgramChange({ ...grantProgram, eligibility: e.target.value });
     setSubmitError(null);
     setSubmitSuccess(null);
   };
@@ -40,18 +40,17 @@ const GrantDescription: React.FC<GrantDescriptionProps> = ({
     setIsSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(null);
-    console.log(grantProgram);
     try {
       if (grantProgram.id && grantProgram.id !== "") {
         await onUpdateGrant(grantProgram.id, grantProgram);
-        setSubmitSuccess("Grant description updated successfully.");
-        navigate("../eligibility");
+        setSubmitSuccess("Eligibility criteria updated successfully.");
+        navigate("../selection");
       } else {
-        setSubmitError("Grant must be created before adding a description.");
+        setSubmitError("Grant must be created before adding eligibility criteria.");
       }
     } catch (err: any) {
       console.error(err);
-      setSubmitError("Failed to update grant description. Please try again.");
+      setSubmitError("Failed to update eligibility criteria. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -59,29 +58,17 @@ const GrantDescription: React.FC<GrantDescriptionProps> = ({
 
   return (
     <div className="content">
-        <TitleAndHeadLine title="Create Description" headline="Provide a detailed description of the grant program" provider={true} />
-        <form className="form-group" onSubmit={handleSubmit}>
-        <Textarea
-          id={id}
-          name={name}
-          label="Grant Description"
-        placeholder="Enter the grant program description"
-        value={grantProgram.description}
-        onChange={handleInputChange}
-        required={required}
-        rows={6}
-      />
-      <Button
-        text={isSubmitting ? "Saving..." : "Save Description"}
-        disabled={isSubmitting || !grantProgram.description}
-      />
-      {submitError && <div className="error-message">{submitError}</div>}
-      {submitSuccess && <div className="success-message">{submitSuccess}</div>}
-    </form>
-
+      <TitleAndHeadLine title="Create Eligibility Criteria" headline="Create Eligibility Criteria for the grant" provider={true} />
+      <form className="form-group" onSubmit={handleSubmit}>
+        <Button
+          text={isSubmitting ? "Saving..." : "Save Eligibility"}
+          disabled={isSubmitting}
+        />
+        {submitError && <div className="error-message">{submitError}</div>}
+        {submitSuccess && <div className="success-message">{submitSuccess}</div>}
+      </form>
     </div>
-    
   );
 };
 
-export default GrantDescription;
+export default GrantEligibility;

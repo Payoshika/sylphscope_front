@@ -1,6 +1,7 @@
 import GrantNav from "./GrantNav";
 import GrantName from "./GrantName";
 import GrantDescription from "./GrantDescription";
+import GrantEligibility from "./GrantEligibility";
 // Import other step components...
 import { useState } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
@@ -92,7 +93,18 @@ const CreateGrantProgram = () => {
               />
             }
           />
-          {/* Add other steps as needed */}
+          <Route
+            path="eligibility"
+            element={
+              <GrantEligibility
+                // id="eligibility"
+                // name="eligibility"
+                // grantProgram={grantProgram}
+                // onGrantProgramChange={setGrantProgram}
+                // onUpdateGrant={handleUpdateGrant}
+              />
+            }
+          />
         </Routes>
       </main>
     </div>

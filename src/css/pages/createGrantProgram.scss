@@ -12,11 +12,13 @@
   @include Padding2rem;
   @include Box;
   @include BoxShadow;
+  padding-left: 0;
+  align-items: start;
 }
 
 .grant-nav__item {
   padding: 1rem 1.5rem;
-  border-radius: 6px;
+  border-radius: 8px;
   p {color: $background-color;}
   text-decoration: none;
   transition: 0.2s;
@@ -26,13 +28,35 @@
   &--active {
     background: $text-color;
   }
+  border: none;
 }
 
 .grant-create-content {
   flex: 1;
   padding: 2rem 3rem;
+  .content{
+    width: 100%;
+    max-width: 80rem;
+    height: 100%;
+    @include Padding2rem;
+    @include ColJustifyStartFlexbox;
+  }
+  @include ColJustifyStartFlexbox;
   @include Box;
   @include BoxShadow;
+}
+
+.grant-create-headline {
+  width: 100%;
+  @include ColJustifyCenterFlexbox;
+  &__title {
+  }
+  &__text {
+    align-self: self-start;
+    margin-bottom: 0;
+    @include RowJustifyStartFlexbox;
+    gap: 1rem;
+  }
 }
 
 @include smartphone {

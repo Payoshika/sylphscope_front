@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import TextInput from "../../components/inputComponents/TextInput";
 import Button from "../../components/basicComponents/Button";
 import type { GrantProgram } from "../../types/grantProgram";
+import { useNavigate } from "react-router-dom";
+import TitleAndHeadLine from "./TitleAndHeadLine";
+
 
 interface GrantNameProps {
   id: string;
@@ -27,6 +30,7 @@ const GrantName: React.FC<GrantNameProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   // Handler for TextInput's onChange event
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,6 +54,7 @@ const GrantName: React.FC<GrantNameProps> = ({
         setSubmitSuccess("Grant name is created successfully.");
         onGrantProgramChange({ ...grantProgram, ...response.data });
       }
+      navigate("../description");
     } catch (err: any) {
         console.error(err);
         setSubmitError("Failed to save grant name. Please try again.");
@@ -59,26 +64,28 @@ const GrantName: React.FC<GrantNameProps> = ({
   };
 
   return (
-  <form className="form-group" onSubmit={handleSubmit}>
-    <TextInput
-      id={id}
-      name={name}
-      label="Grant Name"
-      placeholder="Enter the grant program name"
-      value={grantProgram.title ?? ""}
-      onChange={handleInputChange}
-      required={required}
-      error={error}
-      autoComplete="off"
-    />
-    <p>id : {grantProgram.id}</p>
-    <Button
-      text={isSubmitting ? "Saving..." : "Save Grant Name"}
-      disabled={isSubmitting || !grantProgram.title}
-    />
-    {submitError && <div className="error-message">{submitError}</div>}
-    {submitSuccess && <div className="success-message">{submitSuccess}</div>}
-  </form>
+    <div className="content">
+      <TitleAndHeadLine title="Grant Name" headline="Create a new grant program" provider={true} />
+      <form className="form-group" onSubmit={handleSubmit}>
+        <TextInput
+          id={id}
+          name={name}
+          label="Grant Name"
+          placeholder="Enter the grant program name"
+          value={grantProgram.title ?? ""}
+          onChange={handleInputChange}
+          required={required}
+          error={error}
+          autoComplete="off"
+        />
+        <Button
+          text={isSubmitting ? "Saving..." : "Save Grant Name"}
+          disabled={isSubmitting || !grantProgram.title}
+        />
+        {submitError && <div className="error-message">{submitError}</div>}
+        {submitSuccess && <div className="success-message">{submitSuccess}</div>}
+      </form>
+    </div>
   );
 };
 

@@ -3,7 +3,10 @@
 
 // Form Groups
 .form-group {
-  @include MarginBottom2rem;
+    width: 100% ;
+  @include Box;
+  @include BoxShadow;
+  @include ColJustifyCenterFlexbox;
 
   label {
     display: flex;
@@ -14,6 +17,9 @@
     color: $text-color;
     @include MarginBottom1rem;
   }
+  .form-group{
+    gap:0rem;
+  }
 }
 
 .form-label {
@@ -21,7 +27,7 @@
   font-size: 1.4rem;
   font-weight: 500;
   color: $text-color;
-  @include MarginBottom1rem;
+  align-self: start;
 }
 
 .form-row {
