@@ -3,7 +3,7 @@ import GrantName from "./GrantName";
 import { useState } from "react";
 import type { GrantProgram, Schedule } from "../../types/grantProgram";
 import { GrantStatus } from "../../types/grantProgram";
-
+import { createGrantProgram, updateGrantProgram} from "../../services/GrantProgramService";
 
 const steps = [
   { key: "grant-name", label: "Grant Name" },
@@ -15,22 +15,35 @@ const steps = [
 ];
 
 const initialGrantProgram: GrantProgram = {
-    id: "",
+    id:"",
     title: "",
     description: "",
     providerId: "",
     status: GrantStatus.DRAFT,
-    schedule: {} as Schedule,
+    schedule: {
+        applicationStartDate: null,
+        applicationEndDate: null,
+        decisionDate: null,
+        fundDisbursementDate: null
+    } as Schedule,
     questionIds: [],
-    questionGroupsIds: [],
-}; 
+    questionGroupsIds: []
+};
 
 const CreateGrantProgram = () => {
     const [grantProgram, setGrantProgram] = useState<GrantProgram>(initialGrantProgram);
     const [currentStep, setCurrentStep] = useState(steps[0].key);
-    const [grantName, setGrantName] = useState("");
     const goToStep = (stepKey: string) => setCurrentStep(stepKey);
     let StepComponent = null;
+
+    const handleCreateGrant = async (grantProgram: GrantProgram) => {
+    return createGrantProgram(grantProgram);
+    };
+
+    const handleUpdateGrant = async (id: string, grantProgram: GrantProgram) => {
+        return updateGrantProgram(id, grantProgram);
+    };
+
     switch (currentStep) {
         case "grant-name":
         StepComponent = (
@@ -39,6 +52,8 @@ const CreateGrantProgram = () => {
             name="grantName"
             grantProgram={grantProgram}
             onGrantProgramChange={setGrantProgram}
+            onCreateGrant={handleCreateGrant}
+            onUpdateGrant={handleUpdateGrant}
             />
         );
         break;

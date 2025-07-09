@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import TextInput from "../../components/inputComponents/TextInput";
 import Button from "../../components/basicComponents/Button";
-import { apiClient } from "../../utility/ApiClient";
 import type { GrantProgram } from "../../types/grantProgram";
 
 interface GrantNameProps {
@@ -9,6 +8,8 @@ interface GrantNameProps {
   name: string;
   grantProgram: GrantProgram;
   onGrantProgramChange: (updated: GrantProgram) => void;
+  onCreateGrant: (grantProgram: GrantProgram) => Promise<any>;
+  onUpdateGrant: (id: string, grantProgram: GrantProgram) => Promise<any>;
   error?: boolean | string;
   required?: boolean;
 }
@@ -18,6 +19,8 @@ const GrantName: React.FC<GrantNameProps> = ({
   name,
   grantProgram,
   onGrantProgramChange,
+  onCreateGrant,
+  onUpdateGrant,
   error = false,
   required = true,
 }) => {
@@ -37,44 +40,44 @@ const GrantName: React.FC<GrantNameProps> = ({
     setIsSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(null);
-
     try {
-      // Send the entire GrantProgram object
-      console.log(grantProgram);
-      const response = await apiClient.post("/api/grant-programs", grantProgram);
-      if (response.success) {
-        setSubmitSuccess("Grant name saved successfully!");
+      let response;
+      if (grantProgram.id && grantProgram.id !== "") {
+        response = await onUpdateGrant(grantProgram.id, grantProgram);
+        setSubmitSuccess("Grant name updated successfully.");
       } else {
-        setSubmitError(response.message || "Failed to save grant name.");
+        response = await onCreateGrant(grantProgram);
+        console.log(response);
+        setSubmitSuccess("Grant name is created successfully.");
       }
     } catch (err: any) {
-      setSubmitError(err.message || "Failed to save grant name.");
+        console.error(err);
+        setSubmitError("Failed to save grant name. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="form-group">
-      <TextInput
-        id={id}
-        name={name}
-        label="Grant Name"
-        placeholder="Enter the grant program name"
-        value={grantProgram.title}
-        onChange={handleInputChange}
-        required={required}
-        error={error}
-        autoComplete="off"
-      />
-      <Button
-        text={isSubmitting ? "Saving..." : "Save Grant Name"}
-        disabled={isSubmitting || !grantProgram.title}
-        onClick={handleSubmit}
-      />
-      {submitError && <div className="error-message">{submitError}</div>}
-      {submitSuccess && <div className="success-message">{submitSuccess}</div>}
-    </div>
+  <form className="form-group" onSubmit={handleSubmit}>
+    <TextInput
+      id={id}
+      name={name}
+      label="Grant Name"
+      placeholder="Enter the grant program name"
+      value={grantProgram.title}
+      onChange={handleInputChange}
+      required={required}
+      error={error}
+      autoComplete="off"
+    />
+    <Button
+      text={isSubmitting ? "Saving..." : "Save Grant Name"}
+      disabled={isSubmitting || !grantProgram.title}
+    />
+    {submitError && <div className="error-message">{submitError}</div>}
+    {submitSuccess && <div className="success-message">{submitSuccess}</div>}
+  </form>
   );
 };
 
