@@ -1,8 +1,7 @@
 import GrantNav from "./GrantNav";
 import GrantName from "./GrantName";
-import { Routes, Route } from "react-router-dom";
 import { useState } from "react";
-import type { GrantProgram } from "../../types/grantProgram";
+import type { GrantProgram, Schedule } from "../../types/grantProgram";
 import { GrantStatus } from "../../types/grantProgram";
 
 
