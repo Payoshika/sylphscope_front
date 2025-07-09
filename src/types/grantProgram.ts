@@ -21,6 +21,8 @@ export interface GrantProgram {
   providerId: string;
   status: GrantStatus;
   schedule: Schedule;
+  createdAt: string; 
+  updatedAt: string; 
   questionIds: string[];
   questionGroupsIds: string[];
 }

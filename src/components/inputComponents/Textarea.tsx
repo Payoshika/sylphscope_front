@@ -9,6 +9,7 @@ interface TextareaProps {
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   disabled?: boolean;
   rows?: number;
+  required?: boolean;
 }
 
 const Textarea: React.FC<TextareaProps> = ({
@@ -20,6 +21,7 @@ const Textarea: React.FC<TextareaProps> = ({
   onChange,
   disabled = false,
   rows = 4,
+  required = false,
 }) => {
   return (
     <div className="form-group">
@@ -35,6 +37,7 @@ const Textarea: React.FC<TextareaProps> = ({
         onChange={onChange}
         disabled={disabled}
         rows={rows}
+        required={required}
       />
     </div>
   );

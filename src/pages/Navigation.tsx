@@ -26,7 +26,7 @@ const Navigation: React.FC = () => {
       <div className="card__body">
         <div className="nav-container">
           <div className="nav-brand">
-            <h2 className="no-margin">Fast & Rigorous</h2>
+            <h2 className="no-margin">Figorous</h2>
             {user && role && (
               <p className={`user-type ${role}-color`}>for {role}</p>
             )}
@@ -64,7 +64,7 @@ const Navigation: React.FC = () => {
                 <Link to="/signup" className="btn btn--small">
                   Sign Up
                 </Link>
-                <Link to="/create-dev/grant" className="btn btn--small btn--ghost">
+                <Link to="/create-dev/grant/title" className="btn btn--small btn--ghost">
                   Create Dev Grant
                 </Link>
               </>

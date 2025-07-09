@@ -1,13 +1,16 @@
 import GrantNav from "./GrantNav";
 import GrantName from "./GrantName";
+import GrantDescription from "./GrantDescription";
+// Import other step components...
 import { useState } from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import type { GrantProgram, Schedule } from "../../types/grantProgram";
 import { GrantStatus } from "../../types/grantProgram";
-import { createGrantProgram, updateGrantProgram} from "../../services/GrantProgramService";
+import { createGrantProgram, updateGrantProgram } from "../../services/GrantProgramService";
 
 const steps = [
-  { key: "grant-name", label: "Grant Name" },
-  { key: "details", label: "Details" },
+  { key: "title", label: "Title" },
+  { key: "description", label: "Description" },
   { key: "eligibility", label: "Eligibility" },
   { key: "selection", label: "Selection" },
   { key: "schedule", label: "Schedule" },
@@ -15,63 +18,85 @@ const steps = [
 ];
 
 const initialGrantProgram: GrantProgram = {
-    id:"",
-    title: "",
-    description: "",
-    providerId: "",
-    status: GrantStatus.DRAFT,
-    schedule: {
-        applicationStartDate: null,
-        applicationEndDate: null,
-        decisionDate: null,
-        fundDisbursementDate: null
-    } as Schedule,
-    questionIds: [],
-    questionGroupsIds: []
+  id: "",
+  title: "",
+  description: "",
+  providerId: "",
+  status: GrantStatus.DRAFT,
+  schedule: {
+    applicationStartDate: null,
+    applicationEndDate: null,
+    decisionDate: null,
+    fundDisbursementDate: null,
+  } as Schedule,
+  createdAt: "",
+  updatedAt: "",
+  questionIds: [],
+  questionGroupsIds: [],
 };
 
+// ...existing imports...
+
 const CreateGrantProgram = () => {
-    const [grantProgram, setGrantProgram] = useState<GrantProgram>(initialGrantProgram);
-    const [currentStep, setCurrentStep] = useState(steps[0].key);
-    const goToStep = (stepKey: string) => setCurrentStep(stepKey);
-    let StepComponent = null;
+  const [grantProgram, setGrantProgram] = useState<GrantProgram>(initialGrantProgram);
+  
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    const handleCreateGrant = async (grantProgram: GrantProgram) => {
+  const handleCreateGrant = async (grantProgram: GrantProgram) => {
     return createGrantProgram(grantProgram);
-    };
+  };
 
-    const handleUpdateGrant = async (id: string, grantProgram: GrantProgram) => {
-        return updateGrantProgram(id, grantProgram);
-    };
+  const handleUpdateGrant = async (id: string, grantProgram: GrantProgram) => {
+    return updateGrantProgram(id, grantProgram);
+  };
 
-    switch (currentStep) {
-        case "grant-name":
-        StepComponent = (
-            <GrantName
-            id="grant-name"
-            name="grantName"
-            grantProgram={grantProgram}
-            onGrantProgramChange={setGrantProgram}
-            onCreateGrant={handleCreateGrant}
-            onUpdateGrant={handleUpdateGrant}
-            />
-        );
-        break;
-        // Add other cases for other steps...
-        default:
-        StepComponent = <div>Unknown step</div>;
-    }
+  const handleStepChange = (stepKey: string) => {
+    const segments = location.pathname.split("/");
+    segments[segments.length - 1] = stepKey;
+    const newPath = segments.join("/");
+    navigate(newPath);
+};
 
-    return (
-        <div className="grant-create-layout">
-            <GrantNav
-                steps={steps}
-                currentStep={currentStep}
-                onStepChange={goToStep}
-            />
-            <main className="grant-create-content">{StepComponent}</main>
-        </div>
-    );
+  return (
+    <div className="grant-create-layout">
+      <GrantNav
+        steps={steps}
+        currentStep={location.pathname.split("/").pop() || steps[0].key}
+        onStepChange={handleStepChange}
+      />
+      <main className="grant-create-content">
+        <Routes>
+          <Route
+            path="title"
+            element={
+              <GrantName
+                id="title"
+                name="title"
+                grantProgram={grantProgram}
+                onGrantProgramChange={setGrantProgram}
+                onCreateGrant={handleCreateGrant}
+                onUpdateGrant={handleUpdateGrant}
+              />
+            }
+          />
+          <Route
+            path="description"
+            element={
+              <GrantDescription
+                id="description"
+                name="description"
+                grantProgram={grantProgram}
+                onGrantProgramChange={setGrantProgram}
+                onUpdateGrant={handleUpdateGrant}
+              />
+            }
+          />
+          {/* Add other steps as needed */}
+        </Routes>
+      </main>
+    </div>
+  );
 };
 
 export default CreateGrantProgram;

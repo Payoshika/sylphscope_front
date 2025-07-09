@@ -47,8 +47,8 @@ const GrantName: React.FC<GrantNameProps> = ({
         setSubmitSuccess("Grant name updated successfully.");
       } else {
         response = await onCreateGrant(grantProgram);
-        console.log(response);
         setSubmitSuccess("Grant name is created successfully.");
+        onGrantProgramChange({ ...grantProgram, ...response.data });
       }
     } catch (err: any) {
         console.error(err);
@@ -65,12 +65,13 @@ const GrantName: React.FC<GrantNameProps> = ({
       name={name}
       label="Grant Name"
       placeholder="Enter the grant program name"
-      value={grantProgram.title}
+      value={grantProgram.title ?? ""}
       onChange={handleInputChange}
       required={required}
       error={error}
       autoComplete="off"
     />
+    <p>id : {grantProgram.id}</p>
     <Button
       text={isSubmitting ? "Saving..." : "Save Grant Name"}
       disabled={isSubmitting || !grantProgram.title}

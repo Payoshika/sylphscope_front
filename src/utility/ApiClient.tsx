@@ -149,9 +149,14 @@ class ApiClient {
   async put<T>(
     endpoint: string,
     body?: any,
-    headers?: Record<string, string>
+    config?: { headers?: Record<string, string>; skipAuth?: boolean }
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: "PUT", body, headers });
+    return this.request<T>(endpoint, {
+      method: "PUT",
+      body,
+      headers: config?.headers,
+      skipAuth: config?.skipAuth,
+    });
   }
 
   async patch<T>(
