@@ -97,11 +97,12 @@ const CreateGrantProgram = () => {
             path="eligibility"
             element={
               <GrantEligibility
-                // id="eligibility"
-                // name="eligibility"
-                // grantProgram={grantProgram}
-                // onGrantProgramChange={setGrantProgram}
-                // onUpdateGrant={handleUpdateGrant}
+                id="eligibility"
+                name="eligibility"
+                grantProgram={grantProgram}
+                onUpdateGrant={handleUpdateGrant}
+                error={false}
+                required={true}
               />
             }
           />

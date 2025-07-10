@@ -30,7 +30,7 @@ const DOBPicker: React.FC<DOBPickerProps> = ({
 
   // Generate years (past years for DOB)
   const currentYear = new Date().getFullYear();
-  const years = generateYears(currentYear - 100, currentYear);
+  const years = generateYears("dob");
   const defaultYear = currentYear - 20; // Default to 20 years ago
 
   // Validate whenever value changes

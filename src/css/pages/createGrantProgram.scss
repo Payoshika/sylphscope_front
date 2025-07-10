@@ -19,6 +19,9 @@
 .grant-nav__item {
   padding: 1rem 1.5rem;
   border-radius: 8px;
+  border-left: none;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
   p {color: $background-color;}
   text-decoration: none;
   transition: 0.2s;
@@ -28,7 +31,6 @@
   &--active {
     background: $text-color;
   }
-  border: none;
 }
 
 .grant-create-content {
@@ -36,10 +38,15 @@
   padding: 2rem 3rem;
   .content{
     width: 100%;
-    max-width: 80rem;
+    max-width: 100rem;
     height: 100%;
     @include Padding2rem;
     @include ColJustifyStartFlexbox;
+    .eligibility-lists{
+      width: 100%;
+      flex-direction: row;
+      justify-content: start;
+    }
   }
   @include ColJustifyStartFlexbox;
   @include Box;
@@ -59,6 +66,54 @@
   }
 }
 
+.eligibility-btn--added {
+  background: #fff !important;
+  color: #000 !important;
+  border: 1px solid #3a3e46 !important;
+  cursor: not-allowed !important;
+  opacity: 1 !important;
+}
+
+.eligibility-forms{
+  width:100%;
+  @include Box;
+  @include BoxShadow;
+  @include ColJustifyCenterFlexbox;
+  align-items: start;
+}
+
+.eligibility-form {
+  position: relative;
+  width: 100%;
+  @include Box;
+  @include BoxShadow;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.eligibility-form__remove-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  line-height: 0;
+  color: $text-color;
+  transition: color 0.2s;
+  &:hover {
+    color: $primary-color;
+  }
+}
+
+.comparison-and-values-options{
+  @include RowJustifyStartFlexbox;
+  >div{
+    min-width: 25rem;
+  }
+}
+
 @include smartphone {
   .grant-create-layout {
     flex-direction: column;
@@ -75,5 +130,4 @@
   .grant-create-content {
     padding: 1rem;
   }
-
 }

@@ -10,6 +10,7 @@ import YesNoChoice, {
 import Url from "../components/inputComponents/Url";
 
 import SearchableDropdown from "../components/inputComponents/SearchableDropdown";
+import SearchableMultiSelect from "../components/inputComponents/SearchableMultiSelect";
 import Email from "../components/inputComponents/Email";
 import Password from "../components/inputComponents/Password";
 import TextInput from "../components/inputComponents/TextInput";
@@ -172,6 +173,22 @@ const Components = () => {
     "Fourth list item",
   ];
 
+  const [multiSelectValue, setMultiSelectValue] = useState<string[]>([]);
+
+const multiSelectOptions = [
+  { value: "apple", label: "Apple" },
+  { value: "banana", label: "Banana" },
+  { value: "orange", label: "Orange" },
+  { value: "grape", label: "Grape" },
+  { value: "kiwi", label: "Kiwi" },
+  { value: "pear", label: "Pear" },
+];
+
+const searchMultiSelectOptions = (query: string, options: typeof multiSelectOptions) =>
+  options.filter(opt =>
+    opt.label.toLowerCase().includes(query.toLowerCase())
+  );
+
   return (
     <div className="grid">
       <div className="component-showcase">
@@ -220,20 +237,14 @@ const Components = () => {
             <Card title="Enhanced Radio Components">
               <div className="radio-group">
                 <Radio
-                  id="radio-default-1"
+                  id="radio-default"
                   name="radioDefault"
-                  value="option1"
-                  label="Default Radio Option 1"
-                  checked={radioValue === "option1"}
-                  onChange={(e) => setRadioValue(e.target.value)}
-                />
-                <Radio
-                  id="radio-default-2"
-                  name="radioDefault"
-                  value="option2"
-                  label="Default Radio Option 2"
-                  description="Description can be added"
-                  checked={radioValue === "option2"}
+                  label="Choose an option"
+                  value={radioValue}
+                  options={[
+                    { id: "option1", label: "Default Radio Option 1", value: "option1" },
+                    { id: "option2", label: "Default Radio Option 2", value: "option2" },
+                  ]}
                   onChange={(e) => setRadioValue(e.target.value)}
                 />
               </div>
@@ -490,6 +501,20 @@ const Components = () => {
               onChange={(e) => setSelectValue(e.target.value)}
               options={selectOptions}
             />
+
+            <Card title="Searchable MultiSelect">
+              <SearchableMultiSelect
+                id="fruit-multiselect"
+                name="fruitMultiSelect"
+                label="Select Fruits"
+                value={multiSelectValue}
+                onChange={setMultiSelectValue}
+                options={multiSelectOptions}
+                searchFunction={searchMultiSelectOptions}
+                placeholder="Type to search fruits..."
+                required
+              />
+            </Card>
 
             <div className="form-group">
               <Checkbox

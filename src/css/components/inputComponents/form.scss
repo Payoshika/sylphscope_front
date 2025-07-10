@@ -3,10 +3,13 @@
 
 // Form Groups
 .form-group {
-    width: 100% ;
-  @include Box;
-  @include BoxShadow;
+  width: 100% ;
+  &:not(.date-picker__field .form-group):not(.month-picker__field .form-group) {
+    @include Box;
+    @include BoxShadow;
+  }
   @include ColJustifyCenterFlexbox;
+  align-items: start;
 
   label {
     display: flex;
@@ -19,6 +22,16 @@
   }
   .form-group{
     gap:0rem;
+  }
+  .form-label{
+    margin-bottom : 0;
+  }
+
+}
+
+.date-picker__field{
+  .form-group{
+
   }
 }
 

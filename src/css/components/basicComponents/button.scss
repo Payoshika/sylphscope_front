@@ -41,8 +41,13 @@
   }
 }
 
+.btn--primary {
+  background-color: $text-color;
+  color: $background-color;
+}
+
 .btn--outline {
-  background-color: transparent;
+  background-color: $background-color;
   color: $primary-color;
 
   &:hover {
