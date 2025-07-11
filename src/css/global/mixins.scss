@@ -54,6 +54,10 @@
   box-shadow: 0 0 7px $shadow-color;
 }
 
+@mixin BoxShallowShadow {
+  box-shadow: 0 0 3px $shadow-color;
+}
+
 @mixin Box {
   background-color: $background-color;
   border: 1px solid $border-color;
@@ -188,6 +192,76 @@
   margin: 5rem;
 }
 
+@mixin MarginX0_5rem {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+@mixin MarginX1rem {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+@mixin MarginX2rem {
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
+@mixin MarginX3rem {
+  margin-left: 3rem;
+  margin-right: 3rem;
+}
+
+@mixin MarginX4rem {
+  margin-left: 4rem;
+  margin-right: 4rem;
+}
+
+@mixin MarginX5rem {
+  margin-left: 5rem;
+  margin-right: 5rem;
+}
+
+@mixin MarginX6rem {
+  margin-left: 6rem;
+  margin-right: 6rem;
+}
+
+@mixin MarginY0_5rem {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+@mixin MarginY1rem {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+@mixin MarginY2rem {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+@mixin MarginY3rem {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+@mixin MarginY4rem {
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+}
+
+@mixin MarginY5rem {
+  margin-top: 5rem;
+  margin-bottom: 5rem;
+}
+
+@mixin MarginY6rem {
+  margin-top: 6rem;
+  margin-bottom: 6rem;
+}
+
 // Padding Utilities
 @mixin Padding0_5rem {
   padding: 0.5rem 1rem;
@@ -215,6 +289,75 @@
 
 @mixin Padding6rem {
   padding: 6rem;
+}
+@mixin PaddingX0_5rem {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+@mixin PaddingX1rem {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@mixin PaddingX2rem {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+@mixin PaddingX3rem {
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+@mixin PaddingX4rem {
+  padding-left: 4rem;
+  padding-right: 4rem;
+}
+
+@mixin PaddingX5rem {
+  padding-left: 5rem;
+  padding-right: 5rem;
+}
+
+@mixin PaddingX6rem {
+  padding-left: 6rem;
+  padding-right: 6rem;
+}
+
+@mixin PaddingY0_5rem {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+@mixin PaddingY1rem {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+@mixin PaddingY2rem {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+@mixin PaddingY3rem {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+@mixin PaddingY4rem {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+@mixin PaddingY5rem {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+@mixin PaddingY6rem {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
 }
 
 @mixin Gap0_5rem {

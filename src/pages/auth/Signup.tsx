@@ -7,7 +7,7 @@ import { useToast } from "../../contexts/ToastContext";
 import type { RegisterRequest } from "../../types/auth";
 import AuthCard from "../../components/AuthCard";
 import FormInput from "../../components/FormInput";
-import Radio from "../../components/inputComponents/Radio";
+import Select from "../../components/inputComponents/Select";
 
 import SubmitButton from "../../components/SubmitButton";
 import GoogleOAuthButton from "../../components/GoogleOAuthButton";
@@ -95,19 +95,12 @@ const Signup: React.FC = () => {
   return (
     <AuthCard
       title="Create Account"
-      subtitle="Join SylphScope to get started"
       footerText="Already have an account?"
       footerLinkText="Sign in here"
       footerLinkTo="/signin"
     >
       {errors.submit && <Alert message={errors.submit} />}
-
-      <GoogleOAuthButton disabled={isSubmitting} />
-      <div className="oauth-divider">
-        <span>or create account with email</span>
-      </div>
-
-      <form onSubmit={(e) => handleSubmit(e, onSubmit)}>
+      <form className="signup-form" onSubmit={(e) => handleSubmit(e, onSubmit)}>
         <FormInput
           id="username"
           name="username"
@@ -159,38 +152,36 @@ const Signup: React.FC = () => {
           showPassword={showConfirmPassword}
           onTogglePassword={toggleConfirmPassword}
         />
-        <div className="form-group">
-          <label className="form-label">Choose your role</label>
-          <div className="radio-group">
-            <Radio
-              id="role-student"
-              name="userRole"
-              value="STUDENT"
-              label="Student"
-              checked={values.userRole === "STUDENT"}
-              onChange={handleChange}
-              disabled={isSubmitting}
-              error={!!errors.userRole}
-            />
-            <Radio
-              id="role-provider"
-              name="userRole"
-              value="PROVIDER"
-              label="Provider"
-              checked={values.userRole === "PROVIDER"}
-              onChange={handleChange}
-              disabled={isSubmitting}
-              error={!!errors.userRole}
-            />
-          </div>
-          {errors.userRole && <div className="error-message">{errors.userRole}</div>}
-        </div>
+        <Select
+          id="user-role"
+          name="userRole"
+          label="Choose your role"
+          value={values.userRole}
+          onChange={handleChange}
+          options={[
+            { value: "STUDENT", label: "Student" },
+            { value: "PROVIDER", label: "Provider" },
+          ]}
+          placeholder="Select your role"
+          disabled={isSubmitting}
+          required
+          error={errors.userRole}
+        />
+        {errors.userRole && <div className="error-message">{errors.userRole}</div>}
         <SubmitButton
           isLoading={isSubmitting}
           loadingText="Creating Account..."
           defaultText="Create Account"
         />
       </form>
+      <div className="oauth-divider">
+        <span>Or sign up with</span>
+      </div>
+      <div className="signup-options">
+        <GoogleOAuthButton disabled={isSubmitting} />
+        <GoogleOAuthButton disabled={isSubmitting} />
+        <GoogleOAuthButton disabled={isSubmitting} />
+      </div>
     </AuthCard>
   );
 };

@@ -2,7 +2,6 @@ import React from "react";
 
 interface AuthCardProps {
   title: string;
-  subtitle: string;
   children: React.ReactNode;
   footerText: string;
   footerLinkText: string;
@@ -11,7 +10,6 @@ interface AuthCardProps {
 
 const AuthCard: React.FC<AuthCardProps> = ({
   title,
-  subtitle,
   children,
   footerText,
   footerLinkText,
@@ -22,7 +20,6 @@ const AuthCard: React.FC<AuthCardProps> = ({
       <div className="card">
         <div className="card__header">
           <h2>{title}</h2>
-          <p className="caption">{subtitle}</p>
         </div>
         <div className="card__body">{children}</div>
         <div className="card__footer">

@@ -3,9 +3,11 @@ import type { GrantProgram } from "../../types/grantProgram";
 import { useNavigate } from "react-router-dom";
 import TitleAndHeadLine from "./TitleAndHeadLine";
 import { useState, useEffect, type FormEvent } from "react";
-import { createEligibilityCriteria, fetchEligibilityQuestions, getEligibilityCriteria } from "../../services/GrantProgramService";
-import type { ComparisonOperator, QuestionEligibilityInfoDto, EligibilityCriteriaDTO, QuestionCondition } from "../../data/questionEligibilityInfoDto";
+import { updateEligibilityCriteria, createEligibilityCriteria, fetchEligibilityQuestions, getEligibilityCriteria, createQuestion } from "../../services/GrantProgramService";
+import type { ComparisonOperator, QuestionEligibilityInfoDto, EligibilityCriteriaDTO, QuestionCondition, Option, InputType, DataType } from "../../data/questionEligibilityInfoDto";
+import EligibilityFormBuilder from "./EligibilityFormBuilder";
 import EligibilityForm from "./EligibilityForm";
+import Modal from "../../components/basicComponents/Modal";
 
 interface GrantEligibilityProps {
   id: string;
@@ -17,6 +19,7 @@ interface GrantEligibilityProps {
 }
 
 type EligibilityFormState = {
+  criteria_id?: string; // Optional, can be null for new criteria
   form: QuestionEligibilityInfoDto;
   operator: ComparisonOperator;
   values: any[];
@@ -35,18 +38,20 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
-    const [eligibilityForms, setEligibilityForms] = useState<EligibilityFormState[]>([]);  
-    const navigate = useNavigate();
+  const [eligibilityForms, setEligibilityForms] = useState<EligibilityFormState[]>([]);  
+  const [showBuilderModal, setShowBuilderModal] = useState(false);
 
-useEffect(() => {
-  fetchQuestions();
-}, []);
+  const navigate = useNavigate();
 
-useEffect(() => {
-  if (eligibilityQuestions.length > 0) {
-    fetchEligibility();
-  }
-}, [eligibilityQuestions]);
+  useEffect(() => {
+    fetchQuestions();
+  }, []);
+
+  useEffect(() => {
+    if (eligibilityQuestions.length > 0) {
+      fetchEligibility();
+    }
+  }, [eligibilityQuestions]);
   
     const fetchQuestions = async () => {
       setLoadingQuestions(true);
@@ -90,14 +95,15 @@ useEffect(() => {
     setIsSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(null);
+    console.log("sending criteria list");
     console.log(criteriaList);
     try {
-      await createEligibilityCriteria(criteriaList);
-      setSubmitSuccess("Eligibility criteria created successfully.");
+      await updateEligibilityCriteria(criteriaList, grantProgram.id || "686cf160f9b36c21721c30d8");
+      setSubmitSuccess("Eligibility criteria updated successfully.");
       setEligibilityForms([]);
     } catch (error) {
-      console.error("Failed to create eligibility criteria", error);
-      setSubmitError("Failed to create eligibility criteria");
+      console.error("Failed to update eligibility criteria", error);
+      setSubmitError("Failed to update eligibility criteria");
     } finally {
       setIsSubmitting(false);
     }
@@ -134,6 +140,7 @@ function convertToEligibilityCriteriaDTO(
   };
 
   return {
+    id: formState.criteria_id || "", // Use existing ID if available
     grantProgramId,
     name: question.name,
     description: question.description || "",
@@ -154,10 +161,42 @@ function convertToEligibilityFormState(
 
   return {
     form: questionInfo,
+    criteria_id : criteria.id,
     operator: criteria.simpleCondition.comparisonOperator,
     values: criteria.simpleCondition.values,
   };
 }
+
+const handleCreateEligibilityForm = (form: {
+  inputType: InputType;
+  dataType: string;
+  values: any[];
+  options?: Option[];
+}) => {
+  // Create a new QuestionEligibilityInfoDto for the builder form
+  const newQuestion: QuestionEligibilityInfoDto = {
+    question: {
+      id: "",
+      name: "Custom Question",
+      inputType: form.inputType,
+      questionDataType: form.dataType,
+      questionText: "Custom Question",
+      description: "",
+      isRequired: false,
+    },
+    options: form.options || [],
+    operators: [],
+  };
+
+  setEligibilityForms((prev) => [
+    ...prev,
+    {
+      form: newQuestion,
+      operator: "equals",
+      values: form.values,
+    },
+  ]);
+};
 
   return (
     <div className="content">
@@ -202,6 +241,39 @@ function convertToEligibilityFormState(
             ))}
         </div>
     )}
+    <Button
+  text="Create Custom Condition"
+  onClick={() => setShowBuilderModal(true)}
+  type="button"
+/>
+
+<Modal
+  isOpen={showBuilderModal}
+  onClose={() => setShowBuilderModal(false)}
+  title="Create Custom Eligibility Condition"
+>
+<EligibilityFormBuilder
+  onCreate={async (form) => {
+    // Send question and options together
+    const savedQuestion = await createQuestion(form.question, form.options || []);
+    const newQuestionEligibilityInfoDto: QuestionEligibilityInfoDto = {
+      question: savedQuestion,
+      options: form.options || [],
+      operators: ["equals", "in_list"],
+    };
+
+    setEligibilityForms((prev) => [
+      ...prev,
+      {
+        form: newQuestionEligibilityInfoDto,
+        operator: form.operator,
+        values: form.values,
+      },
+    ]);
+    setShowBuilderModal(false);
+  }}
+/>
+</Modal>
     <Button
         text={isSubmitting ? "Saving..." : "Save Eligibility"}
         disabled={isSubmitting}

@@ -78,8 +78,8 @@ const Select: React.FC<SelectProps> = ({
   const handleOptionSelect = (optionValue: string) => {
     // Create a synthetic event to maintain compatibility
     const syntheticEvent = {
-      target: { value: optionValue },
-      currentTarget: { value: optionValue },
+      target: { name, value: optionValue },
+      currentTarget: { name, value: optionValue },
     } as React.ChangeEvent<HTMLSelectElement>;
 
     onChange(syntheticEvent);

@@ -83,6 +83,7 @@ export interface QuestionEligibilityInfoDto {
 }
 
 export interface EligibilityCriteriaDTO {
+  id: string;
   grantProgramId: string;
   name: string;
   description: string;

@@ -85,10 +85,12 @@
 .eligibility-form {
   position: relative;
   width: 100%;
-  @include Box;
-  @include BoxShadow;
-  padding: 2rem;
-  margin-bottom: 2rem;
+  // @include Box;
+  // @include BoxShadow;
+  @include Padding2rem;
+  @include MarginBottom2rem;
+  box-shadow: 0 -4px 8px -4px rgba(0,0,0,0.3);
+
 }
 
 .eligibility-form__remove-btn {
