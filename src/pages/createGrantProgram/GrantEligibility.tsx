@@ -3,8 +3,9 @@ import type { GrantProgram } from "../../types/grantProgram";
 import { useNavigate } from "react-router-dom";
 import TitleAndHeadLine from "./TitleAndHeadLine";
 import { useState, useEffect, type FormEvent } from "react";
-import { updateEligibilityCriteria, createEligibilityCriteria, fetchEligibilityQuestions, getEligibilityCriteria, createQuestion } from "../../services/GrantProgramService";
+import { updateEligibilityCriteria, createEligibilityCriteria, fetchEligibilityQuestions,fetchEligibilityQuestionGroups, getEligibilityCriteria, createQuestion } from "../../services/GrantProgramService";
 import type { ComparisonOperator, QuestionEligibilityInfoDto, EligibilityCriteriaDTO, QuestionCondition, Option, InputType, DataType, Question } from "../../data/questionEligibilityInfoDto";
+import EligibilityGroupForm from "./EligibilityGroupForm";
 import EligibilityFormBuilder from "./EligibilityFormBuilder";
 import EligibilityForm from "./EligibilityForm";
 import Modal from "../../components/basicComponents/Modal";
@@ -33,12 +34,14 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
   error = false,
   required = true,
 }) => {
-    const [eligibilityQuestions, setEligibilityQuestions] = useState<QuestionEligibilityInfoDto[]>([]);
+   const [eligibilityQuestions, setEligibilityQuestions] = useState<QuestionEligibilityInfoDto[]>([]);
+   const [eligibilityQuestionGroups, setEligibilityQuestionGroups] = useState<QuestionGroupEligibilityInfoDto[]>([]);
   const [loadingQuestions, setLoadingQuestions] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
-  const [eligibilityForms, setEligibilityForms] = useState<EligibilityFormState[]>([]);  
+  const [eligibilityForms, setEligibilityForms] = useState<EligibilityFormState[]>([]);
+  const [eligibilityGroupForms, setEligibilityGroupForms] = useState<EligibilityGroupFormState[]>([]);
   const [showBuilderModal, setShowBuilderModal] = useState(false);
 
   const navigate = useNavigate();
@@ -51,15 +54,17 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
     if (eligibilityQuestions.length > 0) {
       fetchEligibility();
     }
-  }, [eligibilityQuestions]);
+  }, [eligibilityQuestions, eligibilityQuestionGroups]);
   
     const fetchQuestions = async () => {
       setLoadingQuestions(true);
       try {
         const questions = await fetchEligibilityQuestions();
         setEligibilityQuestions(questions);
-        setSubmitSuccess("Eligibility questions fetched successfully.");
         console.log("Eligibility Questions:", eligibilityQuestions);
+        const questionGroups = await fetchEligibilityQuestionGroups();
+        setEligibilityQuestionGroups(questionGroups);
+        console.log("Eligibility Question Groups:", questionGroups);
       } catch (err) {
         console.error("Failed to fetch eligibility questions", err);
       } finally {
@@ -74,12 +79,26 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
         console.log("Fetched eligibility criteria:", eligibilityList);
         // You can set state here if you want to display the fetched criteria
         if (eligibilityList && Array.isArray(eligibilityList)) {
-            const forms = eligibilityList
-                .map((criteria: EligibilityCriteriaDTO) =>
-                    convertToEligibilityFormState(criteria, eligibilityQuestions)
-                )
-                .filter((formState): formState is EligibilityFormState => formState !== null);
-            setEligibilityForms(forms);
+          const forms: EligibilityFormState[] = [];
+          const groupForms: EligibilityGroupFormState[] = [];
+          eligibilityList.forEach((criteria: EligibilityCriteriaDTO) => {
+            if (criteria.criteriaType === "QUESTION_GROUP") {
+              groupForms.push({
+                groupId: criteria.questionGroupId,
+                groupName: criteria.name,
+                groupDescription: criteria.description || "",
+                questionConditions: criteria.questionConditions.map(condition => ({
+                  question: eligibilityQuestions.find(q => q.question.id === condition.questionId) || { question: { id: condition.questionId, name: "", questionDataType: "STRING" } },
+                  condition
+                }))
+              });
+            } else {
+              const formState = convertToEligibilityFormState(criteria, eligibilityQuestions);
+              if (formState) forms.push(formState);
+            }
+          });
+          setEligibilityForms(forms);
+          setEligibilityGroupForms(groupForms);
         }
     } catch (error) {
         console.error("Failed to fetch eligibility criteria", error);
@@ -88,15 +107,15 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const criteriaList: EligibilityCriteriaDTO[] = eligibilityForms.map(formState =>
-        // just for now, set the tentative grantprogramID
-    convertToEligibilityCriteriaDTO(formState, grantProgram.id || "686cf160f9b36c21721c30d8")
-    );
     setIsSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(null);
-    console.log("sending criteria list");
-    console.log(criteriaList);
+      const criteriaList: EligibilityCriteriaDTO[] = [
+    ...eligibilityForms.map(formState =>
+      convertToEligibilityCriteriaDTO(formState, grantProgram.id || "686cf160f9b36c21721c30d8")
+    ),
+    ...convertGroupFormsToCriteriaDTO(eligibilityGroupForms, grantProgram.id || "686cf160f9b36c21721c30d8")
+  ];
     try {
       await updateEligibilityCriteria(criteriaList, grantProgram.id || "686cf160f9b36c21721c30d8");
       setSubmitSuccess("Eligibility criteria updated successfully.");
@@ -119,6 +138,60 @@ const createEligibility = (data: QuestionEligibilityInfoDto) => {
       values: [],
     } as EligibilityFormState,
   ]);
+};
+
+const createEligibilityGroup = (group: QuestionGroupEligibilityInfoDto) => {
+  setEligibilityGroupForms((prev) => [
+    ...prev,
+    {
+      groupId: group.id,
+      groupName: group.name,
+      groupDescription: group.description,
+      questionConditions: group.questions.map(q => ({
+        question: q,
+        condition: {
+          questionId: q.question.id ?? "",
+          comparisonOperator: q.operators[0],
+          values: [],
+          valueDataType: q.question.questionDataType,
+        }
+      })),
+    },
+  ]);
+};
+
+const updateEligibilityGroupForm = (updatedGroup: EligibilityGroupFormState) => {
+  setEligibilityGroupForms(prev =>
+    prev.map(group =>
+      group.groupId === updatedGroup.groupId ? updatedGroup : group
+    )
+  );
+  console.log("Updated eligibility group forms:", eligibilityGroupForms);
+};
+
+const duplicateEligibilityGroupForm = (groupId: string) => {
+  setEligibilityGroupForms(prev => {
+    const groupToDuplicate = prev.find(g => g.groupId === groupId);
+    if (!groupToDuplicate) return prev;
+    // Create a new group with a unique id (or use a timestamp)
+    const newGroup = {
+      ...groupToDuplicate,
+      groupId: `${groupToDuplicate.groupId}-${Date.now()}`,
+      groupName: `${groupToDuplicate.groupName} (Copy)`,
+      // Optionally reset conditions if needed
+      questionConditions: groupToDuplicate.questionConditions.map(pair => ({
+        question: pair.question,
+        condition: { ...pair.condition }
+      }))
+    };
+    // Insert the new group just below the original
+    const idx = prev.findIndex(g => g.groupId === groupId);
+    return [
+      ...prev.slice(0, idx + 1),
+      newGroup,
+      ...prev.slice(idx + 1)
+    ];
+  });
 };
 
 const removeEligibilityForm = (index: number) => {
@@ -151,6 +224,22 @@ function convertToEligibilityCriteriaDTO(
   };
 }
 
+const convertGroupFormsToCriteriaDTO = (
+  eligibilityGroupForms: EligibilityGroupFormState[],
+  grantProgramId: string
+): EligibilityCriteriaDTO[] => {
+  return eligibilityGroupForms.map(group => ({
+    id: group.groupId,
+    grantProgramId,
+    name: group.groupName,
+    description: group.groupDescription,
+    required: true,
+    criteriaType: "QUESTION_GROUP",
+    questionGroupId: group.groupId,
+    questionConditions: group.questionConditions.map(pair => pair.condition),
+  }));
+};
+
 function convertToEligibilityFormState(
   criteria: EligibilityCriteriaDTO,
   questions: QuestionEligibilityInfoDto[]
@@ -166,6 +255,8 @@ function convertToEligibilityFormState(
     values: criteria.simpleCondition.values,
   };
 }
+
+
 
 const handleCreateEligibilityForm = (form: {
   inputType: InputType;
@@ -217,7 +308,37 @@ const handleCreateEligibilityForm = (form: {
         />
         );
     })}
+    {/* for eligibility question groups */}
+      {eligibilityQuestionGroups.map((group) => {
+    const alreadyAdded = eligibilityGroupForms.some(
+      (form) => form.groupId === group.id
+    );
+    return (
+      <Button
+        key={group.id}
+        text={group.name}
+        onClick={() => createEligibilityGroup(group)}
+        type="button"
+        disabled={alreadyAdded}
+        variant={alreadyAdded ? "primary" : "outline"}
+      />
+    );
+  })}
     </form>
+    {eligibilityGroupForms.length > 0 && (
+      <div className="eligibility-group-forms">
+        {eligibilityGroupForms.map((groupForm, idx) => (
+          <EligibilityGroupForm
+            key={groupForm.groupId}
+            group={groupForm}
+            onCreate={updateEligibilityGroupForm}
+            onDuplicate={duplicateEligibilityGroupForm}
+            initialCollapsed={true}
+            pending={groupForm.isPending}
+          />
+        ))}
+      </div>
+    )}
     {eligibilityForms.length >= 1 && (
         <div className="eligibility-forms">
             {eligibilityForms.map((formData, index) => (

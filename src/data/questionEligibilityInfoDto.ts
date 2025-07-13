@@ -82,6 +82,13 @@ export interface QuestionEligibilityInfoDto {
   operators: ComparisonOperator[];
 }
 
+export interface QuestionGroupEligibilityInfoDto {
+  id: string;
+  name: string;
+  description: string;
+  questions: QuestionEligibilityInfoDto[];
+}
+
 export interface EligibilityCriteriaDTO {
   id: string;
   grantProgramId: string;
@@ -98,4 +105,16 @@ export interface EligibilityCriteriaDTO {
   questionGroupId?: string;
   combinationLogic?: CombinationLogic;
   questionConditions?: QuestionCondition[];
+}
+
+export interface QuestionConditionPair {
+  question: QuestionEligibilityInfoDto;
+  condition: QuestionCondition;
+}
+
+export interface EligibilityGroupFormState {
+  groupId: string;
+  groupName: string;
+  groupDescription: string;
+  questionConditions: QuestionConditionPair[];
 }

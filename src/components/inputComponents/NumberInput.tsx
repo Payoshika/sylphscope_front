@@ -10,7 +10,6 @@ interface NumberInputProps {
 
 const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
   const input = e.currentTarget;
-  // Remove any non-numeric characters except for . and -
   input.value = input.value.replace(/[^0-9.\-]/g, "");
 };
 
@@ -23,7 +22,6 @@ const NumberInput: React.FC<NumberInputProps> = ({ id, name, label, value, onCha
       name={name}
       value={value}
       onChange={onChange}
-      onInput={handleInput}
       className="input"
       step="any"
     />

@@ -1,6 +1,7 @@
 import { apiClient } from "../utility/ApiClient";
 import type { GrantProgram } from "../types/grantProgram";
 import type { QuestionEligibilityInfoDto, EligibilityCriteriaDTO, Question, Option, DataType } from "../data/questionEligibilityInfoDto";
+import type { EligibilityGroupFormState } from "../data/questionEligibilityInfoDto";
 
 //grant related functions
 export const createGrantProgram = async (grantProgram: GrantProgram) => {
@@ -32,6 +33,11 @@ export const createQuestion = async (question: Question, options: Option[] = [])
 //Eligibility Related functions
 export const fetchEligibilityQuestions = async (): Promise<QuestionEligibilityInfoDto[]> => {
   const response = await apiClient.get<QuestionEligibilityInfoDto[]>("/api/questions/questions-for-eligibility");
+  return response.data || [];
+};
+
+export const fetchEligibilityQuestionGroups = async (): Promise<QuestionGroupEligibilityInfoDto[]> => {
+  const response = await apiClient.get<QuestionGroupEligibilityInfoDto[]>("/api/questions/question-groups-for-eligibility");
   return response.data || [];
 };
 
