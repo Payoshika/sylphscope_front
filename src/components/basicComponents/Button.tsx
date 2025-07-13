@@ -4,9 +4,10 @@ interface ButtonProps {
   text: string;
   variant?: "primary" | "outline" | "ghost";
   size?: "small" | "regular" | "large";
+  type?: "button" | "submit" | "reset";
   disabled?: boolean;
   fullWidth?: boolean;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void; 
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -16,10 +17,11 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   fullWidth = false,
   onClick,
+  type = "button", 
 }) => {
   const getButtonClass = () => {
     let baseClass = "btn";
-
+    if (variant === "primary") baseClass += " btn--primary";
     if (variant === "outline") baseClass += " btn--outline";
     if (variant === "ghost") baseClass += " btn--ghost";
     if (size === "small") baseClass += " btn--small";
@@ -30,7 +32,7 @@ const Button: React.FC<ButtonProps> = ({
   };
 
   return (
-    <button className={getButtonClass()} disabled={disabled} onClick={onClick}>
+    <button className={getButtonClass()} disabled={disabled} onClick={onClick} type={type}>
       {text}
     </button>
   );

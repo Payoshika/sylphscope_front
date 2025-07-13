@@ -3,7 +3,15 @@
 
 // Form Groups
 .form-group {
+  width: 100% ;
+  &:not(.date-picker__field .form-group):not(.month-picker__field .form-group):not(.signup-form .form-group):not(.signin-form .form-group) {
+    @include Box;
+    @include BoxShallowShadow;
+  }
+  @include ColJustifyCenterFlexbox;
   @include MarginBottom2rem;
+  align-items: start;
+  gap : 1rem;
 
   label {
     display: flex;
@@ -14,6 +22,17 @@
     color: $text-color;
     @include MarginBottom1rem;
   }
+ 
+  .form-label, label{
+    margin-bottom : 0;
+  }
+
+}
+
+.date-picker__field{
+  .form-group{
+
+  }
 }
 
 .form-label {
@@ -21,7 +40,7 @@
   font-size: 1.4rem;
   font-weight: 500;
   color: $text-color;
-  @include MarginBottom1rem;
+  align-self: start;
 }
 
 .form-row {
@@ -38,6 +57,7 @@
 
 // Input Groups (for password toggle)
 .input-group {
+  width : 100%;
   position: relative;
   display: flex;
   align-items: center;

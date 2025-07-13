@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import Checkmark from "../icons/Checkmark";
 
 export interface SelectOption {
   value: string;
@@ -77,8 +78,8 @@ const Select: React.FC<SelectProps> = ({
   const handleOptionSelect = (optionValue: string) => {
     // Create a synthetic event to maintain compatibility
     const syntheticEvent = {
-      target: { value: optionValue },
-      currentTarget: { value: optionValue },
+      target: { name, value: optionValue },
+      currentTarget: { name, value: optionValue },
     } as React.ChangeEvent<HTMLSelectElement>;
 
     onChange(syntheticEvent);
@@ -240,12 +241,14 @@ const Select: React.FC<SelectProps> = ({
                       role="option"
                       aria-selected={value === option.value}
                     >
+                      {value === option.value && (
+                        <span className="custom-select__option-check">
+                        <Checkmark size={14} color="currentColor" strokeWidth={3} />
+                        </span>
+                      )}
                       <span className="custom-select__option-label">
                         {option.label}
                       </span>
-                      {value === option.value && (
-                        <span className="custom-select__option-check">✓</span>
-                      )}
                     </div>
                   ))}
             </div>

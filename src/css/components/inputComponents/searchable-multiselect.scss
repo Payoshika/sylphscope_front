@@ -1,0 +1,179 @@
+@use "../../global/base" as *;
+@use "../../global/mixins" as *;
+@use "./shared" as shared;
+
+.multi-select {
+  &__selected-chips {
+    @include RowJustifyStartFlexbox;
+    @include MarginBottom1rem;
+    flex-wrap: wrap;
+    gap : 0rem;
+  }
+
+  &__chip {
+    background: $primary-color;
+    color: $background-color;
+    border-radius: 2rem;
+    @include Margin1rem;
+    @include Padding1rem;
+    @include RowJustifyStartFlexbox;
+    gap: 0.5rem;
+    align-items: center;
+
+    .multi-select__chip-remove {
+      border: none;
+      color: $background-color;
+      margin-left: 0.5rem;
+      cursor: pointer;
+      border-radius: 50%;
+      width: 1.6rem;
+      height: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+      &:hover {
+        background: rgba($background-color, 0.2);
+      }
+    }
+  }
+
+  &__search-container {
+    @include shared.searchable-container;
+    width : 100%;
+  }
+
+  &__search-wrapper {
+    @include shared.searchable-wrapper;
+    @include ColJustifyStartFlexbox;
+    gap : 0rem;
+    align-items : start;
+
+    &__input{
+        width: 100%;
+        position : relative;
+        input{
+            &:focus-within {
+            border-bottom: none;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            }
+        }
+    }
+  }
+
+  &__search-input {
+    @include shared.searchable-input;
+    min-height: 4.8rem;
+    box-sizing: border-box;
+    padding-right: 4rem;
+    &::placeholder {
+      color: rgba(58, 62, 70, 0.4);
+      font-style: italic;
+    }
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 7px rgba($primary-color, 0.4);
+    }
+    &:disabled {
+      background-color: rgba(58, 62, 70, 0.1);
+      color: rgba(58, 62, 70, 0.4);
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+  }
+
+  &__dropdown-toggle {
+    @include shared.dropdown-toggle;
+  }
+
+  &__dropdown {
+    max-height: 32rem;
+    overflow-y: auto;
+    @include shared.dropdown-menu;
+  }
+
+  &__options {
+    max-height: 28rem;
+    overflow-y: auto;
+    border-right: 2px solid $text-color;
+    border-left: 2px solid $text-color;
+    border-bottom: 2px solid $text-color;
+    border-top: none;
+    @include shared.dropdown-options;
+
+  }
+
+  &__option {
+    &:last-child {
+      border-bottom: none;
+    }
+    &:hover,
+    &--highlighted {
+      background-color: rgba($primary-color, 0.1);
+    }
+    &--selected {
+      background-color: $primary-color;
+      span{
+        color: $background-color;
+      }
+    }
+        @include shared.dropdown-option;
+  }
+
+  &__label {
+    @include shared.form-label;
+  }
+
+  &__no-results {
+    @include shared.no-results;
+  }
+}
+
+.multi-select__field {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  min-height: 4.8rem;
+  border: 2px solid rgba(58, 62, 70, 0.2);
+  border-radius: 6px;
+  background-color: #fffdfa;
+  padding: 0.5rem 1.6rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  &:focus, &:focus-visible {
+    outline: none;
+    border-color: $primary-color;
+  }
+}
+
+.multi-select__placeholder {
+  color: rgba(58, 62, 70, 0.4);
+  font-style: italic;
+  font-size: 1.2rem;
+}
+
+.multi-select__option-content {
+    display: flex;
+    gap: 1rem;
+}
+
+// Mobile responsiveness
+@media (max-width: 768px) {
+  .multi-select__search-input {
+    padding: 1rem 1.2rem;
+    font-size: 1.4rem;
+    min-height: 4.4rem;
+  }
+  .multi-select__dropdown {
+    max-height: 25rem;
+  }
+  .multi-select__option {
+    padding: 1rem 1.2rem;
+  }
+  .multi-select__label {
+    font-size: 1.2rem;
+    margin-bottom : 0;
+  }
+}

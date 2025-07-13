@@ -1,0 +1,532 @@
+@charset "UTF-8";
+/* box sizing */
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* base font */ /* 1 rem = 10px; 10px/16px = 62.5% */
+  font-size: 62.5%;
+  font-family: "Helvetica", "Inter";
+}
+
+body {
+  /* base color */
+  background-color: #fffdfa;
+  color: #3a3e46;
+}
+body img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 100%;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes loading {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.phone-number {
+  display: grid;
+  grid-template-columns: 20rem 1fr;
+  gap: 1rem;
+  align-items: stretch;
+}
+@media (max-width: 768px) {
+  .phone-number {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+.phone-number--error .select,
+.phone-number--error .input,
+.phone-number--error .country-search-input {
+  border-color: #c62828;
+}
+.phone-number--error .select:focus,
+.phone-number--error .input:focus,
+.phone-number--error .country-search-input:focus {
+  border-color: #c62828;
+  box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.2);
+}
+
+.phone-number__country {
+  position: relative;
+}
+.phone-number__country .select {
+  height: 100%;
+  min-height: 4.8rem;
+  padding-left: 1rem;
+  padding-right: 3rem;
+  font-size: 1.4rem;
+  line-height: 1.4;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  cursor: pointer;
+  padding-right: 4rem;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='%23666' d='M8 11L3 6h10z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 1.2rem center;
+  background-size: 1.2rem;
+  width: 100%;
+  padding: 1.2rem 1.6rem;
+  font-size: 1.5rem;
+  font-family: inherit;
+  border: 2px solid rgba(58, 62, 70, 0.2);
+  border-radius: 6px;
+  background-color: #fffdfa;
+  color: #3a3e46;
+  transition: all 0.3s ease;
+  min-height: 4.8rem;
+  box-sizing: border-box;
+}
+.phone-number__country .select option {
+  padding: 1rem 0.8rem;
+  font-size: 1.4rem;
+  line-height: 1.6;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.phone-number__country .select::-moz-placeholder {
+  color: rgba(58, 62, 70, 0.4);
+  font-style: italic;
+}
+.phone-number__country .select::placeholder {
+  color: rgba(58, 62, 70, 0.4);
+  font-style: italic;
+}
+.phone-number__country .select:focus {
+  outline: none;
+  border-color: #3a3e46;
+  box-shadow: 0 0 7px rgba(58, 62, 70, 0.4);
+}
+.phone-number__country .select:disabled {
+  background-color: rgba(58, 62, 70, 0.1);
+  color: rgba(58, 62, 70, 0.4);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.phone-number__country .select:hover:not(:disabled):not(:focus) {
+  border-color: rgba(58, 62, 70, 0.6);
+}
+.phone-number__country .select--error {
+  border-color: #c62828;
+}
+.phone-number__country .select--error:focus {
+  border-color: #c62828;
+  box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.2);
+}
+.phone-number__country .select option {
+  padding: 0.8rem;
+  font-size: 1.4rem;
+  background-color: #fffdfa;
+  color: #3a3e46;
+}
+.phone-number__country .select option:hover {
+  background-color: rgba(58, 62, 70, 0.1);
+}
+.phone-number__country .select option:checked {
+  background-color: #3a3e46;
+  color: #fffdfa;
+}
+@media (max-width: 768px) {
+  .phone-number__country .select {
+    padding: 1rem 1.2rem;
+    font-size: 1.4rem;
+    min-height: 4.4rem;
+  }
+  .phone-number__country .select.has-dropdown {
+    padding-right: 3.5rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .phone-number__country .select {
+    transition: none !important;
+    animation: none !important;
+  }
+  .phone-number__country .select, .phone-number__country .select::before, .phone-number__country .select::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+@media (prefers-contrast: high) {
+  .phone-number__country .select {
+    border-width: 3px;
+  }
+}
+@media print {
+  .phone-number__country .select {
+    border: 1px solid #000;
+    background: white;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+}
+.phone-number__country .country-search-container {
+  position: relative;
+  height: 100%;
+}
+.phone-number__country .country-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+.phone-number__country .country-search-input {
+  min-height: 4.8rem;
+  height: 100%;
+  font-size: 1.4rem;
+  padding: 1.2rem 3.5rem 1.2rem 1.2rem;
+  padding-right: 4rem;
+  width: 100%;
+  padding: 1.2rem 1.6rem;
+  font-size: 1.5rem;
+  font-family: inherit;
+  border: 2px solid rgba(58, 62, 70, 0.2);
+  border-radius: 6px;
+  background-color: #fffdfa;
+  color: #3a3e46;
+  transition: all 0.3s ease;
+  min-height: 4.8rem;
+  box-sizing: border-box;
+}
+.phone-number__country .country-search-input::-moz-placeholder {
+  color: rgba(58, 62, 70, 0.4);
+  font-style: italic;
+}
+.phone-number__country .country-search-input::placeholder {
+  color: rgba(58, 62, 70, 0.4);
+  font-style: italic;
+}
+.phone-number__country .country-search-input:focus {
+  outline: none;
+  border-color: #3a3e46;
+  box-shadow: 0 0 7px rgba(58, 62, 70, 0.4);
+}
+.phone-number__country .country-search-input:disabled {
+  background-color: rgba(58, 62, 70, 0.1);
+  color: rgba(58, 62, 70, 0.4);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.phone-number__country .country-search-input:hover:not(:disabled):not(:focus) {
+  border-color: rgba(58, 62, 70, 0.6);
+}
+.phone-number__country .country-search-input--error {
+  border-color: #c62828;
+}
+.phone-number__country .country-search-input--error:focus {
+  border-color: #c62828;
+  box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.2);
+}
+@media (max-width: 768px) {
+  .phone-number__country .country-search-input {
+    padding: 1rem 1.2rem;
+    font-size: 1.4rem;
+    min-height: 4.4rem;
+  }
+  .phone-number__country .country-search-input.has-dropdown {
+    padding-right: 3.5rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .phone-number__country .country-search-input {
+    transition: none !important;
+    animation: none !important;
+  }
+  .phone-number__country .country-search-input, .phone-number__country .country-search-input::before, .phone-number__country .country-search-input::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+@media (prefers-contrast: high) {
+  .phone-number__country .country-search-input {
+    border-width: 3px;
+  }
+}
+@media print {
+  .phone-number__country .country-search-input {
+    border: 1px solid #000;
+    background: white;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+}
+.phone-number__country .country-dropdown-toggle {
+  position: absolute;
+  right: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0.8rem;
+  cursor: pointer;
+  color: rgba(58, 62, 70, 0.6);
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.phone-number__country .country-dropdown-toggle:hover:not(:disabled) {
+  color: #3a3e46;
+}
+.phone-number__country .country-dropdown-toggle:disabled {
+  color: rgba(58, 62, 70, 0.4);
+  cursor: not-allowed;
+}
+.phone-number__country .country-dropdown-toggle .dropdown-arrow {
+  font-size: 1.2rem;
+  line-height: 1;
+  transition: transform 0.3s ease;
+}
+.phone-number__country .country-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fffdfa;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.phone-number__country .country-dropdown--open {
+  max-height: 32rem;
+  overflow-y: auto;
+}
+@media (max-width: 768px) {
+  .phone-number__country .country-dropdown {
+    max-height: 0;
+  }
+  .phone-number__country .country-dropdown--open {
+    max-height: 25rem;
+  }
+  .phone-number__country .country-dropdown .dropdown-toggle {
+    right: 0.6rem;
+    padding: 0.6rem;
+  }
+  .phone-number__country .country-dropdown .dropdown-toggle .dropdown-arrow {
+    font-size: 1rem;
+  }
+  .phone-number__country .country-dropdown .category-header {
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+  }
+  .phone-number__country .country-dropdown .dropdown-option {
+    padding: 0.8rem 1.2rem;
+  }
+}
+.phone-number__country .country-options {
+  max-height: 30rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(58, 62, 70, 0.2) #fffdfa;
+}
+.phone-number__country .country-options::-webkit-scrollbar {
+  width: 6px;
+}
+.phone-number__country .country-options::-webkit-scrollbar-track {
+  background: #fffdfa;
+}
+.phone-number__country .country-options::-webkit-scrollbar-thumb {
+  background: rgba(58, 62, 70, 0.2);
+  border-radius: 3px;
+}
+.phone-number__country .country-options::-webkit-scrollbar-thumb:hover {
+  background: rgba(58, 62, 70, 0.6);
+}
+.phone-number__country .country-option {
+  gap: 0.8rem;
+  padding: 1rem 1.6rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(58, 62, 70, 0.3);
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+}
+.phone-number__country .country-option:last-child {
+  border-bottom: none;
+}
+.phone-number__country .country-option:hover, .phone-number__country .country-option--highlighted {
+  background-color: rgba(58, 62, 70, 0.1);
+  color: #3a3e46;
+}
+.phone-number__country .country-option--selected {
+  background-color: #3a3e46;
+  color: #fffdfa;
+  font-weight: 500;
+}
+.phone-number__country .country-option--selected:hover {
+  background-color: rgba(58, 62, 70, 0.6);
+}
+.phone-number__country .country-option:last-child {
+  border-bottom: none;
+}
+.phone-number__country .country-flag {
+  font-size: 1.4rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.phone-number__country .country-phone-code {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #3a3e46;
+  min-width: 4rem;
+}
+.country-option--selected .phone-number__country .country-phone-code {
+  color: #fffdfa;
+}
+.phone-number__country .country-name {
+  flex: 1;
+  font-size: 1.3rem;
+}
+.phone-number__country .country-no-results {
+  padding: 2rem 1.6rem;
+  text-align: center;
+  color: rgba(58, 62, 70, 0.4);
+  font-style: italic;
+  font-size: 1.4rem;
+  padding: 1.5rem 1.2rem;
+}
+
+.phone-number__input .input {
+  height: 100%;
+  min-height: 4.8rem;
+  font-size: 1.6rem;
+  width: 100%;
+  padding: 1.2rem 1.6rem;
+  font-size: 1.5rem;
+  font-family: inherit;
+  border: 2px solid rgba(58, 62, 70, 0.2);
+  border-radius: 6px;
+  background-color: #fffdfa;
+  color: #3a3e46;
+  transition: all 0.3s ease;
+  min-height: 4.8rem;
+  box-sizing: border-box;
+}
+.phone-number__input .input::-moz-placeholder {
+  color: rgba(58, 62, 70, 0.4);
+  font-style: italic;
+}
+.phone-number__input .input::placeholder {
+  color: rgba(58, 62, 70, 0.4);
+  font-style: italic;
+}
+.phone-number__input .input:focus {
+  outline: none;
+  border-color: #3a3e46;
+  box-shadow: 0 0 7px rgba(58, 62, 70, 0.4);
+}
+.phone-number__input .input:disabled {
+  background-color: rgba(58, 62, 70, 0.1);
+  color: rgba(58, 62, 70, 0.4);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.phone-number__input .input:hover:not(:disabled):not(:focus) {
+  border-color: rgba(58, 62, 70, 0.6);
+}
+.phone-number__input .input--error {
+  border-color: #c62828;
+}
+.phone-number__input .input--error:focus {
+  border-color: #c62828;
+  box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.2);
+}
+@media (max-width: 768px) {
+  .phone-number__input .input {
+    padding: 1rem 1.2rem;
+    font-size: 1.4rem;
+    min-height: 4.4rem;
+  }
+  .phone-number__input .input.has-dropdown {
+    padding-right: 3.5rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .phone-number__input .input {
+    transition: none !important;
+    animation: none !important;
+  }
+  .phone-number__input .input, .phone-number__input .input::before, .phone-number__input .input::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+@media (prefers-contrast: high) {
+  .phone-number__input .input {
+    border-width: 3px;
+  }
+}
+@media print {
+  .phone-number__input .input {
+    border: 1px solid #000;
+    background: white;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+}
+
+@media (max-width: 768px) {
+  .phone-number__country {
+    margin-bottom: 0;
+  }
+  .phone-number__country .select,
+  .phone-number__country .country-search-input {
+    width: 100%;
+  }
+  .phone-number__input .input {
+    width: 100%;
+  }
+  .phone-number__display {
+    margin-top: 1rem;
+  }
+  .phone-number__display .form-helper-text {
+    font-size: 1.3rem;
+    padding: 1rem;
+  }
+  .country-flag {
+    font-size: 1.4rem;
+  }
+  .country-name {
+    font-size: 1.3rem;
+  }
+}
+.phone-number + .error-message {
+  margin-top: 0.5rem;
+  font-size: 1.3rem;
+  color: #c62828;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.phone-number + .error-message::before {
+  content: "⚠️";
+  font-size: 1.4rem;
+}/*# sourceMappingURL=phonenumber.css.map */

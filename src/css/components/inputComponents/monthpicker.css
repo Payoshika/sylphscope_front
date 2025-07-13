@@ -1,0 +1,190 @@
+/* box sizing */
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* base font */ /* 1 rem = 10px; 10px/16px = 62.5% */
+  font-size: 62.5%;
+  font-family: "Helvetica", "Inter";
+}
+
+body {
+  /* base color */
+  background-color: #fffdfa;
+  color: #3a3e46;
+}
+body img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 100%;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes loading {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.month-picker {
+  display: grid;
+  grid-template-columns: 15rem 15rem;
+  grid-template-rows: auto;
+  gap: 1rem;
+  align-items: end;
+}
+@media (max-width: 768px) {
+  .month-picker {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.month-picker__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.month-picker__label {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: rgba(58, 62, 70, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+}
+
+.month-picker .select {
+  cursor: pointer;
+  padding-right: 4rem;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='%23666' d='M8 11L3 6h10z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 1.2rem center;
+  background-size: 1.2rem;
+  width: 100%;
+  padding: 1.2rem 1.6rem;
+  font-size: 1.5rem;
+  font-family: inherit;
+  border: 2px solid rgba(58, 62, 70, 0.2);
+  border-radius: 6px;
+  background-color: #fffdfa;
+  color: #3a3e46;
+  transition: all 0.3s ease;
+  min-height: 4.8rem;
+  box-sizing: border-box;
+}
+.month-picker .select::-moz-placeholder {
+  color: rgba(58, 62, 70, 0.4);
+  font-style: italic;
+}
+.month-picker .select::placeholder {
+  color: rgba(58, 62, 70, 0.4);
+  font-style: italic;
+}
+.month-picker .select:focus {
+  outline: none;
+  border-color: #3a3e46;
+  box-shadow: 0 0 7px rgba(58, 62, 70, 0.4);
+}
+.month-picker .select:disabled {
+  background-color: rgba(58, 62, 70, 0.1);
+  color: rgba(58, 62, 70, 0.4);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.month-picker .select:hover:not(:disabled):not(:focus) {
+  border-color: rgba(58, 62, 70, 0.6);
+}
+.month-picker .select--error {
+  border-color: #c62828;
+}
+.month-picker .select--error:focus {
+  border-color: #c62828;
+  box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.2);
+}
+.month-picker .select option {
+  padding: 0.8rem;
+  font-size: 1.4rem;
+  background-color: #fffdfa;
+  color: #3a3e46;
+}
+.month-picker .select option:hover {
+  background-color: rgba(58, 62, 70, 0.1);
+}
+.month-picker .select option:checked {
+  background-color: #3a3e46;
+  color: #fffdfa;
+}
+@media (max-width: 768px) {
+  .month-picker .select {
+    padding: 1rem 1.2rem;
+    font-size: 1.4rem;
+    min-height: 4.4rem;
+  }
+  .month-picker .select.has-dropdown {
+    padding-right: 3.5rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .month-picker .select {
+    transition: none !important;
+    animation: none !important;
+  }
+  .month-picker .select, .month-picker .select::before, .month-picker .select::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+@media (prefers-contrast: high) {
+  .month-picker .select {
+    border-width: 3px;
+  }
+}
+@media print {
+  .month-picker .select {
+    border: 1px solid #000;
+    background: white;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+}
+
+.month-picker--error .select {
+  border-color: #c62828;
+}
+.month-picker--error .select:focus {
+  border-color: #c62828;
+  box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.2);
+}
+.month-picker--error .month-picker__label {
+  color: #c62828;
+}
+
+.month-picker {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .month-picker__label {
+    font-size: 1.4rem;
+  }
+}/*# sourceMappingURL=monthpicker.css.map */

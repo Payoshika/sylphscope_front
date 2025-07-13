@@ -16,7 +16,7 @@ export interface SearchableCategory {
   };
 }
 
-interface SearchableDropdownProps {
+export interface SearchableDropdownProps {
   id: string;
   name: string;
   label: string;

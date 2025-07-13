@@ -1,0 +1,280 @@
+/* box sizing */
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* base font */ /* 1 rem = 10px; 10px/16px = 62.5% */
+  font-size: 62.5%;
+  font-family: "Helvetica", "Inter";
+}
+
+body {
+  /* base color */
+  background-color: #fffdfa;
+  color: #3a3e46;
+}
+body img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 100%;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes loading {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.yes-no-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  align-items: center;
+  width: 100%;
+}
+.yes-no-toggle__track {
+  position: relative;
+  width: 8rem;
+  height: 3rem;
+  background-color: rgba(58, 62, 70, 0.1);
+  border: 2px solid rgba(58, 62, 70, 0.2);
+  border-radius: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.yes-no-toggle__track:hover:not(.yes-no-toggle--disabled) {
+  border-color: #3a3e46;
+}
+.yes-no-toggle--disabled .yes-no-toggle__track {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.yes-no-toggle__slider {
+  position: absolute;
+  top: 0.15rem;
+  left: 0.15rem;
+  width: 3.6rem;
+  height: 2.4rem;
+  background-color: #fffdfa;
+  border: 2px solid rgba(58, 62, 70, 0.2);
+  border-radius: 1.2rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(58, 62, 70, 0.1);
+}
+.yes-no-toggle__slider--yes {
+  transform: translateX(3.6rem);
+  background-color: #3a3e46;
+  border-color: #3a3e46;
+}
+.yes-no-toggle__slider--no {
+  transform: translateX(0);
+  background-color: rgba(58, 62, 70, 0.4);
+  border-color: rgba(58, 62, 70, 0.4);
+}
+.yes-no-toggle__slider--error {
+  border-color: #c62828;
+}
+.yes-no-toggle__slider--disabled {
+  background-color: rgba(58, 62, 70, 0.1);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.yes-no-toggle__labels {
+  display: flex;
+  justify-content: space-between;
+  width: 8rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+.yes-no-toggle__option {
+  transition: color 0.3s ease;
+}
+.yes-no-toggle__option--no {
+  color: rgba(58, 62, 70, 0.4);
+}
+.yes-no-toggle__option--no.yes-no-toggle__option--active {
+  color: rgba(58, 62, 70, 0.4);
+  font-weight: 600;
+}
+.yes-no-toggle__option--yes {
+  color: rgba(58, 62, 70, 0.4);
+}
+.yes-no-toggle__option--yes.yes-no-toggle__option--active {
+  color: #3a3e46;
+  font-weight: 600;
+}
+.yes-no-toggle--small .yes-no-toggle__track {
+  width: 6rem;
+  height: 2.4rem;
+}
+.yes-no-toggle--small .yes-no-toggle__slider {
+  width: 2.8rem;
+  height: 1.8rem;
+}
+.yes-no-toggle--small .yes-no-toggle__slider--yes {
+  transform: translateX(2.9rem);
+}
+.yes-no-toggle--small .yes-no-toggle__labels {
+  width: 6rem;
+  font-size: 1rem;
+}
+.yes-no-toggle--large .yes-no-toggle__track {
+  width: 10rem;
+  height: 3.8rem;
+}
+.yes-no-toggle--large .yes-no-toggle__slider {
+  width: 4.8rem;
+  height: 3rem;
+}
+.yes-no-toggle--large .yes-no-toggle__slider--yes {
+  transform: translateX(4.9rem);
+}
+.yes-no-toggle--large .yes-no-toggle__labels {
+  width: 10rem;
+  font-size: 1.3rem;
+}
+.yes-no-toggle--success-danger .yes-no-toggle__slider--yes {
+  background-color: #2d7d32;
+  border-color: #2d7d32;
+}
+.yes-no-toggle--success-danger .yes-no-toggle__slider--no {
+  background-color: #c62828;
+  border-color: #c62828;
+}
+.yes-no-toggle--success-danger .yes-no-toggle__option--yes.yes-no-toggle__option--active {
+  color: #2d7d32;
+}
+.yes-no-toggle--success-danger .yes-no-toggle__option--no.yes-no-toggle__option--active {
+  color: #c62828;
+}
+.yes-no-toggle--primary-secondary .yes-no-toggle__slider--yes {
+  background-color: #3a3e46;
+  border-color: #3a3e46;
+}
+.yes-no-toggle--primary-secondary .yes-no-toggle__slider--no {
+  background-color: rgba(58, 62, 70, 0.6);
+  border-color: rgba(58, 62, 70, 0.6);
+}
+.yes-no-toggle--primary-secondary .yes-no-toggle__option--yes.yes-no-toggle__option--active {
+  color: #3a3e46;
+}
+.yes-no-toggle--primary-secondary .yes-no-toggle__option--no.yes-no-toggle__option--active {
+  color: rgba(58, 62, 70, 0.6);
+}
+.yes-no-toggle--error .yes-no-toggle__track {
+  border-color: #c62828;
+}
+
+.help-text {
+  font-size: 1.1rem;
+  color: rgba(58, 62, 70, 0.4);
+  margin-bottom: 0.6rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .yes-no-toggle__track {
+    width: 7rem;
+    height: 2.8rem;
+  }
+  .yes-no-toggle__slider {
+    width: 3.2rem;
+    height: 2.2rem;
+  }
+  .yes-no-toggle__slider--yes {
+    transform: translateX(3.5rem);
+  }
+  .yes-no-toggle__labels {
+    width: 7rem;
+    font-size: 1rem;
+  }
+  .yes-no-toggle--small .yes-no-toggle__track {
+    width: 5.5rem;
+    height: 2.4rem;
+  }
+  .yes-no-toggle--small .yes-no-toggle__slider {
+    width: 2.4rem;
+    height: 1.8rem;
+  }
+  .yes-no-toggle--small .yes-no-toggle__slider--yes {
+    transform: translateX(2.8rem);
+  }
+  .yes-no-toggle--small .yes-no-toggle__labels {
+    width: 5.5rem;
+    font-size: 0.9rem;
+  }
+  .yes-no-toggle--large .yes-no-toggle__track {
+    width: 8.5rem;
+    height: 3.2rem;
+  }
+  .yes-no-toggle--large .yes-no-toggle__slider {
+    width: 4rem;
+    height: 2.6rem;
+  }
+  .yes-no-toggle--large .yes-no-toggle__slider--yes {
+    transform: translateX(4.2rem);
+  }
+  .yes-no-toggle--large .yes-no-toggle__labels {
+    width: 8.5rem;
+    font-size: 1.1rem;
+  }
+  .help-text {
+    font-size: 1rem;
+  }
+}
+@media (prefers-contrast: high) {
+  .yes-no-toggle__track {
+    border-width: 3px;
+  }
+  .yes-no-toggle__slider {
+    border-width: 3px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .yes-no-toggle__track, .yes-no-toggle__slider, .yes-no-toggle__option {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+@media print {
+  .yes-no-toggle__track {
+    display: none;
+  }
+  .yes-no-toggle::after {
+    content: "Selected: " attr(data-value);
+    font-weight: bold;
+    color: black;
+  }
+}
+.yes-no-toggle__track:focus-visible {
+  outline: 2px solid rgba(58, 62, 70, 0.5);
+  outline-offset: 2px;
+}
+
+.yes-no-toggle__track:focus {
+  outline: none;
+}
+.yes-no-toggle__track[tabindex="0"]:focus-visible {
+  outline: 2px solid rgba(58, 62, 70, 0.5);
+  outline-offset: 2px;
+}/*# sourceMappingURL=toggle.css.map */

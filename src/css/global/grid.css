@@ -1,0 +1,17 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: min-content;
+  min-height: 100vh;
+  max-width: 140rem;
+  margin: 0 auto;
+}
+
+.signin-container,
+.signup-container {
+  grid-column: 1/-1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}/*# sourceMappingURL=grid.css.map */

@@ -1,0 +1,135 @@
+@use "../global/base" as *;
+@use "../global/mixins" as *;
+
+.grant-create-layout {
+  min-height: 100vh;
+  @include RowJustifyStartFlexbox;
+  align-items: stretch;
+}
+
+.grant-nav {
+  @include ColJustifyStartFlexbox;
+  @include Padding2rem;
+  @include Box;
+  @include BoxShadow;
+  padding-left: 0;
+  align-items: start;
+}
+
+.grant-nav__item {
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  border-left: none;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  p {color: $background-color;}
+  text-decoration: none;
+  transition: 0.2s;
+  p {
+    margin-bottom: 0;
+  }
+  &--active {
+    background: $text-color;
+  }
+}
+
+.grant-create-content {
+  flex: 1;
+  padding: 2rem 3rem;
+  .content{
+    width: 100%;
+    max-width: 100rem;
+    height: 100%;
+    @include Padding2rem;
+    @include ColJustifyStartFlexbox;
+    .eligibility-lists{
+      width: 100%;
+      flex-direction: row;
+      justify-content: start;
+    }
+  }
+  @include ColJustifyStartFlexbox;
+  @include Box;
+  @include BoxShadow;
+}
+
+.grant-create-headline {
+  width: 100%;
+  @include ColJustifyCenterFlexbox;
+  &__title {
+  }
+  &__text {
+    align-self: self-start;
+    margin-bottom: 0;
+    @include RowJustifyStartFlexbox;
+    gap: 1rem;
+  }
+}
+
+.eligibility-btn--added {
+  background: #fff !important;
+  color: #000 !important;
+  border: 1px solid #3a3e46 !important;
+  cursor: not-allowed !important;
+  opacity: 1 !important;
+}
+
+.eligibility-forms{
+  width:100%;
+  @include Box;
+  @include BoxShadow;
+  @include ColJustifyCenterFlexbox;
+  align-items: start;
+}
+
+.eligibility-form {
+  position: relative;
+  width: 100%;
+  // @include Box;
+  // @include BoxShadow;
+  @include Padding2rem;
+  @include MarginBottom2rem;
+  box-shadow: 0 -4px 8px -4px rgba(0,0,0,0.3);
+
+}
+
+.eligibility-form__remove-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  line-height: 0;
+  color: $text-color;
+  transition: color 0.2s;
+  &:hover {
+    color: $primary-color;
+  }
+}
+
+.comparison-and-values-options{
+  @include RowJustifyStartFlexbox;
+  >div{
+    min-width: 25rem;
+  }
+}
+
+@include smartphone {
+  .grant-create-layout {
+    flex-direction: column;
+  }
+  .grant-nav {
+    flex-direction: row;
+    min-width: 0;
+    border-right: none;
+    border-bottom: 1px solid #eee;
+    padding: 1rem 0.5rem;
+    gap: 0.5rem;
+    justify-content: space-around;
+  }
+  .grant-create-content {
+    padding: 1rem;
+  }
+}

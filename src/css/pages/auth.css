@@ -1,0 +1,66 @@
+/* box sizing */
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* base font */ /* 1 rem = 10px; 10px/16px = 62.5% */
+  font-size: 62.5%;
+  font-family: "Helvetica", "Inter";
+}
+
+body {
+  /* base color */
+  background-color: #fffdfa;
+  color: #3a3e46;
+}
+body img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 100%;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  color: rgba(58, 62, 70, 0.6);
+  transition: all 0.3s ease;
+}
+.password-toggle:hover:not(:disabled) {
+  color: #3a3e46;
+  background-color: rgba(58, 62, 70, 0.1);
+}
+.password-toggle:focus {
+  outline: 2px solid #3a3e46;
+  outline-offset: 2px;
+}
+.password-toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: rgba(58, 62, 70, 0.4);
+}
+.password-toggle:active:not(:disabled) {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.password-toggle__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}/*# sourceMappingURL=auth.css.map */

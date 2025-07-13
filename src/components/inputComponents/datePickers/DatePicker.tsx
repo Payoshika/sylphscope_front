@@ -154,7 +154,6 @@ const DatePicker: React.FC<ExtendedDatePickerProps> = ({
           <Select
             id={`${id}-day`}
             name={`${name}-day`}
-            label="Day"
             value={value.day}
             onChange={handleDayChange}
             options={days.map((day) => ({
@@ -164,7 +163,6 @@ const DatePicker: React.FC<ExtendedDatePickerProps> = ({
             placeholder="Day"
             disabled={disabled}
             error={hasError}
-            size="small"
           />
         </div>
 
@@ -172,7 +170,6 @@ const DatePicker: React.FC<ExtendedDatePickerProps> = ({
           <Select
             id={`${id}-month`}
             name={`${name}-month`}
-            label="Month"
             value={value.month}
             onChange={handleMonthChange}
             options={months.map((month) => ({
@@ -182,7 +179,6 @@ const DatePicker: React.FC<ExtendedDatePickerProps> = ({
             placeholder="Month"
             disabled={disabled}
             error={hasError}
-            size="small"
           />
         </div>
 
@@ -190,7 +186,6 @@ const DatePicker: React.FC<ExtendedDatePickerProps> = ({
           <Select
             id={`${id}-year`}
             name={`${name}-year`}
-            label="Year"
             value={value.year}
             onChange={handleYearChange}
             options={years.map((year) => ({
@@ -200,7 +195,6 @@ const DatePicker: React.FC<ExtendedDatePickerProps> = ({
             placeholder="Year"
             disabled={disabled}
             error={hasError}
-            size="small"
           />
         </div>
       </div>

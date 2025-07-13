@@ -27,7 +27,7 @@ const validateSigninForm = (values: LoginRequest): Record<string, string> => {
 
 const Signin: React.FC = () => {
   const navigate = useNavigate();
-  const { login, user, mfaRequired } = useAuth();
+  const { user, mfaRequired } = useAuth();
   const { showPassword, togglePassword } = usePasswordVisibility();
 
   // Redirect if already authenticated
@@ -85,19 +85,12 @@ const Signin: React.FC = () => {
   return (
     <AuthCard
       title="Sign In"
-      subtitle="Welcome back to SylphScope"
       footerText="Don't have an account?"
       footerLinkText="Sign up here"
       footerLinkTo="/signup"
     >
       {errors.submit && <Alert message={errors.submit} />}
-
-      <GoogleOAuthButton disabled={isSubmitting} />
-      <div className="oauth-divider">
-        <span>or continue with email</span>
-      </div>
-
-      <form onSubmit={(e) => handleSubmit(e, onSubmit)}>
+      <form className="signin-form" onSubmit={(e) => handleSubmit(e, onSubmit)}>
         <FormInput
           id="username"
           name="username"
@@ -129,6 +122,14 @@ const Signin: React.FC = () => {
           defaultText="Sign In"
         />
       </form>
+      <div className="oauth-divider">
+        <span>or continue with email</span>
+      </div>
+      <div className="signup-options">
+        <GoogleOAuthButton disabled={isSubmitting} />
+        <GoogleOAuthButton disabled={isSubmitting} />
+        <GoogleOAuthButton disabled={isSubmitting} />
+      </div>
     </AuthCard>
   );
 };

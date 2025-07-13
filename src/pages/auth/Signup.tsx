@@ -7,6 +7,8 @@ import { useToast } from "../../contexts/ToastContext";
 import type { RegisterRequest } from "../../types/auth";
 import AuthCard from "../../components/AuthCard";
 import FormInput from "../../components/FormInput";
+import Select from "../../components/inputComponents/Select";
+
 import SubmitButton from "../../components/SubmitButton";
 import GoogleOAuthButton from "../../components/GoogleOAuthButton";
 import Alert from "../../components/Alert";
@@ -64,6 +66,7 @@ const Signup: React.FC = () => {
       email: "",
       password: "",
       confirmPassword: "",
+      userRole: "",
     } as RegisterRequest,
     validate: validateSignupForm,
   });
@@ -71,7 +74,6 @@ const Signup: React.FC = () => {
   const onSubmit = async (formData: RegisterRequest) => {
     try {
       const response = await AuthService.register(formData);
-
       if (response.success) {
         showSuccess(
           "Your account has been created successfully!",
@@ -93,19 +95,12 @@ const Signup: React.FC = () => {
   return (
     <AuthCard
       title="Create Account"
-      subtitle="Join SylphScope to get started"
       footerText="Already have an account?"
       footerLinkText="Sign in here"
       footerLinkTo="/signin"
     >
       {errors.submit && <Alert message={errors.submit} />}
-
-      <GoogleOAuthButton disabled={isSubmitting} />
-      <div className="oauth-divider">
-        <span>or create account with email</span>
-      </div>
-
-      <form onSubmit={(e) => handleSubmit(e, onSubmit)}>
+      <form className="signup-form" onSubmit={(e) => handleSubmit(e, onSubmit)}>
         <FormInput
           id="username"
           name="username"
@@ -157,13 +152,36 @@ const Signup: React.FC = () => {
           showPassword={showConfirmPassword}
           onTogglePassword={toggleConfirmPassword}
         />
-
+        <Select
+          id="user-role"
+          name="userRole"
+          label="Choose your role"
+          value={values.userRole}
+          onChange={handleChange}
+          options={[
+            { value: "STUDENT", label: "Student" },
+            { value: "PROVIDER", label: "Provider" },
+          ]}
+          placeholder="Select your role"
+          disabled={isSubmitting}
+          required
+          error={errors.userRole}
+        />
+        {errors.userRole && <div className="error-message">{errors.userRole}</div>}
         <SubmitButton
           isLoading={isSubmitting}
           loadingText="Creating Account..."
           defaultText="Create Account"
         />
       </form>
+      <div className="oauth-divider">
+        <span>Or sign up with</span>
+      </div>
+      <div className="signup-options">
+        <GoogleOAuthButton disabled={isSubmitting} />
+        <GoogleOAuthButton disabled={isSubmitting} />
+        <GoogleOAuthButton disabled={isSubmitting} />
+      </div>
     </AuthCard>
   );
 };

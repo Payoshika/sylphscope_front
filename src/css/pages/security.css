@@ -1,0 +1,143 @@
+/* box sizing */
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* base font */ /* 1 rem = 10px; 10px/16px = 62.5% */
+  font-size: 62.5%;
+  font-family: "Helvetica", "Inter";
+}
+
+body {
+  /* base color */
+  background-color: #fffdfa;
+  color: #3a3e46;
+}
+body img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 100%;
+}
+
+.danger-zone {
+  border-color: rgba(198, 40, 40, 0.3);
+}
+.danger-zone .card__header h3 {
+  color: #c62828;
+}
+
+.danger-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.danger-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2rem;
+  border: 1px solid rgba(198, 40, 40, 0.2);
+  border-radius: 6px;
+  background-color: rgba(198, 40, 40, 0.05);
+}
+.danger-item h4 {
+  margin-bottom: 1rem;
+  color: #c62828;
+}
+.danger-item .caption {
+  color: rgba(58, 62, 70, 0.6);
+}
+@media (max-width: 768px) {
+  .danger-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+}
+
+.danger-btn {
+  border-color: #c62828;
+  color: #c62828;
+}
+.danger-btn:hover:not(:disabled) {
+  background-color: #c62828;
+  color: #fffdfa;
+}
+.danger-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mfa-setup-content {
+  margin-bottom: 2rem;
+}
+
+.mfa-step {
+  margin-bottom: 2rem;
+}
+.mfa-step:last-child {
+  margin-bottom: 0;
+}
+.mfa-step h4 {
+  margin-bottom: 1rem;
+  color: #3a3e46;
+}
+.mfa-step .caption {
+  margin-bottom: 1rem;
+}
+
+.qr-code-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 2rem;
+}
+
+.qr-code-mock {
+  width: 20rem;
+  height: 20rem;
+  border: 2px dashed rgba(58, 62, 70, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  text-align: center;
+  background-color: rgba(58, 62, 70, 0.1);
+  border-radius: 6px;
+}
+.qr-code-mock p {
+  margin: 1rem;
+  color: rgba(58, 62, 70, 0.6);
+}
+@media (max-width: 768px) {
+  .qr-code-mock {
+    width: 16rem;
+    height: 16rem;
+  }
+}
+
+.delete-confirm-content {
+  margin-bottom: 2rem;
+}
+.delete-confirm-content p {
+  margin: 2rem;
+}
+.delete-confirm-content .input {
+  margin-top: 1rem;
+}/*# sourceMappingURL=security.css.map */

@@ -1,4 +1,5 @@
 import React from "react";
+import CrossSign from "../icons/CrossSign";
 
 interface ModalProps {
   isOpen: boolean;
@@ -28,7 +29,7 @@ const Modal: React.FC<ModalProps> = ({
               onClick={onClose}
               aria-label="Close modal"
             >
-              ×
+              <CrossSign width={24} height={24} />
             </button>
           </div>
         )}

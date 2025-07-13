@@ -1,0 +1,189 @@
+/* box sizing */
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* base font */ /* 1 rem = 10px; 10px/16px = 62.5% */
+  font-size: 62.5%;
+  font-family: "Helvetica", "Inter";
+}
+
+body {
+  /* base color */
+  background-color: #fffdfa;
+  color: #3a3e46;
+}
+body img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 100%;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes loading {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.gcse-grade-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.gcse-grade__subject,
+.gcse-grade__grade {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.gcse-grade__label {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #3a3e46;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.gcse-grade__label .required-asterisk {
+  color: #c62828;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.gcse-grade-container .select {
+  cursor: pointer;
+  padding-right: 4rem;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='%23666' d='M8 11L3 6h10z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 1.2rem center;
+  background-size: 1.2rem;
+  width: 100%;
+  padding: 1.2rem 1.6rem;
+  font-size: 1.5rem;
+  font-family: inherit;
+  border: 2px solid rgba(58, 62, 70, 0.2);
+  border-radius: 6px;
+  background-color: #fffdfa;
+  color: #3a3e46;
+  transition: all 0.3s ease;
+  min-height: 4.8rem;
+  box-sizing: border-box;
+}
+.gcse-grade-container .select::-moz-placeholder {
+  color: rgba(58, 62, 70, 0.4);
+  font-style: italic;
+}
+.gcse-grade-container .select::placeholder {
+  color: rgba(58, 62, 70, 0.4);
+  font-style: italic;
+}
+.gcse-grade-container .select:focus {
+  outline: none;
+  border-color: #3a3e46;
+  box-shadow: 0 0 7px rgba(58, 62, 70, 0.4);
+}
+.gcse-grade-container .select:disabled {
+  background-color: rgba(58, 62, 70, 0.1);
+  color: rgba(58, 62, 70, 0.4);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.gcse-grade-container .select:hover:not(:disabled):not(:focus) {
+  border-color: rgba(58, 62, 70, 0.6);
+}
+.gcse-grade-container .select--error {
+  border-color: #c62828;
+}
+.gcse-grade-container .select--error:focus {
+  border-color: #c62828;
+  box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.2);
+}
+.gcse-grade-container .select option {
+  padding: 0.8rem;
+  font-size: 1.4rem;
+  background-color: #fffdfa;
+  color: #3a3e46;
+}
+.gcse-grade-container .select option:hover {
+  background-color: rgba(58, 62, 70, 0.1);
+}
+.gcse-grade-container .select option:checked {
+  background-color: #3a3e46;
+  color: #fffdfa;
+}
+@media (max-width: 768px) {
+  .gcse-grade-container .select {
+    padding: 1rem 1.2rem;
+    font-size: 1.4rem;
+    min-height: 4.4rem;
+  }
+  .gcse-grade-container .select.has-dropdown {
+    padding-right: 3.5rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gcse-grade-container .select {
+    transition: none !important;
+    animation: none !important;
+  }
+  .gcse-grade-container .select, .gcse-grade-container .select::before, .gcse-grade-container .select::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+@media (prefers-contrast: high) {
+  .gcse-grade-container .select {
+    border-width: 3px;
+  }
+}
+@media print {
+  .gcse-grade-container .select {
+    border: 1px solid #000;
+    background: white;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+}
+
+.gcse-grade__info {
+  padding: 1rem 1.5rem;
+  background-color: rgba(0, 102, 204, 0.05);
+  border: 1px solid rgba(0, 102, 204, 0.2);
+  border-radius: 6px;
+  margin-top: 0.5rem;
+}
+.gcse-grade__info .info-text {
+  font-size: 1.2rem;
+  color: rgba(58, 62, 70, 0.6);
+  line-height: 1.4;
+}
+.gcse-grade__info .info-text strong {
+  color: #0066cc;
+  font-weight: 600;
+}
+
+.gcse-grade__grade {
+  animation: fadeIn 0.3s ease-in-out;
+}/*# sourceMappingURL=gcsegrade.css.map */

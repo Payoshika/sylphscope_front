@@ -1,0 +1,40 @@
+@use "../global/mixins" as *;
+@use "../global/base" as *;
+
+.oauth-divider {
+  display: flex;
+  align-items: center;
+  margin: 2rem 0;
+}
+.oauth-divider::before, .oauth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: $text-color
+}
+.oauth-divider::before {
+  margin-right: 1rem;
+}
+.oauth-divider::after {
+  margin-left: 1rem;
+}
+.oauth-divider span {
+  color:  $text-color;
+  font-size: 1.4rem;
+  white-space: nowrap;
+}
+
+.signup-form, .signin-form{
+    @include ColJustifyStartFlexbox;
+    gap : 0rem;
+}
+
+
+.signup-options{
+    @include RowJustifyCenterFlexbox;
+
+    .form-group{
+        border: none;
+        box-shadow: none;
+    }
+}

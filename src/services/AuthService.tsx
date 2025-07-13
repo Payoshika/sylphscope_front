@@ -92,7 +92,6 @@ class AuthService {
         userData,
         { skipAuth: true }
       );
-
       if (response.success && response.data) {
         // Store token (note: using 'token' not 'accessToken')
         tokenManager.setToken(response.data.token);

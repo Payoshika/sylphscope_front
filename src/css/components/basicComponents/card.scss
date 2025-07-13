@@ -27,9 +27,16 @@
     // @include MarginBottom2rem;
   }
 
+  &__header{
+    h2{
+      text-align : center;
+    }
+  }
+
   &__footer {
     padding-top: 1.6rem;
-    @include RowJustifySpaceBetweenFlexbox;
+    @include RowJustifyCenterFlexbox;
+    text-align : center;
   }
 }
 

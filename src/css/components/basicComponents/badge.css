@@ -1,0 +1,55 @@
+/* box sizing */
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* base font */ /* 1 rem = 10px; 10px/16px = 62.5% */
+  font-size: 62.5%;
+  font-family: "Helvetica", "Inter";
+}
+
+body {
+  /* base color */
+  background-color: #fffdfa;
+  color: #3a3e46;
+}
+body img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 100%;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.8rem 1.5rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  border-radius: 999px;
+  background-color: #3a3e46;
+  color: #fffdfa;
+}
+.badge--outline {
+  background-color: transparent;
+  border: 1px solid #3a3e46;
+  color: #3a3e46;
+}
+.badge--small {
+  padding: 0.2rem 0.8rem;
+  font-size: 1rem;
+}
+.badge--large {
+  padding: 0.6rem 1.6rem;
+  font-size: 1.4rem;
+}
+
+.badge-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}/*# sourceMappingURL=badge.css.map */

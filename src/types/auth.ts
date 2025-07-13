@@ -1,5 +1,3 @@
-import type { User } from "./user";
-
 export interface LoginRequest {
   username: string;
   password: string;
@@ -19,6 +17,7 @@ export interface RegisterRequest {
   email: string;
   password: string;
   confirmPassword: string;
+  userRole: string;
 }
 
 export interface MfaSetupInfo {

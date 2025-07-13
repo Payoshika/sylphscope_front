@@ -115,9 +115,8 @@
     cursor: pointer;
     transition: all 0.2s ease;
     border-bottom: 1px solid rgba($border-color, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    @include RowJustifyStartFlexbox;
+    gap : 1rem;
 
     &:last-child {
       border-bottom: none;
@@ -148,12 +147,6 @@
   &__option-label {
     flex: 1;
     font-size: 1.3rem;
-  }
-
-  &__option-check {
-    font-weight: bold;
-    font-size: 1.2rem;
-    margin-left: 0.8rem;
   }
 
   // Size variants
