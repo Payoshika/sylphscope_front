@@ -121,7 +121,7 @@ const handleOperatorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         <div>
           {question.inputType === "NUMBER" && (
             <NumberInput
-              id={question.id}
+              id="customNumberInput"
               name={question.name}
               label={question.questionText}
               value={values[0] ?? ""}
@@ -130,7 +130,7 @@ const handleOperatorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
           )}
           {question.inputType === "DATE" && (
             <DatePicker
-              id={question.id}
+              id="customDateInput"
               name={question.name}
               label={question.questionText}
               value={values[0] ?? ""}
@@ -139,7 +139,7 @@ const handleOperatorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
           )}
           {(question.inputType === "RADIO" || question.inputType === "MULTISELECT") && searchableOptions.length > 0 && (
             <SearchableMultiSelect
-              id={question.id}
+              id="customMultiSelectInput"
               name={question.name}
               label={question.questionText}
               value={Array.isArray(values) ? values : values ? [values] : []}
@@ -157,7 +157,7 @@ const handleOperatorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
           )}
           {question.inputType === "TEXT" && (
             <TextInput
-              id={question.id}
+              id="customTextInput"
               name={question.name}
               label={question.questionText}
               value={values[0] ?? ""}
@@ -167,7 +167,7 @@ const handleOperatorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
           )}
           {question.inputType === "TEXTAREA" && (
             <Textarea
-              id={question.id}
+              id="customTextareaInput"
               name={question.name}
               label={question.questionText}
               value={values[0] ?? ""}

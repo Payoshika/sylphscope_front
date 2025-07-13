@@ -7,6 +7,8 @@ import NumberInput from "../../components/inputComponents/NumberInput";
 import Button from "../../components/basicComponents/Button";
 import DatePicker from "../../components/inputComponents/datePickers/DatePicker";
 import SearchableMultiSelect from "../../components/inputComponents/SearchableMultiSelect";
+import type { DateValue } from "../../components/inputComponents/datePickers/types";
+import CrossSign from "../../components/icons/CrossSign";
 
 const inputTypeOptions: { value: InputType; label: string }[] = [
   { value: "TEXT", label: "Text" },
@@ -110,8 +112,9 @@ interface EligibilityFormBuilderProps {
       questionDataType: DataType;
     };
     operator: ComparisonOperator;
-    values: any[];
     options?: Option[];
+    optionDataType?: DataType;
+    values: any[];
   }) => void;
 }
 
@@ -125,6 +128,7 @@ const EligibilityFormBuilder: React.FC<EligibilityFormBuilderProps> = ({ onCreat
   const [options, setOptions] = useState<Option[]>([]);
   const [optionInput, setOptionInput] = useState("");
   const [multiSelectError, setMultiSelectError] = useState<string>("");
+const [valueError, setValueError] = useState<string>("");
 
   // Option handling for RADIO/MULTISELECT
   const handleAddOption = () => {
@@ -140,9 +144,24 @@ const EligibilityFormBuilder: React.FC<EligibilityFormBuilderProps> = ({ onCreat
   };
 
   // Value handling for condition values
-  const handleValueChange = (val: string) => {
-    setValues([val]);
-  };
+const handleValueChange = (val: string | DateValue | number) => {
+  setValues([val]);
+};
+
+const handleInputTypeChange = (newType: InputType) => {
+  setInputType(newType);
+  if (newType === "RADIO" || newType === "MULTISELECT") {
+    setDataType("ARRAY");
+  } else if (newType === "TEXT" || newType === "TEXTAREA") {
+    setDataType("STRING");
+  } else if (newType === "NUMBER") {
+    setDataType("INTEGER");
+  } else if (newType === "DATE") {
+    setDataType("DATE");
+  } else {
+    setDataType("STRING");
+  }
+};
 
   // For SearchableMultiSelect
     const handleMultiSelectChange = (selected: string[]) => {
@@ -212,19 +231,10 @@ const EligibilityFormBuilder: React.FC<EligibilityFormBuilderProps> = ({ onCreat
         name="inputType"
         label="Input Type"
         value={inputType}
-        onChange={(e) => setInputType(e.target.value as InputType)}
+        onChange={(e) => handleInputTypeChange(e.target.value as InputType)}
         options={inputTypeOptions}
         required
       />
-        <Select
-        id="data-type"
-        name="dataType"
-        label="Data Type"
-        value={dataType}
-        onChange={(e) => setDataType(e.target.value as DataType)}
-        options={getDataTypeOptions(inputType)}
-        required
-        />
         {inputType !== "RADIO" && inputType !== "MULTISELECT" && (
         <Select
         id="operator"
@@ -246,13 +256,13 @@ const EligibilityFormBuilder: React.FC<EligibilityFormBuilderProps> = ({ onCreat
         />
       )}
       {inputType === "NUMBER" && (
-        <NumberInput
-          id="number-value"
-          name="numberValue"
-          label="Value"
-          value={values[0] ?? ""}
-          onChange={(e) => handleValueChange(e.target.value)}
-        />
+          <NumberInput
+            id="number-value"
+            name="numberValue"
+            label="Value"
+            value={values[0] ?? ""}
+            onChange={(e) => handleValueChange(e.target.value)}
+          />
       )}
       {inputType === "DATE" && (
         <DatePicker
@@ -272,25 +282,35 @@ const EligibilityFormBuilder: React.FC<EligibilityFormBuilderProps> = ({ onCreat
           onChange={(e) => handleValueChange(e.target.value)}
         />
       )}
+                {valueError && <div className="error-message">{valueError}</div>}
       {/* Option builder and SearchableMultiSelect for RADIO/MULTISELECT */}
       {(inputType === "RADIO" || inputType === "MULTISELECT") && (
         <div>
-          <TextInput
-            id="option-input"
-            name="optionInput"
-            label="Add Option"
-            value={optionInput}
-            onChange={(e) => setOptionInput(e.target.value)}
-          />
-          <Button text="Add Option" onClick={handleAddOption} type="button" />
-          <ul>
-            {options.map((opt, idx) => (
-              <li key={idx}>
-                {opt.label}
-                <Button text="Remove" onClick={() => handleRemoveOption(idx)} type="button" size="small" />
-              </li>
-            ))}
-          </ul>
+          <form className="form-group">
+            <ul>
+              {options.map((opt, idx) => (
+                <li key={idx} className="option-row">
+                  <span>{opt.label}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveOption(idx)}
+                    className="option-remove-btn"
+                    aria-label={`Remove ${opt.label}`}
+                  >
+                    <CrossSign width={18} height={18} />
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <TextInput
+              id="option-input"
+              name="optionInput"
+              label="Add Option"
+              value={optionInput}
+              onChange={(e) => setOptionInput(e.target.value)}
+            />
+            <Button text="Add Option" onClick={handleAddOption} type="button" />
+          </form>
             <Select
             id="operator"
             name="operator"
@@ -318,7 +338,6 @@ const EligibilityFormBuilder: React.FC<EligibilityFormBuilderProps> = ({ onCreat
           />
         </div>
       )}
-
       <Button text="Create" onClick={handleCreate} type="button" />
     </div>
   );

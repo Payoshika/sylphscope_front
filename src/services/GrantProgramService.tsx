@@ -1,6 +1,6 @@
 import { apiClient } from "../utility/ApiClient";
 import type { GrantProgram } from "../types/grantProgram";
-import type { QuestionEligibilityInfoDto, EligibilityCriteriaDTO, Question } from "../data/questionEligibilityInfoDto";
+import type { QuestionEligibilityInfoDto, EligibilityCriteriaDTO, Question, Option, DataType } from "../data/questionEligibilityInfoDto";
 
 //grant related functions
 export const createGrantProgram = async (grantProgram: GrantProgram) => {
@@ -19,10 +19,13 @@ export const updateGrantProgram = async (id: string | number, grantProgram: Gran
 export const createQuestion = async (question: Question, options: Option[] = []) => {
   const { id, ...questionData } = question;
   const payload = {
-    ...questionData,
-    options,
+    "question" : questionData,
+    "options" : options,
   };
+  console.log(payload);
   const response = await apiClient.post<Question>("/api/questions", payload);
+  console.log("createdQuestion for custom Eligibility");
+  console.log(response.data);
   return response.data;
 };
 

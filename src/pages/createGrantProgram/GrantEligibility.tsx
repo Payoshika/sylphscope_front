@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import TitleAndHeadLine from "./TitleAndHeadLine";
 import { useState, useEffect, type FormEvent } from "react";
 import { updateEligibilityCriteria, createEligibilityCriteria, fetchEligibilityQuestions, getEligibilityCriteria, createQuestion } from "../../services/GrantProgramService";
-import type { ComparisonOperator, QuestionEligibilityInfoDto, EligibilityCriteriaDTO, QuestionCondition, Option, InputType, DataType } from "../../data/questionEligibilityInfoDto";
+import type { ComparisonOperator, QuestionEligibilityInfoDto, EligibilityCriteriaDTO, QuestionCondition, Option, InputType, DataType, Question } from "../../data/questionEligibilityInfoDto";
 import EligibilityFormBuilder from "./EligibilityFormBuilder";
 import EligibilityForm from "./EligibilityForm";
 import Modal from "../../components/basicComponents/Modal";
@@ -132,7 +132,7 @@ function convertToEligibilityCriteriaDTO(
   const question = formState.form.question;
 
   const simpleCondition: QuestionCondition = {
-    questionId: question.id,
+    questionId: question.id ?? "",
     description: question.description || "",
     comparisonOperator: formState.operator,
     values: formState.values,
@@ -179,7 +179,7 @@ const handleCreateEligibilityForm = (form: {
       id: "",
       name: "Custom Question",
       inputType: form.inputType,
-      questionDataType: form.dataType,
+      questionDataType: form.dataType as DataType,
       questionText: "Custom Question",
       description: "",
       isRequired: false,
@@ -255,7 +255,11 @@ const handleCreateEligibilityForm = (form: {
 <EligibilityFormBuilder
   onCreate={async (form) => {
     // Send question and options together
-    const savedQuestion = await createQuestion(form.question, form.options || []);
+    const savedQuestion = await createQuestion(form.question as Question, form.options || []);
+    if (!savedQuestion) {
+      setSubmitError("Failed to create question.");
+      return;
+    }
     const newQuestionEligibilityInfoDto: QuestionEligibilityInfoDto = {
       question: savedQuestion,
       options: form.options || [],

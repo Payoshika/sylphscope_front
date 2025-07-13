@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import type { SearchableOption } from "./SearchableDropdown";
 import Checkmark from "../icons/Checkmark";
+import CrossSign from "../icons/CrossSign";
 
 interface SearchableMultiSelectProps {
   id: string;
@@ -138,15 +139,15 @@ const SearchableMultiSelect: React.FC<SearchableMultiSelectProps> = ({
         .map((opt) => (
           <span className={`${className}__chip`} key={opt!.value}>
             {opt!.label}
-            <button
-              type="button"
-              className={`${className}__chip-remove`}
-              onClick={(e) => handleRemoveSelected(opt!.value, e)}
-              aria-label={`Remove ${opt!.label}`}
-              tabIndex={-1}
-            >
-              ×
-            </button>
+          <button
+            type="button"
+            className={`${className}__chip-remove`}
+            onClick={(e) => handleRemoveSelected(opt!.value, e)}
+            aria-label={`Remove ${opt!.label}`}
+            tabIndex={-1}
+          >
+            <CrossSign width={16} height={16} />
+          </button>
           </span>
         ))}
     </div>

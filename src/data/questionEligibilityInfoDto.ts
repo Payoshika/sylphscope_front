@@ -57,7 +57,7 @@ export interface QuestionCondition {
 
 // Define Question type according to your backend structure
 export interface Question {
-  id: string;
+  id?: string;
   name: string;
   inputType: InputType;
   questionDataType: DataType;
