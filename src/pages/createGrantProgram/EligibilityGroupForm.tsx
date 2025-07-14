@@ -3,17 +3,26 @@ import type { EligibilityGroupFormState, ComparisonOperator, QuestionConditionPa
 import TextInput from "../../components/inputComponents/TextInput";
 import Button from "../../components/basicComponents/Button";
 import EligibilityForm from "./EligibilityForm";
+import CrossSign from "../../components/icons/CrossSign";
 
 interface EligibilityGroupFormProps {
   group: EligibilityGroupFormState;
   onCreate: (group: EligibilityGroupFormState) => void;
   onUpdateCondition?: (groupId: string, idx: number, condition: QuestionConditionPair) => void;
   onDuplicate?: (groupId: string) => void;
+  onRemove?: (groupId: string) => void; // <-- Add this prop
   initialCollapsed?: boolean;
   pending?: boolean;
 }
 
-const EligibilityGroupForm: React.FC<EligibilityGroupFormProps> = ({ group, onCreate, onUpdateCondition, onDuplicate, initialCollapsed = false, pending = true }) => {
+const EligibilityGroupForm: React.FC<EligibilityGroupFormProps> = ({  group,
+  onCreate,
+  onUpdateCondition,
+  onDuplicate,
+  onRemove, // <-- Add this prop
+  initialCollapsed = false,
+  pending = true,
+}) => {
   const [groupName, setGroupName] = useState(group.groupName);
   const [questionConditions, setQuestionConditions] = useState<QuestionConditionPair[]>(group.questionConditions);
   const [collapsed, setCollapsed] = useState(initialCollapsed);
@@ -52,33 +61,45 @@ const EligibilityGroupForm: React.FC<EligibilityGroupFormProps> = ({ group, onCr
   return (
     <div className="eligibility-group-forms">
       <form className={`eligibility-group-form${pendingStatus ? " eligibility-group-form--pending" : ""}`}>
-        <div>
+        <div style={{ position: "relative" }}>
           {collapsed ? (
             <div className="group-collapsed-row">
-                <button
+              <button
                 type="button"
                 className="group-name-collapsed"
                 onClick={() => setCollapsed(false)}
-                >
+              >
                 {groupName}
-                </button>
-                <button
+              </button>
+              <button
                 type="button"
                 className="group-duplicate-btn"
                 onClick={() => onDuplicate && onDuplicate(group.groupId)}
-                >
-                Create different condition for the same question group
-                </button>
+              >
+                Duplicate
+              </button>
+              <button
+                type="button"
+                className="group-remove-btn"
+                onClick={() => onRemove && onRemove(group.groupId)}
+                aria-label="Remove group"
+              >
+                <CrossSign width={22} height={22} />
+              </button>
             </div>
-            ) : (
-            <TextInput
-              id={`group-name-${group.groupId}`}
-              name={`groupName-${group.groupId}`}
-              label="Custom Condition Name"
-              value={groupName}
-              onChange={e => setGroupName(e.target.value)}
-              required
-            />
+          ) : (
+            <>
+              <div className="group-header-row">
+                <TextInput
+                  id={`group-name-${group.groupId}`}
+                  name={`groupName-${group.groupId}`}
+                  label="Custom Condition Name"
+                  value={groupName}
+                  onChange={e => setGroupName(e.target.value)}
+                  required
+                />
+              </div>
+            </>
           )}
         </div>
         {!collapsed && (
@@ -95,12 +116,19 @@ const EligibilityGroupForm: React.FC<EligibilityGroupFormProps> = ({ group, onCr
                 />
               ))}
             </div>
-            <Button
-              text="Add Group Condition"
-              type="button"
-              className="add-group-condition-btn"
-              onClick={handleCreate}
-            />
+            <div className="group-action-row">
+              <Button
+                text="Add Group Condition"
+                type="button"
+                onClick={handleCreate}
+              />
+              <Button
+                text="Cancel"
+                type="button"
+                variant="outline"
+                onClick={() => onRemove && onRemove(group.groupId)}
+              />
+            </div>
           </>
         )}
       </form>

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import TitleAndHeadLine from "./TitleAndHeadLine";
 import { useState, useEffect, type FormEvent } from "react";
 import { updateEligibilityCriteria, createEligibilityCriteria, fetchEligibilityQuestions,fetchEligibilityQuestionGroups, getEligibilityCriteria, createQuestion } from "../../services/GrantProgramService";
-import type { ComparisonOperator, QuestionEligibilityInfoDto, EligibilityCriteriaDTO, QuestionCondition, Option, InputType, DataType, Question } from "../../data/questionEligibilityInfoDto";
+import type { ComparisonOperator, EligibilityGroupFormState,QuestionGroupEligibilityInfoDto,  QuestionEligibilityInfoDto, EligibilityCriteriaDTO, QuestionCondition, Option, InputType, DataType, Question } from "../../data/questionEligibilityInfoDto";
 import EligibilityGroupForm from "./EligibilityGroupForm";
 import EligibilityFormBuilder from "./EligibilityFormBuilder";
 import EligibilityForm from "./EligibilityForm";
@@ -84,13 +84,27 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
           eligibilityList.forEach((criteria: EligibilityCriteriaDTO) => {
             if (criteria.criteriaType === "QUESTION_GROUP") {
               groupForms.push({
-                groupId: criteria.questionGroupId,
+                groupId: criteria.questionGroupId ?? "",
                 groupName: criteria.name,
                 groupDescription: criteria.description || "",
-                questionConditions: criteria.questionConditions.map(condition => ({
-                  question: eligibilityQuestions.find(q => q.question.id === condition.questionId) || { question: { id: condition.questionId, name: "", questionDataType: "STRING" } },
-                  condition
-                }))
+                questionConditions: Array.isArray(criteria.questionConditions)
+                  ? criteria.questionConditions.map(condition => ({
+                      question: eligibilityQuestions.find(q => q.question.id === condition.questionId) || {
+                        question: {
+                          id: condition.questionId,
+                          name: "",
+                          questionText: "",
+                          inputType: "TEXT",
+                          questionDataType: "STRING",
+                          description: "",
+                          isRequired: false,
+                        },
+                        options: [],
+                        operators: ["equals"]
+                      },
+                      condition
+                    }))
+                  : []
               });
             } else {
               const formState = convertToEligibilityFormState(criteria, eligibilityQuestions);
@@ -333,6 +347,11 @@ const handleCreateEligibilityForm = (form: {
             group={groupForm}
             onCreate={updateEligibilityGroupForm}
             onDuplicate={duplicateEligibilityGroupForm}
+            onRemove={(groupId) =>
+              setEligibilityGroupForms((prev) =>
+                prev.filter((g) => g.groupId !== groupId)
+              )
+            }
             initialCollapsed={true}
             pending={groupForm.isPending}
           />

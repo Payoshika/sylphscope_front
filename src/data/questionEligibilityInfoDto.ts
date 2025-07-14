@@ -117,4 +117,5 @@ export interface EligibilityGroupFormState {
   groupName: string;
   groupDescription: string;
   questionConditions: QuestionConditionPair[];
+  isPending?: boolean;
 }
