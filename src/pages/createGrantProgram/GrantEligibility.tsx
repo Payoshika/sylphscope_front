@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import TitleAndHeadLine from "./TitleAndHeadLine";
 import { useState, useEffect, type FormEvent } from "react";
 import { updateEligibilityCriteria, createEligibilityCriteria, fetchEligibilityQuestions,fetchEligibilityQuestionGroups, getEligibilityCriteria, createQuestion } from "../../services/GrantProgramService";
-import type { ComparisonOperator, QuestionEligibilityInfoDto, EligibilityCriteriaDTO, QuestionCondition, Option, InputType, DataType, Question } from "../../data/questionEligibilityInfoDto";
+import type { ComparisonOperator, EligibilityGroupFormState,QuestionGroupEligibilityInfoDto,  QuestionEligibilityInfoDto, EligibilityCriteriaDTO, QuestionCondition, Option, InputType, DataType, Question } from "../../data/questionEligibilityInfoDto";
 import EligibilityGroupForm from "./EligibilityGroupForm";
 import EligibilityFormBuilder from "./EligibilityFormBuilder";
 import EligibilityForm from "./EligibilityForm";
@@ -15,6 +15,13 @@ interface GrantEligibilityProps {
   name: string;
   grantProgram: GrantProgram;
   onUpdateGrant: (id: string, grantProgram: GrantProgram) => Promise<any>;
+  onGrantProgramChange: (updated: GrantProgram) => void;
+  eligibilityQuestions: QuestionEligibilityInfoDto[];
+  setEligibilityQuestions: React.Dispatch<React.SetStateAction<QuestionEligibilityInfoDto[]>>;
+  eligibilityQuestionGroups: QuestionGroupEligibilityInfoDto[];
+  setEligibilityQuestionGroups: React.Dispatch<React.SetStateAction<QuestionGroupEligibilityInfoDto[]>>;
+  eligibilities: EligibilityCriteriaDTO[];
+  setEligibilities: React.Dispatch<React.SetStateAction<EligibilityCriteriaDTO[]>>;
   error?: boolean | string;
   required?: boolean;
 }
@@ -31,11 +38,16 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
   name,
   grantProgram,
   onUpdateGrant,
+  onGrantProgramChange,
+  eligibilityQuestions, 
+  setEligibilityQuestions,
+  eligibilityQuestionGroups,
+  setEligibilityQuestionGroups,
+  eligibilities,
+  setEligibilities,
   error = false,
   required = true,
 }) => {
-   const [eligibilityQuestions, setEligibilityQuestions] = useState<QuestionEligibilityInfoDto[]>([]);
-   const [eligibilityQuestionGroups, setEligibilityQuestionGroups] = useState<QuestionGroupEligibilityInfoDto[]>([]);
   const [loadingQuestions, setLoadingQuestions] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -61,7 +73,7 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
       try {
         const questions = await fetchEligibilityQuestions();
         setEligibilityQuestions(questions);
-        console.log("Eligibility Questions:", eligibilityQuestions);
+        console.log("Eligibility Questions:", questions);
         const questionGroups = await fetchEligibilityQuestionGroups();
         setEligibilityQuestionGroups(questionGroups);
         console.log("Eligibility Question Groups:", questionGroups);
@@ -76,21 +88,35 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
     try {
         const grantProgramId = "686cf160f9b36c21721c30d8";
         const eligibilityList = await getEligibilityCriteria(grantProgramId);
-        console.log("Fetched eligibility criteria:", eligibilityList);
         // You can set state here if you want to display the fetched criteria
         if (eligibilityList && Array.isArray(eligibilityList)) {
+          setEligibilities(eligibilityList);
           const forms: EligibilityFormState[] = [];
           const groupForms: EligibilityGroupFormState[] = [];
           eligibilityList.forEach((criteria: EligibilityCriteriaDTO) => {
             if (criteria.criteriaType === "QUESTION_GROUP") {
               groupForms.push({
-                groupId: criteria.questionGroupId,
+                groupId: criteria.questionGroupId ?? "",
                 groupName: criteria.name,
                 groupDescription: criteria.description || "",
-                questionConditions: criteria.questionConditions.map(condition => ({
-                  question: eligibilityQuestions.find(q => q.question.id === condition.questionId) || { question: { id: condition.questionId, name: "", questionDataType: "STRING" } },
-                  condition
-                }))
+                questionConditions: Array.isArray(criteria.questionConditions)
+                  ? criteria.questionConditions.map(condition => ({
+                      question: eligibilityQuestions.find(q => q.question.id === condition.questionId) || {
+                        question: {
+                          id: condition.questionId,
+                          name: "",
+                          questionText: "",
+                          inputType: "TEXT",
+                          questionDataType: "STRING",
+                          description: "",
+                          isRequired: false,
+                        },
+                        options: [],
+                        operators: ["equals"]
+                      },
+                      condition
+                    }))
+                  : []
               });
             } else {
               const formState = convertToEligibilityFormState(criteria, eligibilityQuestions);
@@ -118,6 +144,7 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
   ];
     try {
       await updateEligibilityCriteria(criteriaList, grantProgram.id || "686cf160f9b36c21721c30d8");
+      setEligibilities(criteriaList);
       setSubmitSuccess("Eligibility criteria updated successfully.");
       setEligibilityForms([]);
     } catch (error) {
@@ -256,8 +283,6 @@ function convertToEligibilityFormState(
   };
 }
 
-
-
 const handleCreateEligibilityForm = (form: {
   inputType: InputType;
   dataType: string;
@@ -333,6 +358,11 @@ const handleCreateEligibilityForm = (form: {
             group={groupForm}
             onCreate={updateEligibilityGroupForm}
             onDuplicate={duplicateEligibilityGroupForm}
+            onRemove={(groupId) =>
+              setEligibilityGroupForms((prev) =>
+                prev.filter((g) => g.groupId !== groupId)
+              )
+            }
             initialCollapsed={true}
             pending={groupForm.isPending}
           />

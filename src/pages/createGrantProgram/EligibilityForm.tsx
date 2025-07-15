@@ -99,7 +99,7 @@ const handleOperatorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
           onClick={onRemove}
           aria-label="Remove eligibility form"
         >
-          <CrossSign width={30} height={30} />
+          <CrossSign width={22} height={22} />
         </button>
       )}
       <div>
