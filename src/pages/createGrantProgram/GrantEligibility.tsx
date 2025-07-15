@@ -15,6 +15,13 @@ interface GrantEligibilityProps {
   name: string;
   grantProgram: GrantProgram;
   onUpdateGrant: (id: string, grantProgram: GrantProgram) => Promise<any>;
+  onGrantProgramChange: (updated: GrantProgram) => void;
+  eligibilityQuestions: QuestionEligibilityInfoDto[];
+  setEligibilityQuestions: React.Dispatch<React.SetStateAction<QuestionEligibilityInfoDto[]>>;
+  eligibilityQuestionGroups: QuestionGroupEligibilityInfoDto[];
+  setEligibilityQuestionGroups: React.Dispatch<React.SetStateAction<QuestionGroupEligibilityInfoDto[]>>;
+  eligibilities: EligibilityCriteriaDTO[];
+  setEligibilities: React.Dispatch<React.SetStateAction<EligibilityCriteriaDTO[]>>;
   error?: boolean | string;
   required?: boolean;
 }
@@ -31,11 +38,16 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
   name,
   grantProgram,
   onUpdateGrant,
+  onGrantProgramChange,
+  eligibilityQuestions, 
+  setEligibilityQuestions,
+  eligibilityQuestionGroups,
+  setEligibilityQuestionGroups,
+  eligibilities,
+  setEligibilities,
   error = false,
   required = true,
 }) => {
-   const [eligibilityQuestions, setEligibilityQuestions] = useState<QuestionEligibilityInfoDto[]>([]);
-   const [eligibilityQuestionGroups, setEligibilityQuestionGroups] = useState<QuestionGroupEligibilityInfoDto[]>([]);
   const [loadingQuestions, setLoadingQuestions] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -61,7 +73,7 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
       try {
         const questions = await fetchEligibilityQuestions();
         setEligibilityQuestions(questions);
-        console.log("Eligibility Questions:", eligibilityQuestions);
+        console.log("Eligibility Questions:", questions);
         const questionGroups = await fetchEligibilityQuestionGroups();
         setEligibilityQuestionGroups(questionGroups);
         console.log("Eligibility Question Groups:", questionGroups);
@@ -76,9 +88,9 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
     try {
         const grantProgramId = "686cf160f9b36c21721c30d8";
         const eligibilityList = await getEligibilityCriteria(grantProgramId);
-        console.log("Fetched eligibility criteria:", eligibilityList);
         // You can set state here if you want to display the fetched criteria
         if (eligibilityList && Array.isArray(eligibilityList)) {
+          setEligibilities(eligibilityList);
           const forms: EligibilityFormState[] = [];
           const groupForms: EligibilityGroupFormState[] = [];
           eligibilityList.forEach((criteria: EligibilityCriteriaDTO) => {
@@ -132,6 +144,7 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
   ];
     try {
       await updateEligibilityCriteria(criteriaList, grantProgram.id || "686cf160f9b36c21721c30d8");
+      setEligibilities(criteriaList);
       setSubmitSuccess("Eligibility criteria updated successfully.");
       setEligibilityForms([]);
     } catch (error) {
@@ -269,8 +282,6 @@ function convertToEligibilityFormState(
     values: criteria.simpleCondition.values,
   };
 }
-
-
 
 const handleCreateEligibilityForm = (form: {
   inputType: InputType;

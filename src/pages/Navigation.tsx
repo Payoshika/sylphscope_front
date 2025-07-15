@@ -64,7 +64,7 @@ const Navigation: React.FC = () => {
                 <Link to="/signup" className="btn btn--small">
                   Sign Up
                 </Link>
-                <Link to="/create-dev/grant/title" className="btn btn--small btn--ghost">
+                <Link to="/create-grant/686cf160f9b36c21721c30d8/title" className="btn btn--small btn--ghost">
                   Create Dev Grant
                 </Link>
               </>

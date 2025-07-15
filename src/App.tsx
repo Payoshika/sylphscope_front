@@ -32,7 +32,7 @@ function App() {
             <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
             <Route path="/mfa-verification" element={<MfaVerification />} />
             <Route path="/components" element={<Components />} />
-            <Route path="create-dev/grant/*" element={<CreateGrantProgram />} />
+            <Route path="/create-grant/:grantProgramId/*" element={<CreateGrantProgram />} />
             {/* Protected routes - all nested under ProtectedLayout */}
             <Route path="/" element={<ProtectedLayout />}>
               <Route path="settings" element={<Settings />} />

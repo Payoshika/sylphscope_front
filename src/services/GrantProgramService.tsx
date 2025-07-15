@@ -1,18 +1,21 @@
 import { apiClient } from "../utility/ApiClient";
 import type { GrantProgram } from "../types/grantProgram";
-import type { QuestionEligibilityInfoDto, EligibilityCriteriaDTO, Question, Option, DataType } from "../data/questionEligibilityInfoDto";
+import type { QuestionEligibilityInfoDto, EligibilityCriteriaDTO, Question, Option, DataType ,QuestionGroupEligibilityInfoDto} from "../data/questionEligibilityInfoDto";
 import type { EligibilityGroupFormState } from "../data/questionEligibilityInfoDto";
 
 //grant related functions
+export const getGrantProgramById = async (id: string | number): Promise<GrantProgram> => {
+  const response = await apiClient.get<GrantProgram>(`/api/grant-programs/${id}`);
+  return response.data;
+};
+
 export const createGrantProgram = async (grantProgram: GrantProgram) => {
 const { id, createdAt, updatedAt, ...grantProgramData } = grantProgram;
 return apiClient.post("/api/grant-programs", grantProgramData);
 };
 
-
 export const updateGrantProgram = async (id: string | number, grantProgram: GrantProgram) => {
   console.log("Updating grant program:", id, grantProgram);
-
   return apiClient.put(`/api/grant-programs/${id}`, grantProgram);
 };
 
@@ -53,3 +56,9 @@ export const createEligibilityCriteria = async (criteriaList: EligibilityCriteri
 export const updateEligibilityCriteria = async (criteriaList: EligibilityCriteriaDTO[], grantProgramId: string) => {
   return apiClient.put(`/api/eligibility-criteria/batch?grantProgramId=${grantProgramId}`, criteriaList);
 };
+
+export const updateQuestion = async (grantProgramId: string, questionInfoList: QuestionEligibilityInfoDto[]) => {
+  console.log("Updating questions for grant program:", grantProgramId, questionInfoList);
+  return apiClient.put(`/api/grant-programs/questions/batch?grantProgramId=${grantProgramId}`, questionInfoList);
+};
+

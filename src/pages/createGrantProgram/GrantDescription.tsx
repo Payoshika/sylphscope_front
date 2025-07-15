@@ -40,10 +40,10 @@ const GrantDescription: React.FC<GrantDescriptionProps> = ({
     setIsSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(null);
-    console.log(grantProgram);
     try {
       if (grantProgram.id && grantProgram.id !== "") {
-        await onUpdateGrant(grantProgram.id, grantProgram);
+        response = await onUpdateGrant(grantProgram.id, grantProgram);
+        onGrantProgramChange({ ...grantProgram, ...response.data });
         setSubmitSuccess("Grant description updated successfully.");
         navigate("../eligibility");
       } else {
