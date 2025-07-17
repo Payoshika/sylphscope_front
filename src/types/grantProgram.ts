@@ -25,4 +25,25 @@ export interface GrantProgram {
   updatedAt: string; 
   questionIds: string[];
   questionGroupsIds: string[];
+  selectionCriteria: SelectionCriterion[];
+  evaluationScale: EvaluationScale;
+}
+
+export type EvaluationType = "AUTO" | "MANUAL"; // Adjust as needed
+
+export enum EvaluationScale {
+  HUNDRED,
+  TEN,
+  FIVE,
+  A2E
+}
+export interface SelectionCriterion {
+  id: string;
+  criterionName: string;
+  grantProgramId: string;
+  questionType: string;
+  questionId: string;
+  weight: number;
+  evaluationType: EvaluationType;
+  evaluationScale: EvaluationScale;
 }

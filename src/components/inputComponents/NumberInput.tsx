@@ -6,6 +6,9 @@ interface NumberInputProps {
   label: string;
   value: number | "";
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  min?: number;
+  max?: number;
+  suffix?: string; // <-- Add this prop
 }
 
 const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
@@ -13,18 +16,33 @@ const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
   input.value = input.value.replace(/[^0-9.\-]/g, "");
 };
 
-const NumberInput: React.FC<NumberInputProps> = ({ id, name, label, value, onChange }) => (
-  <div className="form-group">
+const NumberInput: React.FC<NumberInputProps> = ({
+  id,
+  name,
+  label,
+  value,
+  onChange,
+  min,
+  max,
+  suffix, // <-- Add this prop
+}) => (
+  <div className="form-group number-input-group">
     <label htmlFor={id} className="form-label">{label}</label>
-    <input
-      type="number"
-      id={id}
-      name={name}
-      value={value}
-      onChange={onChange}
-      className="input"
-      step="any"
-    />
+    <div className="number-input-wrapper">
+      <input
+        type="number"
+        id={id}
+        name={name}
+        value={value}
+        onChange={onChange}
+        className="input"
+        step="any"
+        min={min}
+        max={max}
+        onInput={handleInput}
+      />
+      {suffix && <span className="number-input-suffix">{suffix}</span>}
+    </div>
   </div>
 );
 

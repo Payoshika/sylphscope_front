@@ -1,0 +1,70 @@
+@use "../global/base" as *;
+@use "../global/mixins" as *;
+@use "../components/inputComponents/shared" as shared;
+
+.selection-criteria__question-btn {
+  @include MarginBottom1rem;
+}
+
+.selection-criteria__btn {
+  width: 100%;
+  text-align: left;
+}
+
+.selection-criteria__input-row {
+  @include MarginBottom1rem;
+  @include RowJustifyStartFlexbox;
+  @include Gap1rem;
+  @include Box;
+  @include BoxShadow;  
+    div {
+    width: auto;
+  }
+  align-items: start;
+}
+
+.selection-criteria__input-label {
+  min-width: 16rem;
+  font-size: 1.2rem;
+  @include shared.form-label;
+}
+
+.selection-criteria__input {
+  width: 8rem;
+  padding: 0.5rem;
+  font-size: 1.4rem;
+  @include shared.base-input;
+}
+
+.selection-criteria__custom-input-row {
+  @include RowJustifyStartFlexbox;
+  @include Gap1rem;
+  align-items: center;
+}
+
+.selection-criteria__total {
+  font-weight: bold;
+  @include MarginTop1rem;
+}
+
+.selection-criteria__input-percent {
+  font-size: 1.2rem;
+}
+
+.selection-criteria__remove-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem;
+  margin-left: 0.5rem;
+  color: $error-color;
+  display: flex;
+  align-items: center;
+  line-height: 0;
+  border-radius: 4px;
+  transition: color 0.2s;
+  &:hover {
+    color: darken($error-color, 10%);
+    background: $subtle-color;
+  }
+}

@@ -1,5 +1,5 @@
 import { apiClient } from "../utility/ApiClient";
-import type { GrantProgram } from "../types/grantProgram";
+import type { GrantProgram, SelectionCriterion } from "../types/grantProgram";
 import type { QuestionEligibilityInfoDto, EligibilityCriteriaDTO, Question, Option, DataType ,QuestionGroupEligibilityInfoDto} from "../data/questionEligibilityInfoDto";
 import type { EligibilityGroupFormState } from "../data/questionEligibilityInfoDto";
 
@@ -62,3 +62,15 @@ export const updateQuestion = async (grantProgramId: string, questionInfoList: Q
   return apiClient.put(`/api/grant-programs/questions/batch?grantProgramId=${grantProgramId}`, questionInfoList);
 };
 
+export const getSelectionCriteria = async (grantProgramId: string): Promise<SelectionCriterion[]> => {
+  const response = await apiClient.get<SelectionCriterion[]>(`/api/selection-criteria/by-grant-program/${grantProgramId}`);
+  return response.data || [];
+};
+
+export const updateSelectionCriteria = async (
+  grantProgramId: string,
+  criteriaList: SelectionCriterion[]
+) => {
+  console.log("asking update selection criteria", grantProgramId, criteriaList);
+  return apiClient.put(`/api/selection-criteria/batch-update/${grantProgramId}`, criteriaList);
+};

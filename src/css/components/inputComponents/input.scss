@@ -21,6 +21,19 @@
   min-height: 5.6rem;
 }
 
+
+.number-input-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.number-input-suffix {
+  margin-left: 0.5rem;
+  font-size: 1.4rem;
+  color: #3a3e46;
+}
+
 .textarea {
   @extend .input;
   min-height: 12rem;
