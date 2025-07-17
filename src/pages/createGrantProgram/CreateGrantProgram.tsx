@@ -3,13 +3,15 @@ import GrantName from "./GrantName";
 import GrantDescription from "./GrantDescription";
 import GrantEligibility from "./GrantEligibility";
 import ChooseOrCreateQuestions from "./ChooseOrCreateQuestions";
+import SelectionCriteria from "./SelectionCriteria";
+
 // Import other step components...
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation, useParams } from "react-router-dom";
 import type { GrantProgram, Schedule } from "../../types/grantProgram";
 import { GrantStatus } from "../../types/grantProgram";
 import { createGrantProgram, updateGrantProgram,getGrantProgramById } from "../../services/GrantProgramService";
-import type { ComparisonOperator, EligibilityGroupFormState,QuestionGroupEligibilityInfoDto, QuestionEligibilityInfoDto, EligibilityCriteriaDTO, QuestionCondition, Option, InputType, DataType, Question } from "../../data/questionEligibilityInfoDto";
+import type { ComparisonOperator, EligibilityGroupFormState,QuestionGroupEligibilityInfoDto, QuestionEligibilityInfoDto, EligibilityCriteriaDTO, QuestionCondition, SelectionCriterion, Option, InputType, DataType, Question } from "../../data/questionEligibilityInfoDto";
 import ChooseOrCreateQuestion from "./ChooseOrCreateQuestions";
 
 const steps = [
@@ -17,6 +19,7 @@ const steps = [
   { key: "description", label: "Description" },
   { key: "eligibility", label: "Eligibility" },
   { key: "questions", label: "Questions" },
+  { key: "selection", label: "Selection" },
   { key: "schedule", label: "Schedule" },
   { key: "review", label: "Review & Submit" },
 ];
@@ -36,6 +39,7 @@ const initialGrantProgram: GrantProgram = {
   createdAt: "",
   updatedAt: "",
   questionIds: [],
+  selectionCriteria: [],
   questionGroupsIds: [],
 };
 
@@ -151,6 +155,17 @@ const CreateGrantProgram = () => {
               />
             }
           />
+          <Route
+          path="selection"
+          element={
+            <SelectionCriteria
+              grantProgram={grantProgram}
+              onUpdateGrant={handleUpdateGrant}
+              selectedQuestions={selectedQuestions}
+              setGrantProgram={setGrantProgram}
+            />
+          }
+        />
         </Routes>
       </main>
     </div>
