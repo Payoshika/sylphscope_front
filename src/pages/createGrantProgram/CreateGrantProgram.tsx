@@ -4,6 +4,7 @@ import GrantDescription from "./GrantDescription";
 import GrantEligibility from "./GrantEligibility";
 import ChooseOrCreateQuestions from "./ChooseOrCreateQuestions";
 import SelectionCriteria from "./SelectionCriteria";
+import GrantSchedule from "./GrantSchedule";
 
 // Import other step components...
 import { useState, useEffect } from "react";
@@ -163,6 +164,17 @@ const CreateGrantProgram = () => {
               onUpdateGrant={handleUpdateGrant}
               selectedQuestions={selectedQuestions}
               setGrantProgram={setGrantProgram}
+            />
+          }
+        />
+        <Route
+          path="schedule"
+          element={
+            <GrantSchedule
+              grantProgram={grantProgram}
+              setGrantProgram={setGrantProgram}
+              onUpdateGrant={handleUpdateGrant}
+              getGrantProgram={getGrantProgram}
             />
           }
         />

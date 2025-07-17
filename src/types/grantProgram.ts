@@ -11,7 +11,6 @@ export interface Schedule {
   applicationEndDate: string | null;
   decisionDate: string | null;
   fundDisbursementDate: string | null;
-  // ...other fields if needed
 }
 
 export interface GrantProgram {

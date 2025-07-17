@@ -74,3 +74,33 @@ export const updateSelectionCriteria = async (
   console.log("asking update selection criteria", grantProgramId, criteriaList);
   return apiClient.put(`/api/selection-criteria/batch-update/${grantProgramId}`, criteriaList);
 };
+
+function toIsoDateString(date: string | { day: string; month: string; year: string } | null): string | null {
+  if (!date) return null;
+  if (typeof date === "string") {
+    if (!date) return null;
+    if (date.includes("T")) return date;
+    if (date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      return `${date}T00:00:00Z`;
+    }
+    return null;
+  }
+  // Handle DateValue object
+  const { year, month, day } = date;
+  if (!year || !month || !day) return null;
+  return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}T00:00:00Z`;
+}
+
+export const updateGrantProgramSchedule = async (
+  grantProgramId: string,
+  schedule: GrantProgram["schedule"]
+) => {
+  console.log("Updating grant program schedule:", grantProgramId, schedule);
+  const payload = {
+    applicationStartDate: toIsoDateString(schedule.applicationStartDate),
+    applicationEndDate: toIsoDateString(schedule.applicationEndDate),
+    decisionDate: toIsoDateString(schedule.decisionDate),
+    fundDisbursementDate: toIsoDateString(schedule.fundDisbursementDate),
+  };
+  return apiClient.put(`/api/grant-programs/${grantProgramId}/schedule`, payload);
+};
