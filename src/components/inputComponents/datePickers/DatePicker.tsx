@@ -75,7 +75,7 @@ const DatePicker: React.FC<ExtendedDatePickerProps> = ({
           break;
         case "any":
         default:
-          // Don't set a default for 'any' type
+          defaultYear = currentYear.toString();
           break;
       }
 
