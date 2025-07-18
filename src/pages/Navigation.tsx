@@ -34,20 +34,13 @@ const Navigation: React.FC = () => {
           <div className="nav-links">
             {isAuthenticated ? (
               <>
-                <Link
-                  to="/components"
-                  className={
-                    location.pathname === "/components"
-                      ? "btn btn--small"
-                      : "btn btn--small btn--ghost"
-                  }
-                >
-                  Components
+                <Link to="/grant-management" className="btn btn--small btn--ghost">
+                  Grant Management
+                </Link>
+                <Link to="/organisation" className="btn btn--small btn--ghost">
+                  Your Organisation
                 </Link>
                 <div className="nav-user">
-                  <span className="caption">
-                    Welcome, {user?.username || user?.email}
-                  </span>
                   <button
                     onClick={handleLogout}
                     className="btn btn--small btn--outline"
@@ -63,9 +56,6 @@ const Navigation: React.FC = () => {
                 </Link>
                 <Link to="/signup" className="btn btn--small">
                   Sign Up
-                </Link>
-                <Link to="/create-grant/686cf160f9b36c21721c30d8/title" className="btn btn--small btn--ghost">
-                  Create Dev Grant
                 </Link>
               </>
             )}

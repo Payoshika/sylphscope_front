@@ -26,6 +26,8 @@ export interface GrantProgram {
   questionGroupsIds: string[];
   selectionCriteria: SelectionCriterion[];
   evaluationScale: EvaluationScale;
+  award?: number[];
+  numOfAward?: number; 
 }
 
 export type EvaluationType = "AUTO" | "MANUAL"; // Adjust as needed

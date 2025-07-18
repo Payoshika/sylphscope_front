@@ -9,6 +9,11 @@ export const getGrantProgramById = async (id: string | number): Promise<GrantPro
   return response.data;
 };
 
+export const getGrantProgramsByProviderId = async (providerId: string | number): Promise<GrantProgram[]> => {
+  const response = await apiClient.get<GrantProgram[]>(`/api/grant-programs/provider/${providerId}`);
+  return response.data || [];
+};
+
 export const createGrantProgram = async (grantProgram: GrantProgram) => {
 const { id, createdAt, updatedAt, ...grantProgramData } = grantProgram;
 return apiClient.post("/api/grant-programs", grantProgramData);

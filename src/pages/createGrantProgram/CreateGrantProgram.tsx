@@ -5,10 +5,11 @@ import GrantEligibility from "./GrantEligibility";
 import ChooseOrCreateQuestions from "./ChooseOrCreateQuestions";
 import SelectionCriteria from "./SelectionCriteria";
 import GrantSchedule from "./GrantSchedule";
+import GrantAmount from "./GrantAmount";
 
 // Import other step components...
 import { useState, useEffect } from "react";
-import { Routes, Route, useNavigate, useLocation, useParams } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation, useParams, Navigate } from "react-router-dom";
 import type { GrantProgram, Schedule } from "../../types/grantProgram";
 import { GrantStatus } from "../../types/grantProgram";
 import { createGrantProgram, updateGrantProgram,getGrantProgramById } from "../../services/GrantProgramService";
@@ -17,6 +18,7 @@ import ChooseOrCreateQuestion from "./ChooseOrCreateQuestions";
 
 const steps = [
   { key: "title", label: "Title" },
+  { key: "amount", label: "Amount" }, 
   { key: "description", label: "Description" },
   { key: "eligibility", label: "Eligibility" },
   { key: "questions", label: "Questions" },
@@ -97,6 +99,7 @@ const CreateGrantProgram = () => {
       />
       <main className="grant-create-content">
         <Routes>
+          <Route path="/" element={<Navigate to="title" replace />} />
           <Route
             path="title"
             element={
@@ -106,6 +109,16 @@ const CreateGrantProgram = () => {
                 grantProgram={grantProgram}
                 onGrantProgramChange={setGrantProgram}
                 onCreateGrant={handleCreateGrant}
+                onUpdateGrant={handleUpdateGrant}
+              />
+            }
+          />
+          <Route
+            path="amount"
+            element={
+              <GrantAmount
+                grantProgram={grantProgram}
+                onGrantProgramChange={setGrantProgram}
                 onUpdateGrant={handleUpdateGrant}
               />
             }
