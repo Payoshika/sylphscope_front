@@ -98,7 +98,6 @@ const TuitionfeeStatus: React.FC<TuitionfeeStatusProps> = ({
             onChange={handleChange}
             disabled={disabled}
             variant="default"
-            error={hasError}
           />
         ))}
       </div>

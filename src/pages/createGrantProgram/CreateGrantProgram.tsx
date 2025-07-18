@@ -104,12 +104,12 @@ const CreateGrantProgram = () => {
             path="title"
             element={
               <GrantName
-                id="title"
-                name="title"
-                grantProgram={grantProgram}
-                onGrantProgramChange={setGrantProgram}
-                onCreateGrant={handleCreateGrant}
-                onUpdateGrant={handleUpdateGrant}
+          id="title"
+          name="title"
+          grantProgram={grantProgram}
+          onGrantProgramChange={setGrantProgram}
+          onCreateGrant={handleCreateGrant}
+          onUpdateGrant={handleUpdateGrant}
               />
             }
           />
@@ -117,9 +117,9 @@ const CreateGrantProgram = () => {
             path="amount"
             element={
               <GrantAmount
-                grantProgram={grantProgram}
-                onGrantProgramChange={setGrantProgram}
-                onUpdateGrant={handleUpdateGrant}
+          grantProgram={grantProgram}
+          onGrantProgramChange={setGrantProgram}
+          onUpdateGrant={handleUpdateGrant}
               />
             }
           />
@@ -127,11 +127,11 @@ const CreateGrantProgram = () => {
             path="description"
             element={
               <GrantDescription
-                id="description"
-                name="description"
-                grantProgram={grantProgram}
-                onGrantProgramChange={setGrantProgram}
-                onUpdateGrant={handleUpdateGrant}
+          id="description"
+          name="description"
+          grantProgram={grantProgram}
+          onGrantProgramChange={setGrantProgram}
+          onUpdateGrant={handleUpdateGrant}
               />
             }
           />
@@ -139,33 +139,34 @@ const CreateGrantProgram = () => {
             path="eligibility"
             element={
               <GrantEligibility
-                id="eligibility"
-                name="eligibility"
-                grantProgram={grantProgram}
-                onUpdateGrant={handleUpdateGrant}
-                onGrantProgramChange={setGrantProgram}
-                eligibilityQuestions={eligibilityQuestions}
-                setEligibilityQuestions={setEligibilityQuestions}
-                eligibilityQuestionGroups={eligibilityQuestionGroups}
-                setEligibilityQuestionGroups={setEligibilityQuestionGroups}
-                eligibilities={eligibilities}
-                setEligibilities={setEligibilities}
-                error={false}
-                required={true}
+          id="eligibility"
+          name="eligibility"
+          grantProgram={grantProgram}
+          onUpdateGrant={handleUpdateGrant}
+          onGrantProgramChange={setGrantProgram}
+          eligibilityQuestions={eligibilityQuestions}
+          setEligibilityQuestions={setEligibilityQuestions}
+          eligibilityQuestionGroups={eligibilityQuestionGroups}
+          setEligibilityQuestionGroups={setEligibilityQuestionGroups}
+          eligibilities={eligibilities}
+          setEligibilities={setEligibilities}
+          error={false}
+          required={true}
               />
             }
           />
           <Route
             path="questions"
             element={
-              <ChooseOrCreateQuestion
-                grantProgram={grantProgram}
-                onUpdateGrant={getGrantProgram}
-                questions={eligibilityQuestions}
-                questionGroups={eligibilityQuestionGroups}
-                eligibilities={eligibilities}
-                selectedQuestions={selectedQuestions}
-                setSelectedQuestions={setSelectedQuestions}
+              <ChooseOrCreateQuestions
+          grantProgram={grantProgram}
+          onUpdateGrant={getGrantProgram}
+          questions={eligibilityQuestions}
+          questionGroups={eligibilityQuestionGroups}
+          eligibilities={eligibilities}
+          selectedQuestions={selectedQuestions}
+          setSelectedQuestions={setSelectedQuestions}
+          grantProgramId={grantProgramId ?? ""}
               />
             }
           />

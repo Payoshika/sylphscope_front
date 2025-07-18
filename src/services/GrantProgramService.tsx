@@ -1,11 +1,13 @@
 import { apiClient } from "../utility/ApiClient";
 import type { GrantProgram, SelectionCriterion } from "../types/grantProgram";
 import type { QuestionEligibilityInfoDto, EligibilityCriteriaDTO, Question, Option, DataType ,QuestionGroupEligibilityInfoDto} from "../data/questionEligibilityInfoDto";
-import type { EligibilityGroupFormState } from "../data/questionEligibilityInfoDto";
 
 //grant related functions
 export const getGrantProgramById = async (id: string | number): Promise<GrantProgram> => {
   const response = await apiClient.get<GrantProgram>(`/api/grant-programs/${id}`);
+  if (!response.data) {
+    throw new Error("GrantProgram not found");
+  }
   return response.data;
 };
 
