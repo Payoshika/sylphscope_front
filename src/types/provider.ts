@@ -6,5 +6,5 @@ export interface Provider {
   websiteUrl: string;
   organisationDescription: string;
   logoUrl: string;
-  createdAt: string; // Use string for ISO date, Instant in Java
+  createdAt: string; 
 }

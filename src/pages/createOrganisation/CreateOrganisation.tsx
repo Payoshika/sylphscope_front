@@ -21,6 +21,7 @@ const initialOrganisation: Provider = {
   websiteUrl: "",
   organisationDescription: "",
   logoUrl: "",
+  createdAt: "",
 };
 
 const CreateOrganisation = () => {

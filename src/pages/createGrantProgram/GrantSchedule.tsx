@@ -76,14 +76,20 @@ const handleSaveSchedule = async () => {
     console.log("saving the date", grantProgram.schedule);
     const response = await updateGrantProgramSchedule(grantProgram.id, grantProgram.schedule);
     console.log("response", response);
-    if (response?.data?.schedule) {
+    if (
+      response &&
+      typeof response.data === "object" &&
+      response.data !== null &&
+      "schedule" in response.data
+    ) {
+      const data = response.data as { schedule: GrantProgram["schedule"] };
       setGrantProgram(prev => ({
         ...prev,
         schedule: {
-          applicationStartDate: response.data.schedule.applicationStartDate,
-          applicationEndDate: response.data.schedule.applicationEndDate,
-          decisionDate: response.data.schedule.decisionDate,
-          fundDisbursementDate: response.data.schedule.fundDisbursementDate,
+          applicationStartDate: data.schedule.applicationStartDate,
+          applicationEndDate: data.schedule.applicationEndDate,
+          decisionDate: data.schedule.decisionDate,
+          fundDisbursementDate: data.schedule.fundDisbursementDate,
         }
       }));
     }

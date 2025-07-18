@@ -3,7 +3,7 @@ import TextInput from "../../components/inputComponents/TextInput";
 import Button from "../../components/basicComponents/Button";
 import TitleAndHeadLine from "../createGrantProgram/TitleAndHeadLine";
 import type { Provider } from "../../types/provider";
-
+import type { ProviderStaff } from "../../types/user";
 
 interface OrganisationNameProps {
   organisation: Provider;

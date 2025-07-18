@@ -94,7 +94,6 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
           value={fixedType}
           onChange={handleFixedTypeChange}
           options={fixedOptions}
-          required
         />
         <NumberInput
           id="min-amount"
@@ -103,7 +102,6 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
           value={minAmount}
           onChange={handleMinAmountChange}
           min={0}
-          required
         />
         {fixedType !== "fixed" && (
           <NumberInput
@@ -113,7 +111,6 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
             value={maxAmount}
             onChange={handleMaxAmountChange}
             min={minAmount}
-            required
           />
         )}
         <NumberInput
@@ -123,7 +120,6 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
           value={numOfAward}
           onChange={handleNumOfAwardChange}
           min={1}
-          required
         />
         <Button
           text={isSubmitting ? "Saving..." : "Save Grant Amount"}

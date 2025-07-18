@@ -9,7 +9,6 @@ import AuthService from "../services/AuthService";
 
 const MfaVerification: React.FC = () => {
   const navigate = useNavigate();
-  const { verifyMfa } = useAuth();
   const { showError, showSuccess } = useToast();
   const [code, setCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);

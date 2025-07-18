@@ -142,16 +142,18 @@ const handleRemoveQuestion = (questionId: string) => {
     (grantProgram.questionGroupsIds || []).includes(groupId);
   // Render question buttons
   const renderQuestionButtons = () =>
-    questions.map((question) => (
-      <Button
-        key={question.question.id}
-        text={question.question.name}
-        onClick={() => handleChooseQuestion(question)}
-        type="button"
-        disabled={isQuestionDisabled(question.question.id)}
-        variant={isQuestionDisabled(question.question.id) ? "primary" : "outline"}
-      />
-    ));
+    questions
+      .filter((question) => question?.question?.id !== undefined)
+      .map((question) => (
+        <Button
+          key={question.question.id}
+          text={question.question.name}
+          onClick={() => handleChooseQuestion(question)}
+          type="button"
+          disabled={isQuestionDisabled(question.question.id)}
+          variant={isQuestionDisabled(question.question.id) ? "primary" : "outline"}
+        />
+      ));
 
   // Render group buttons
   const renderGroupButtons = () =>
@@ -168,16 +170,17 @@ const handleRemoveQuestion = (questionId: string) => {
 
   // Render selected questions
   const renderSelectedQuestions = () =>
-    selectedQuestions.map((question) => (
-      <div className="eligibility-form">
-        <QuestionDisplay
-        key={question.question.id}
-        question={question}
-        inputAllowed={true}
-        onRemove={() => handleRemoveQuestion(question.question.id)}
-      />
-      </div>
-    ));
+    selectedQuestions
+      .filter((question) => question?.question?.id !== undefined)
+      .map((question) => (
+        <div className="eligibility-form" key={question.question.id}>
+          <QuestionDisplay
+            question={question}
+            inputAllowed={true}
+            onRemove={() => handleRemoveQuestion(question.question.id)}
+          />
+        </div>
+      ));
 
   return (
     <div className="content">

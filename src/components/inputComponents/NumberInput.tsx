@@ -8,7 +8,7 @@ interface NumberInputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   min?: number;
   max?: number;
-  suffix?: string; // <-- Add this prop
+  suffix?: string; 
 }
 
 const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
