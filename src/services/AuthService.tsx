@@ -330,6 +330,10 @@ class AuthService {
       return "unauthenticated";
     }
   }
+
+  static async getStaffByUserId(userId: string | number) {
+    return apiClient.get<ProviderStaff>(`/api/provider-staff/user/${userId}`);
+  }
 }
 
 export default AuthService;

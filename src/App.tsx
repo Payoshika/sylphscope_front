@@ -18,6 +18,9 @@ import ProtectedLayout from "./pages/ProtectedLayout";
 import ToastContainer from "./components/ToastItem";
 import MfaVerification from "./components/MfaVarification";
 import CreateGrantProgram from "./pages/createGrantProgram/CreateGrantProgram"
+import CreateOrganisation from "./pages/createOrganisation/CreateOrganisation"
+import GrantManagement from "./pages/grantManagement/GrantManagement";
+import ProviderLayout from "./pages/ProviderLayout";
 
 function App() {
   return (
@@ -32,13 +35,15 @@ function App() {
             <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
             <Route path="/mfa-verification" element={<MfaVerification />} />
             <Route path="/components" element={<Components />} />
-            <Route path="/create-grant/:grantProgramId/*" element={<CreateGrantProgram />} />
-            {/* Protected routes - all nested under ProtectedLayout */}
-            <Route path="/" element={<ProtectedLayout />}>
+            {/* Provider routes nested under ProtectedLayout and ProviderLayout */}
+            <Route element={<ProtectedLayout />}>
+              <Route element={<ProviderLayout />}>
+                <Route path="/grant-management/*" element={<GrantManagement />} />
+                <Route path="/create-grant/:grantProgramId/*" element={<CreateGrantProgram />} />
+                <Route path="/organisation/*" element={<CreateOrganisation />} />
+              </Route>
               <Route path="settings" element={<Settings />} />
-            </Route>
-            <Route path="/grant" element={<ProtectedLayout />}>
-              <Route path="create/*" element={<CreateGrantProgram />} />
+              {/* Other protected routes */}
             </Route>
             {/* Catch all - redirect to signin */}
             <Route path="*" element={<Navigate to="/signin" replace />} />
