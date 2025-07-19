@@ -26,13 +26,22 @@ export const updateGrantProgram = async (id: string | number, grantProgram: Gran
   return apiClient.put(`/api/grant-programs/${id}`, grantProgram);
 };
 
-// export const getGrantPrograms = async (
-//   page: number = 0,
-//   size: number = 10
-// ): Promise<{ content: GrantProgram[]; totalElements: number; totalPages: number; number: number }> => {
-//   const response = await apiClient.get(`/api/grant-programs?page=${page}&size=${size}`);
-//   return response.data;
-// };
+export const getGrantPrograms = async (
+  page: number = 0,
+  size: number = 10
+): Promise<{ content: GrantProgram[]; totalElements: number; totalPages: number; number: number }> => {
+  const response = await apiClient.get(`/api/grant-programs?page=${page}&size=${size}`);
+  return response.data;
+};
+
+export const getGrantProgramsByStudentId = async (
+  studentId: string,
+  page: number = 0,
+  size: number = 10
+): Promise<{ content: GrantProgram[]; totalElements: number; totalPages: number; number: number }> => {
+  const response = await apiClient.get(`/api/grant-programs/student/${studentId}?page=${page}&size=${size}`);
+  return response.data;
+};
 
 //Question Related functions
 export const createQuestion = async (question: Question, options: Option[] = []) => {

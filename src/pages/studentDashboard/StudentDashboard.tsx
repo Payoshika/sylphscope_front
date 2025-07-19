@@ -2,16 +2,19 @@ import { useEffect, useState } from "react";
 import StudentDashboardNav from "./StudentDashboardNav";
 import GrantList from "./GrantList";
 import StudentProfile from "./StudentProfile";
+import AppliedGrantList from "./AppliedGrantList";
+import FurtherInfo from "./FurtherInfo";
 
 import { useOutletContext, Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import type { Student } from "../../types/student";
 import type { GrantProgram } from "../../types/grantProgram";
-// import { getGrantPrograms } from "../../services/GrantProgramService";
 import { updateStudentByStudentId } from "../../services/StudentService";
 
 const steps = [
-  { key: "list", label: "Available Grants" },
-  { key: "profile", label: "Profile" },
+    { key: "profile", label: "Basic Profile" },
+    { key: "further-info", label: "Further Information" },
+    { key: "list", label: "Available Grants" },
+    { key: "applied", label: "Applied Grants" },
 ];
 
 const StudentDashboard = () => {
@@ -20,31 +23,11 @@ const StudentDashboard = () => {
   setStudent: (s: Student) => void;
   updateStudent: (s: Student) => Promise<Student>;
     }>();
-  const [grantPrograms, setGrantPrograms] = useState<GrantProgram[]>([]);
-  const [loadingGrants, setLoadingGrants] = useState(true);
-
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(student);
   const handleStepChange = (stepKey: string) => {
     navigate(`/student-dashboard/${stepKey}`);
   };
-
-//   useEffect(() => {
-//     const fetchGrants = async () => {
-//       if (student?.id) {
-//         setLoadingGrants(true);
-//         try {
-//           const grants = await getGrantPrograms();
-//           setGrantPrograms(grants);
-//         } catch (err) {
-//           setGrantPrograms([]);
-//         }
-//         setLoadingGrants(false);
-//       }
-//     };
-//     fetchGrants();
-//   }, [student?.id]);
 
   return (
     <div className="grant-create-layout">
@@ -60,8 +43,6 @@ const StudentDashboard = () => {
             path="list"
             element={
               <GrantList
-                grantPrograms={grantPrograms}
-                loading={loadingGrants}
               />
             }
           />
@@ -69,6 +50,14 @@ const StudentDashboard = () => {
             path="profile"
             element={<StudentProfile />}
           />
+        <Route
+            path="further-info"
+            element={<FurtherInfo />}
+        />
+        <Route
+            path="applied"
+            element={<AppliedGrantList />}
+        />
         </Routes>
       </main>
     </div>
