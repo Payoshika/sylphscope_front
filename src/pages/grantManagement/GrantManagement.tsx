@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import GrantManagementNav from "./GrantManagementNav";
 import ListGrants from "./ListGrants";
 import { useOutletContext } from "react-router-dom";
@@ -62,7 +62,6 @@ const GrantManagement = () => {
             element={
               <ListGrants
                 provider={provider}
-                providerStaff={providerStaff}
                 grantPrograms={grantPrograms}
                 loading={loadingGrants}
               />

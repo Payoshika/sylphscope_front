@@ -5,7 +5,7 @@ import { useOutletContext } from "react-router-dom";
 import type { Provider } from "../../types/provider";
 import type { ProviderStaff } from "../../types/user";
 import { useState, useEffect } from "react";
-import { Routes, Route, useNavigate, useLocation, useParams, Navigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import { updateProvider } from "../../services/ProviderService";
 
 const steps = [

@@ -7,13 +7,13 @@ import { useNavigate } from "react-router-dom";
 
 interface ListGrantsProps {
   provider: Provider;
-  providerStaff: ProviderStaff;
   grantPrograms: GrantProgram[];
   loading: boolean;
 }
 
-const ListGrants: React.FC<ListGrantsProps> = ({ provider, providerStaff, grantPrograms, loading }) => {
+const ListGrants: React.FC<ListGrantsProps> = ({ provider, grantPrograms, loading }) => {
   const navigate = useNavigate();
+
 
   if (loading) {
     return <div>Loading grants...</div>;

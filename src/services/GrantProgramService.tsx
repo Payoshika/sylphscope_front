@@ -1,6 +1,6 @@
 import { apiClient } from "../utility/ApiClient";
 import type { GrantProgram, SelectionCriterion } from "../types/grantProgram";
-import type { QuestionEligibilityInfoDto, EligibilityCriteriaDTO, Question, Option, DataType ,QuestionGroupEligibilityInfoDto} from "../data/questionEligibilityInfoDto";
+import type { QuestionEligibilityInfoDto, EligibilityCriteriaDTO, Question, Option,QuestionGroupEligibilityInfoDto} from "../data/questionEligibilityInfoDto";
 
 //grant related functions
 export const getGrantProgramById = async (id: string | number): Promise<GrantProgram> => {

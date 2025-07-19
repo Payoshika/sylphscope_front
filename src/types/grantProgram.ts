@@ -33,6 +33,7 @@ export interface GrantProgram {
 export type EvaluationType = "AUTO" | "MANUAL"; // Adjust as needed
 
 export type EvaluationScale = "HUNDRED" | "TEN" | "FIVE" | "A2E";
+
 export interface SelectionCriterion {
   id: string;
   criterionName: string;

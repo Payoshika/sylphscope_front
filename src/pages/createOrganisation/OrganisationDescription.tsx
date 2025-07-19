@@ -7,14 +7,12 @@ import type { Provider } from "../../types/provider";
 interface OrganisationDescriptionProps {
   organisation: Provider;
   onOrganisationChange: (updated: Provider) => void;
-  providerStaff: ProviderStaff;
   onUpdateProvider: (provider: Provider) => Promise<any>;
 }
 
 const OrganisationDescription: React.FC<OrganisationDescriptionProps> = ({
   organisation,
   onOrganisationChange,
-  providerStaff,
   onUpdateProvider,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
