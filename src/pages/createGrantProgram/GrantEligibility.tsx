@@ -2,8 +2,8 @@ import Button from "../../components/basicComponents/Button";
 import type { GrantProgram } from "../../types/grantProgram";
 import { useNavigate } from "react-router-dom";
 import TitleAndHeadLine from "./TitleAndHeadLine";
-import { useState, useEffect, type FormEvent } from "react";
-import { updateEligibilityCriteria, createEligibilityCriteria, fetchEligibilityQuestions,fetchEligibilityQuestionGroups, getEligibilityCriteria, createQuestion } from "../../services/GrantProgramService";
+import { useState, useEffect} from "react";
+import { updateEligibilityCriteria, fetchEligibilityQuestions,fetchEligibilityQuestionGroups, getEligibilityCriteria, createQuestion } from "../../services/GrantProgramService";
 import type { ComparisonOperator, EligibilityGroupFormState,QuestionGroupEligibilityInfoDto,  QuestionEligibilityInfoDto, EligibilityCriteriaDTO, QuestionCondition, Option, InputType, DataType, Question } from "../../data/questionEligibilityInfoDto";
 import EligibilityGroupForm from "./EligibilityGroupForm";
 import EligibilityFormBuilder from "./EligibilityFormBuilder";
@@ -282,37 +282,6 @@ function convertToEligibilityFormState(
     values: criteria.simpleCondition.values,
   };
 }
-
-const handleCreateEligibilityForm = (form: {
-  inputType: InputType;
-  dataType: string;
-  values: any[];
-  options?: Option[];
-}) => {
-  // Create a new QuestionEligibilityInfoDto for the builder form
-  const newQuestion: QuestionEligibilityInfoDto = {
-    question: {
-      id: "",
-      name: "Custom Question",
-      inputType: form.inputType,
-      questionDataType: form.dataType as DataType,
-      questionText: "Custom Question",
-      description: "",
-      isRequired: false,
-    },
-    options: form.options || [],
-    operators: [],
-  };
-
-  setEligibilityForms((prev) => [
-    ...prev,
-    {
-      form: newQuestion,
-      operator: "equals",
-      values: form.values,
-    },
-  ]);
-};
 
   return (
     <div className="content">

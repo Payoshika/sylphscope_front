@@ -15,6 +15,20 @@ export const months = [
   { value: "12", label: "December" },
 ];
 
+export const toDateValue = (date: string | { day: string; month: string; year: string } | null): DateValue => {
+  if (!date) return { day: "", month: "", year: "" };
+  if (typeof date === "object") return date;
+  // Handles both "YYYY-MM-DD" and "YYYY-MM-DDTHH:mm:ssZ"
+  const [datePart] = date.split("T");
+  if (!datePart) return { day: "", month: "", year: "" };
+  const [year, month, day] = datePart.split("-");
+  return {
+    year: year || "",
+    month: month || "",
+    day: day || "",
+  };
+};
+
 // Generate years for different picker types
 export const generateYears = (type: 'dob' | 'future' | 'any' | 'past'): number[] => {
   const currentYear = new Date().getFullYear();

@@ -1,0 +1,18 @@
+export type Gender =
+  | "MALE"
+  | "FEMALE"
+  | "NON_BINARY"
+  | "GENDERFLUID"
+  | "GENDERQUEER"
+  | "AGENDER"
+  | "BIGENDER"
+  | "DEMIGENDER"
+  | "PANGENDER"
+  | "TWO_SPIRIT"
+  | "TRANSGENDER_MALE"
+  | "TRANSGENDER_FEMALE"
+  | "QUESTIONING"
+  | "PREFER_NOT_TO_SAY"
+  | "SELF_DESCRIBE"
+  | "OTHER";
+

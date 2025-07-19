@@ -5,7 +5,6 @@ import AuthService from "../services/AuthService";
 import { getProviderById } from "../services/ProviderService";
 import type { Provider } from "../types/provider";
 import type { ProviderStaff } from "../types/user";
-import ProtectedLayout from "./ProtectedLayout";
 
 const ProviderLayout: React.FC = () => {
   const { user, isLoading } = useAuth();

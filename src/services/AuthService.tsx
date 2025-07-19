@@ -53,7 +53,7 @@ class AuthService {
 
         // Create user object from the response
         const user: User = {
-          id: parseInt(response.data.id),
+          id: response.data.id,
           username: response.data.username,
           email: response.data.email || "",
           roles: response.data.roles,
@@ -99,7 +99,7 @@ class AuthService {
 
         // Create user object from the response
         const user: User = {
-          id: parseInt(response.data.id),
+          id: response.data.id,
           username: response.data.username,
           email: "", // Not provided in JwtResponse
           roles: response.data.roles,
@@ -286,7 +286,7 @@ class AuthService {
 
         // Update user object with fresh data from response
         const user: User = {
-          id: parseInt(response.data.id),
+          id: response.data.id,
           username: response.data.username,
           email: response.data.email || "",
           roles: response.data.roles,

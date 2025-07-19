@@ -3,7 +3,7 @@ import OrganisationName from "./OrganisationName";
 import OrganisationDescription from "./OrganisationDescription";
 import { useOutletContext } from "react-router-dom";
 import type { Provider } from "../../types/provider";
-import type { ProviderStaff } from "../../types/user";
+// import type { ProviderStaff } from "../../types/user";
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import { updateProvider } from "../../services/ProviderService";
@@ -25,8 +25,8 @@ const initialOrganisation: Provider = {
 };
 
 const CreateOrganisation = () => {
-  // Get providerStaff and provider from ProviderLayout
-  const { providerStaff, provider } = useOutletContext<{ providerStaff: ProviderStaff; provider: Provider }>();
+  // Get provider from ProviderLayout
+  const { provider } = useOutletContext<{ provider: Provider }>();
   const [organisation, setOrganisation] = useState<Provider>(provider ?? initialOrganisation);
 
   useEffect(() => {
@@ -66,7 +66,6 @@ const handleUpdateProvider = async (organisation: Provider) => {
               <OrganisationName
                 organisation={organisation}
                 onOrganisationChange={setOrganisation}
-                providerStaff={providerStaff}
                 onUpdateProvider={handleUpdateProvider}
               />
             }
@@ -77,7 +76,6 @@ const handleUpdateProvider = async (organisation: Provider) => {
               <OrganisationDescription
                 organisation={organisation}
                 onOrganisationChange={setOrganisation}
-                providerStaff={providerStaff}
                 onUpdateProvider={handleUpdateProvider}
               />
             }
