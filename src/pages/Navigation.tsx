@@ -34,12 +34,21 @@ const Navigation: React.FC = () => {
           <div className="nav-links">
             {isAuthenticated ? (
               <>
-                <Link to="/grant-management" className="btn btn--small btn--ghost">
-                  Grant Management
-                </Link>
-                <Link to="/organisation" className="btn btn--small btn--ghost">
-                  Your Organisation
-                </Link>
+                {user && user.roles?.[0] === "ROLE_STUDENT" && (
+                  <Link to="/student-dashboard" className="btn btn--small btn--ghost">
+                    Student Dashboard
+                  </Link>
+                )}
+                {user && user.roles?.[0] === "ROLE_PROVIDER" && (
+                  <>
+                    <Link to="/grant-management" className="btn btn--small btn--ghost">
+                      Grant Management
+                    </Link>
+                    <Link to="/organisation" className="btn btn--small btn--ghost">
+                      Your Organisation
+                    </Link>
+                  </>
+                )}
                 <div className="nav-user">
                   <button
                     onClick={handleLogout}

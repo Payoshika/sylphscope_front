@@ -86,7 +86,7 @@ const Gender: React.FC<GenderProps> = (props) => {
   return (
     <SearchableDropdown
       {...props}
-      options={genderOptions}
+      options={genderOptions.filter(option => option.value !== "self-describe")}
       searchFunction={searchGendersFunction}
       getCategorizedOptions={getCategorizedGenders}
       renderOption={renderGenderOption}
@@ -94,13 +94,7 @@ const Gender: React.FC<GenderProps> = (props) => {
       placeholder={
         props.placeholder || "Search and select your gender identity"
       }
-      // Custom input configuration
-      allowCustomInput={props.allowCustomInput ?? true}
-      customInputTriggerValue="self-describe"
-      customValue={props.customValue}
-      onCustomChange={props.onCustomChange}
-      customInputPlaceholder="Enter your gender identity"
-      customInputLabel="Please describe your gender:"
+      allowCustomInput={false}
     />
   );
 };

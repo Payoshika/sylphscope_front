@@ -5,6 +5,7 @@ import Button from "../../components/basicComponents/Button";
 import DatePicker from "../../components/inputComponents/datePickers/DatePicker";
 import type { DateValue } from "../../components/inputComponents/datePickers/types";
 import { updateGrantProgramSchedule } from "../../services/GrantProgramService";
+import { toDateValue } from "../../components/inputComponents/datePickers/utils";
 
 interface GrantScheduleProps {
   grantProgram: GrantProgram;
@@ -29,20 +30,6 @@ const fetchAndUpdate = async () => {
 };
 fetchAndUpdate();
 }, []);
-
-const toDateValue = (date: string | DateValue | null): DateValue => {
-  if (!date) return { day: "", month: "", year: "" };
-  if (typeof date === "object") return date;
-  // Handles both "YYYY-MM-DD" and "YYYY-MM-DDTHH:mm:ssZ"
-  const [datePart] = date.split("T");
-  if (!datePart) return { day: "", month: "", year: "" };
-  const [year, month, day] = datePart.split("-");
-  return {
-    year: year || "",
-    month: month || "",
-    day: day || "",
-  };
-};
 
 // Helper to convert DateValue to string (YYYY-MM-DD)
 const fromDateValue = (val: DateValue): string | null => {
