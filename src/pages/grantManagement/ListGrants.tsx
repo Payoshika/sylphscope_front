@@ -1,9 +1,9 @@
 import React from "react";
 import Card from "../../components/basicComponents/Card";
 import type { Provider } from "../../types/provider";
-import type { ProviderStaff } from "../../types/user";
 import type { GrantProgram } from "../../types/grantProgram";
 import { useNavigate } from "react-router-dom";
+import Button from "../../components/basicComponents/Button";
 
 interface ListGrantsProps {
   provider: Provider;
@@ -43,13 +43,11 @@ const ListGrants: React.FC<ListGrantsProps> = ({ provider, grantPrograms, loadin
             <p>
                 <strong>Grant ID:</strong> {grant.id}
             </p>
-              <button
+              <Button
+                text="Manage Grant"
                 type="button"
                 onClick={() => navigate(`/create-grant/${grant.id}`)}
-                style={{ marginTop: "1rem" }}
-              >
-                Manage Grant
-              </button>
+              />
             </Card>
           ))}
         </div>

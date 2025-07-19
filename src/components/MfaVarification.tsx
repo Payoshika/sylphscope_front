@@ -1,7 +1,6 @@
 // Update src/components/MfaVarification.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
 import FormInput from "./FormInput";
 import SubmitButton from "./SubmitButton";
