@@ -9,6 +9,7 @@ import type {
   User,
   ProfileUpdateRequest,
   UpdateMfaRequest,
+  ProviderStaff,
 } from "../types/user";
 
 interface AuthEventDetail {

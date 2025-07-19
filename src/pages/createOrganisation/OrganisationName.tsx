@@ -3,19 +3,16 @@ import TextInput from "../../components/inputComponents/TextInput";
 import Button from "../../components/basicComponents/Button";
 import TitleAndHeadLine from "../createGrantProgram/TitleAndHeadLine";
 import type { Provider } from "../../types/provider";
-import type { ProviderStaff } from "../../types/user";
 
 interface OrganisationNameProps {
   organisation: Provider;
   onOrganisationChange: (updated: Provider) => void;
-  providerStaff: ProviderStaff;
   onUpdateProvider: (provider: Provider) => Promise<any>;
 }
 
 const OrganisationName: React.FC<OrganisationNameProps> = ({
   organisation,
   onOrganisationChange,
-  providerStaff,
   onUpdateProvider,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
