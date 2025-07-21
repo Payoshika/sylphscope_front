@@ -1,4 +1,8 @@
 import type { GrantProgramDto } from "./grantProgram";
+import type { EligibilityCriteriaRequestDto } from "./eligibilityCriteria";
+import type { QuestionDto } from "./question";
+import type { QuestionGroupDto } from "./questionGroup";
+import type { QuestionEligibilityInfoDto, QuestionGroupEligibilityInfoDto } from "../data/questionEligibilityInfoDto";
 
 export type ApplicationStatus =
   | "draft"
@@ -19,9 +23,7 @@ export interface StudentAnswerDto {
   questionId: string;
   applicationId: string[];
   questionGroupId: string;
-  answer: Answer;
-  answeredAt: string; // ISO string
-  updatedAt: string;  // ISO string
+  answer: Answer[];
   questionText: string;
   optionText: string;
 }
@@ -52,4 +54,10 @@ export interface ApplicationDto {
 export interface GrantProgramApplicationDto {
   grantProgram: GrantProgramDto;
   application: ApplicationDto;
+}
+
+export interface EligibilityCriteriaWithQuestionDto {
+  eligibilityCriteria: EligibilityCriteriaRequestDto;
+  question: QuestionEligibilityInfoDto | null;
+  questionGroup: QuestionGroupEligibilityInfoDto | null;
 }

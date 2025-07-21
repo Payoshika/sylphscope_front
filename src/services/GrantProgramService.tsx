@@ -64,7 +64,7 @@ export const fetchEligibilityQuestions = async (): Promise<QuestionEligibilityIn
 };
 
 export const fetchEligibilityQuestionGroups = async (): Promise<QuestionGroupEligibilityInfoDto[]> => {
-  const response = await apiClient.get<QuestionGroupEligibilityInfoDto[]>("/api/questions/question-groups-for-eligibility");
+  const response = await apiClient.get<QuestionGroupEligibilityInfoDto[]>("/api/question-groups/groups-for-eligibility");
   return response.data || [];
 };
 

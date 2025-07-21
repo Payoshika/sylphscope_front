@@ -155,7 +155,7 @@ const handleInputTypeChange = (newType: InputType) => {
   } else if (newType === "TEXT" || newType === "TEXTAREA") {
     setDataType("STRING");
   } else if (newType === "NUMBER") {
-    setDataType("INTEGER");
+    setDataType("DOUBLE");
   } else if (newType === "DATE") {
     setDataType("DATE");
   } else {

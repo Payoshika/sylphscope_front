@@ -21,6 +21,7 @@ import CreateGrantProgram from "./pages/createGrantProgram/CreateGrantProgram";
 import CreateOrganisation from "./pages/createOrganisation/CreateOrganisation";
 import GrantManagement from "./pages/grantManagement/GrantManagement";
 import StudentDashboard from "./pages/studentDashboard/StudentDashboard";
+import StudentApplication from "./pages/studentApplication/StudentApplication";
 import ProviderLayout from "./pages/ProviderLayout";
 import StudentLayout from "./pages/StudentLayout";
 
@@ -48,6 +49,11 @@ function App() {
             <Route element={<ProtectedLayout />}>
               <Route element={<StudentLayout />}>
                 <Route path="/student-dashboard/*" element={<StudentDashboard />} />
+              </Route>
+            </Route>
+            <Route element={<ProtectedLayout />}>
+              <Route element={<StudentLayout />}>
+                <Route path="/student-application/:grantProgramId/*" element={<StudentApplication />} />
               </Route>
             </Route>
             <Route element={<ProtectedLayout />}>

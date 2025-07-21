@@ -29,6 +29,15 @@ export const toDateValue = (date: string | { day: string; month: string; year: s
   };
 };
 
+export const formatDateForBackend = (date: string | { day: string; month: string; year: string } | null): string => {
+  if (!date) return "";
+  if (typeof date === "string") return date;
+  if (date.year && date.month && date.day) {
+    return `${date.year}-${date.month.padStart(2, "0")}-${date.day.padStart(2, "0")}`;
+  }
+  return "";
+};
+
 // Generate years for different picker types
 export const generateYears = (type: 'dob' | 'future' | 'any' | 'past'): number[] => {
   const currentYear = new Date().getFullYear();
