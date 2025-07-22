@@ -5,7 +5,7 @@ import { updateAnswers, getAnswersByApplicationId } from "../../services/Applica
 import Button from "../../components/basicComponents/Button";
 import { formatDateForBackend } from "../../components/inputComponents/datePickers/utils";
 import { doesAnswerMeetCriteria } from "../../utility/criteriaUtils";
-
+import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 interface EligibilityProps {
   eligibilityCriteriaWithQuestion: EligibilityCriteriaWithQuestionDto[];
   application: ApplicationDto | null;
@@ -136,12 +136,46 @@ console.log("original Answer is ", answers);
     return <div>No eligibility criteria found for this grant program.</div>;
   }
 
-  return (
-    <div className="content">
-      <h2>Eligibility Criteria</h2>
-      <form className="eligibility-forms" onSubmit={handleSubmit}>
-        {eligibilityCriteriaWithQuestion.map((item, idx) => (
-          <div key={idx} className="eligibility-form">
+return (
+  <div className="content">
+    <TitleAndHeadLine
+      title="Eligibility Criteria"
+      headline="Answer questions to see if you are eligible for the grant"
+      student={true}
+    />
+    <form className="eligibility-forms" onSubmit={handleSubmit}>
+      {eligibilityCriteriaWithQuestion.map((item, idx) => {
+        // Determine eligibility for single question
+        let isEligible = true;
+        if (item.question && item.eligibilityCriteria?.simpleCondition) {
+          isEligible = doesAnswerMeetCriteria(
+            answers[item.question.question.id],
+            item.eligibilityCriteria.simpleCondition.comparisonOperator,
+            item.eligibilityCriteria.simpleCondition.values
+          );
+        }
+        // For question group, eligible if all conditions are met
+        if (item.questionGroup && item.eligibilityCriteria?.questionConditions) {
+          isEligible = item.questionGroup.questions.every((q: any) => {
+            const cond = item.eligibilityCriteria.questionConditions.find(
+              (c: any) => c.questionId === q.question.id
+            );
+            if (!cond) return true;
+            return doesAnswerMeetCriteria(
+              answers[item.questionGroup.id]?.[q.question.id],
+              cond.comparisonOperator,
+              cond.values
+            );
+          });
+        }
+
+        return (
+          <div
+            key={idx}
+            className={`eligibility-form ${
+              isEligible ? "eligibility-form--eligible" : "eligibility-form--ineligible"
+            }`}
+          >
             {item.question && (
               <div>
                 {renderInput(
@@ -153,71 +187,58 @@ console.log("original Answer is ", answers);
                 {/* Render criteria info for single question */}
                 {item.eligibilityCriteria?.simpleCondition && (
                   <div className="criteria-info">
-                    <strong>Criteria:</strong>{" "}
-                    Operator: {item.eligibilityCriteria.simpleCondition.comparisonOperator}, Values: {JSON.stringify(item.eligibilityCriteria.simpleCondition.values)}
-                    <br />
-                    <strong>Answer:</strong> {JSON.stringify(answers[item.question.question.id])}
-                    <br />
-                    <strong>Meets Criteria:</strong>{" "}
-                    {doesAnswerMeetCriteria(
-                      answers[item.question.question.id],
-                      item.eligibilityCriteria.simpleCondition.comparisonOperator,
-                      item.eligibilityCriteria.simpleCondition.values
-                    )
-                      ? "✅"
-                      : "❌"}
+                    <p className={`eligibility-message-${isEligible ? "eligible" : "ineligible"}`}>{isEligible ? "Eligible" : "Ineligible"}</p>
+                    <p>
+                      criteria: your answer should {item.eligibilityCriteria.simpleCondition.comparisonOperator}{" "}
+                      {JSON.stringify(item.eligibilityCriteria.simpleCondition.values)}
+                    </p>
                   </div>
                 )}
               </div>
             )}
             {item.questionGroup &&
-              item.questionGroup.questions.map((q: any, qIdx: number) => (
-                <div key={qIdx} className="question-group">
-                  {renderInput(
-                    q.question,
-                    q.options,
-                    answers[item.questionGroup.id]?.[q.question.id],
-                    (id, value) => handleAnswerChange(id, value, item.questionGroup.id)
-                  )}
-                  {/* Render criteria info for question group */}
-                  {item.eligibilityCriteria?.questionConditions &&
-                    (() => {
-                      const condition = item.eligibilityCriteria.questionConditions.find(
-                        (cond: any) => cond.questionId === q.question.id
-                      );
-                      if (!condition) return null;
-                      return (
-                        <div className="criteria-info">
-                          <strong>Criteria:</strong>{" "}
-                          Operator: {condition.comparisonOperator}, Values: {JSON.stringify(condition.values)}
-                          <br />
-                          <strong>Answer:</strong> {JSON.stringify(answers[item.questionGroup.id]?.[q.question.id])}
-                          <br />
-                          <strong>Meets Criteria:</strong>{" "}
-                          {doesAnswerMeetCriteria(
-                            answers[item.questionGroup.id]?.[q.question.id],
-                            condition.comparisonOperator,
-                            condition.values
-                          )
-                            ? "✅"
-                            : "❌"}
-                        </div>
-                      );
-                    })()}
-                </div>
-              ))}
+              item.questionGroup.questions.map((q: any, qIdx: number) => {
+                const cond = item.eligibilityCriteria?.questionConditions?.find(
+                  (c: any) => c.questionId === q.question.id
+                );
+                const eligible = cond
+                  ? doesAnswerMeetCriteria(
+                      answers[item.questionGroup.id]?.[q.question.id],
+                      cond.comparisonOperator,
+                      cond.values
+                    )
+                  : true;
+                return (
+                  <div key={qIdx} className="question-group">
+                    {renderInput(
+                      q.question,
+                      q.options,
+                      answers[item.questionGroup.id]?.[q.question.id],
+                      (id, value) => handleAnswerChange(id, value, item.questionGroup.id)
+                    )}
+                    {cond && (
+                      <div className="criteria-info">
+                    <p className={`eligibility-message-${isEligible ? "eligible" : "ineligible"}`}>{isEligible ? "Eligible" : "Ineligible"}</p>
+                        <br />
+                        Criteria: {cond.comparisonOperator} {JSON.stringify(cond.values)}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
           </div>
-        ))}
-        <Button
-            text={isSubmitting ? "Submitting..." : "Submit"}
-            type="submit"
-            disabled={isSubmitting}
-        />
-        {submitError && <div className="error-message">{submitError}</div>}
-        {submitSuccess && <div className="success-message">{submitSuccess}</div>}
-      </form>
-    </div>
-  );
+        );
+      })}
+      <Button
+        text={isSubmitting ? "Submitting..." : "Submit"}
+        type="submit"
+        disabled={isSubmitting}
+      />
+      {submitError && <div className="error-message">{submitError}</div>}
+      {submitSuccess && <div className="success-message">{submitSuccess}</div>}
+    </form>
+  </div>
+);
 };
 
 export default Eligibility;

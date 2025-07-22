@@ -1,7 +1,7 @@
 import Button from "../../components/basicComponents/Button";
 import type { GrantProgram } from "../../types/grantProgram";
 import { useNavigate } from "react-router-dom";
-import TitleAndHeadLine from "./TitleAndHeadLine";
+import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import { useState, useEffect} from "react";
 import { updateEligibilityCriteria, fetchEligibilityQuestions,fetchEligibilityQuestionGroups, getEligibilityCriteria, createQuestion } from "../../services/GrantProgramService";
 import type { ComparisonOperator, EligibilityGroupFormState,QuestionGroupEligibilityInfoDto,  QuestionEligibilityInfoDto, EligibilityCriteriaDTO, QuestionCondition, Option, InputType, DataType, Question } from "../../data/questionEligibilityInfoDto";
@@ -147,6 +147,7 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
       setEligibilities(criteriaList);
       setSubmitSuccess("Eligibility criteria updated successfully.");
       setEligibilityForms([]);
+      navigate(0);
     } catch (error) {
       console.error("Failed to update eligibility criteria", error);
       setSubmitError("Failed to update eligibility criteria");

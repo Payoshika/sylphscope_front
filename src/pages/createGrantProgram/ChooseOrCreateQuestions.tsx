@@ -9,7 +9,7 @@ import type {
   DataType,
 } from "../../data/questionEligibilityInfoDto";
 import Button from "../../components/basicComponents/Button";
-import TitleAndHeadLine from "./TitleAndHeadLine";
+import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import Modal from "../../components/basicComponents/Modal";
 import QuestionForm from "./QuestionForm";
 import QuestionDisplay from "./QuestionDisplay";

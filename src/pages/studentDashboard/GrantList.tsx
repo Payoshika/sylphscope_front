@@ -8,7 +8,7 @@ import Button from "../../components/basicComponents/Button";
 import { useState, useEffect } from "react";
 import { getGrantProgramsByStudentId } from "../../services/GrantProgramService";
 import { createApplicationByStudentAndGrantProgramId } from "../../services/ApplicationService";
-
+import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 interface GrantListProps {
 }
 
@@ -48,7 +48,11 @@ const GrantList: React.FC<GrantListProps> = () => {
 
   return (
     <div className="content">
-      <h2>Available Grants</h2>
+      <TitleAndHeadLine
+        title="Available Grants"
+        headline="apply to the ones you are eligible"
+        student={true}
+      />
       {grantPrograms.length === 0 ? (
         <p>No grants to display.</p>
       ) : (

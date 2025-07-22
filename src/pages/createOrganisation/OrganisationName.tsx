@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import TextInput from "../../components/inputComponents/TextInput";
 import Button from "../../components/basicComponents/Button";
-import TitleAndHeadLine from "../createGrantProgram/TitleAndHeadLine";
+import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import type { Provider } from "../../types/provider";
 
 interface OrganisationNameProps {
@@ -42,7 +42,7 @@ const OrganisationName: React.FC<OrganisationNameProps> = ({
 
   return (
     <div className="content">
-      <TitleAndHeadLine title="Organisation Name" headline="Create a new organisation" provider={true} />
+      <TitleAndHeadLine title="Organisation Name" headline="Set Your Organisation Name" provider={true} />
       <form className="form-group" onSubmit={handleSubmit}>
     <TextInput
     id="organisation-name"

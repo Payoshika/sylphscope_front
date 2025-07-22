@@ -3,7 +3,7 @@ import TextInput from "../../components/inputComponents/TextInput";
 import Button from "../../components/basicComponents/Button";
 import type { GrantProgram } from "../../types/grantProgram";
 import { useNavigate } from "react-router-dom";
-import TitleAndHeadLine from "./TitleAndHeadLine";
+import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 
 
 interface GrantNameProps {
@@ -54,7 +54,7 @@ const GrantName: React.FC<GrantNameProps> = ({
         setSubmitSuccess("Grant name is created successfully.");
         onGrantProgramChange({ ...grantProgram, ...response.data });
       }
-      navigate("../description");
+      navigate("../amount");
     } catch (err: any) {
         console.error(err);
         setSubmitError("Failed to save grant name. Please try again.");
@@ -81,6 +81,7 @@ const GrantName: React.FC<GrantNameProps> = ({
         <Button
           text={isSubmitting ? "Saving..." : "Save Grant Name"}
           disabled={isSubmitting || !grantProgram.title}
+          type="submit"
         />
         {submitError && <div className="error-message">{submitError}</div>}
         {submitSuccess && <div className="success-message">{submitSuccess}</div>}

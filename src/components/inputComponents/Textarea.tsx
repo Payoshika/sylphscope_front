@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 
 interface TextareaProps {
   id: string;
@@ -23,21 +23,43 @@ const Textarea: React.FC<TextareaProps> = ({
   rows = 4,
   required = false,
 }) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const adjustHeight = () => {
+    const el = textareaRef.current;
+    if (el) {
+      el.style.height = "auto";
+      el.style.height = el.scrollHeight + "px";
+    }
+  };
+
+  useEffect(() => {
+    adjustHeight();
+  }, [value]);
+
+  const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
+    adjustHeight();
+    onChange(e as React.ChangeEvent<HTMLTextAreaElement>);
+  };
+
   return (
     <div className="form-group">
       <label htmlFor={id} className="form-label">
         {label}
       </label>
       <textarea
+        ref={textareaRef}
         id={id}
         name={name}
         className="textarea"
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        onInput={handleInput}
         disabled={disabled}
         rows={rows}
         required={required}
+        style={{ resize: "vertical", overflow: "hidden" }}
       />
     </div>
   );

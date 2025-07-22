@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Card from "../../components/basicComponents/Card";
 import Button from "../../components/basicComponents/Button";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import { getGrantProgramAndApplicationByStudentId } from "../../services/ApplicationService";
 import type { GrantProgramApplicationDto } from "../../types/application";
 import type { Student } from "../../types/student";
+import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 
 const AppliedGrantList: React.FC = () => {
   const { student } = useOutletContext<{ student: Student }>();
   const [appliedGrants, setAppliedGrants] = useState<GrantProgramApplicationDto[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAppliedGrants = async () => {
@@ -28,7 +30,11 @@ const AppliedGrantList: React.FC = () => {
 
   return (
     <div className="content">
-      <h2>Applied Grants</h2>
+      <TitleAndHeadLine
+        title="Applied Grants"
+        headline="list of grant you have applied"
+        student={true}
+      />
       {loading ? (
         <p>Loading applied grants...</p>
       ) : appliedGrants.length === 0 ? (
@@ -58,6 +64,11 @@ const AppliedGrantList: React.FC = () => {
               <p>
                 <strong>Submitted At:</strong> {application.submittedAt?.slice(0, 10)}
               </p>
+              <Button
+                text="View Application"
+                type="button"
+                onClick={() => navigate(`/student-application/${grantProgram.id}`)}
+              />
             </Card>
           ))}
         </div>

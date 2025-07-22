@@ -4,6 +4,7 @@ import type { Provider } from "../../types/provider";
 import type { GrantProgram } from "../../types/grantProgram";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/basicComponents/Button";
+import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 
 interface ListGrantsProps {
   provider: Provider;
@@ -21,7 +22,7 @@ const ListGrants: React.FC<ListGrantsProps> = ({ provider, grantPrograms, loadin
 
   return (
     <div className="content">
-      <h2>List of Grants</h2>
+      <TitleAndHeadLine title="List of Grants" headline="List of Grants" provider={true} />
       {grantPrograms.length === 0 ? (
         <p>No grants to display.</p>
       ) : (

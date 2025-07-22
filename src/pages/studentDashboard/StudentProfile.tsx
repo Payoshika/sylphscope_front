@@ -10,6 +10,7 @@ import type { Gender } from "../../types/gender";
 import DOBPicker from "../../components/inputComponents/datePickers/DOBPicker";
 import { toDateValue } from "../../components/inputComponents/datePickers/utils";
 import type { DateValue } from "../../components/inputComponents/datePickers/types";
+import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 
 const genderOptions = [
     { value: "Male", label: "Male" },
@@ -118,8 +119,12 @@ const [form, setForm] = useState<Student>(student);
   };
 
   return (
-    <div className="student-profile-layout">
-      <h2>Student Profile</h2>
+    <div className="content">
+      <TitleAndHeadLine
+        title="Student Profile"
+        headline="Create your basic profile before apply any grant"
+        student={true}
+      />
       <form className="form-group" onSubmit={handleSubmit}>
         <TextInput
           id="firstName"

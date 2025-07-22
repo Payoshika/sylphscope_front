@@ -1,5 +1,5 @@
 import React from 'react'
-import PlusSign from '../../components/icons/PlusSign'
+import PlusSign from '../components/icons/PlusSign'
 
 type TitleAndHeadLineProps = {
     title: string

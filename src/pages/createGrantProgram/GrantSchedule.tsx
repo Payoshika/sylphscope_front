@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import type { GrantProgram } from "../../types/grantProgram";
-import TitleAndHeadLine from "./TitleAndHeadLine";
+import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import Button from "../../components/basicComponents/Button";
 import DatePicker from "../../components/inputComponents/datePickers/DatePicker";
 import type { DateValue } from "../../components/inputComponents/datePickers/types";

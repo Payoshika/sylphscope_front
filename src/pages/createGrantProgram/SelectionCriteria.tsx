@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import type { GrantProgram, EvaluationScale } from "../../types/grantProgram";
 import type { QuestionEligibilityInfoDto } from "../../data/questionEligibilityInfoDto";
 import type { SelectionCriterion } from "../../types/grantProgram";
-import TitleAndHeadLine from "./TitleAndHeadLine";
+import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import Button from "../../components/basicComponents/Button";
 import { getSelectionCriteria, updateSelectionCriteria } from "../../services/GrantProgramService";
 import Select from "../../components/inputComponents/Select";

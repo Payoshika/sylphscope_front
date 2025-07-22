@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Textarea from "../../components/inputComponents/Textarea";
 import Button from "../../components/basicComponents/Button";
-import TitleAndHeadLine from "../createGrantProgram/TitleAndHeadLine";
+import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import type { Provider } from "../../types/provider";
 
 interface OrganisationDescriptionProps {
@@ -41,7 +41,7 @@ const OrganisationDescription: React.FC<OrganisationDescriptionProps> = ({
 
   return (
     <div className="content">
-      <TitleAndHeadLine title="Create Description" headline="Provide a detailed description of the organisation" provider={true} />
+      <TitleAndHeadLine title="Organisation Description" headline="Provide a detailed description of the organisation" provider={true} />
       <form className="form-group" onSubmit={handleSubmit}>
         <Textarea
         id="organisation-description"

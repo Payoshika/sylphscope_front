@@ -9,8 +9,9 @@ import { Routes, Route, useNavigate, useLocation, Navigate } from "react-router-
 import { getGrantProgramsByProviderId } from "../../services/GrantProgramService";
 
 const steps = [
+  { key: "create", label: "Create Grant" },
   { key: "list", label: "List Grants" },
-  // Add more steps as needed
+  { key: "review", label: "Review Application" },
 ];
 
 const GrantManagement = () => {
