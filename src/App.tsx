@@ -24,6 +24,7 @@ import StudentDashboard from "./pages/studentDashboard/StudentDashboard";
 import StudentApplication from "./pages/studentApplication/StudentApplication";
 import ProviderLayout from "./pages/ProviderLayout";
 import StudentLayout from "./pages/StudentLayout";
+import Message from "./pages/grantManagement/Message";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
                 <Route path="/grant-management/*" element={<GrantManagement />} />
                 <Route path="/create-grant/:grantProgramId/*" element={<CreateGrantProgram />} />
                 <Route path="/organisation/*" element={<CreateOrganisation />} />
+                <Route path="/provider-messages" element={<Message userName="" />} />
               </Route>
             </Route>
             <Route element={<ProtectedLayout />}>

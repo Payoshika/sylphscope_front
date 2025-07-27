@@ -1,0 +1,117 @@
+@use "../global/base" as *;
+@use "../global/mixins" as *;
+
+.create-grant-options {
+  width: 100%;
+  min-height: 40rem;
+  @include RowJustifyCenterFlexbox;
+  @include Box;
+  @include BoxShadow;
+}
+
+.create-grant-option {
+    width: 35rem;
+  @include Box;
+  @include BoxShadow;
+  padding: 2rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+
+  &.selected {
+    border-color: $primary-color;
+    box-shadow: 0 8px 24px rgba($primary-color, 0.15);
+  }
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba($primary-color, 0.1);
+  }
+}
+
+.create-grant-option-header {
+  margin-bottom: 1.5rem;
+  text-align: center;
+
+  h3 {
+    color: $text-color;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: $secondary-color;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+.create-grant-option-content {
+  @include ColJustifyCenterFlexbox;
+  gap: 1rem;
+  text-align: center;
+}
+
+.create-grant-duplicate-section {
+  @include ColJustifyCenterFlexbox;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid $border-color;
+}
+
+.selected-grant-info {
+  @include Box;
+  padding: 1rem;
+  background: $background-color;
+  border-radius: 8px;
+  text-align: left;
+
+  h4 {
+    color: $text-color;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: $text-color;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .grant-description {
+    color: $secondary-color;
+    font-size: 0.9rem;
+    font-weight: normal;
+    margin-bottom: 0;
+  }
+}
+
+.create-grant-action {
+  margin-top: 1rem;
+}
+
+// Responsive design
+@include extrasmall {
+  .create-grant-options {
+    padding: 1rem 0;
+    gap: 1.5rem;
+  }
+
+  .create-grant-option {
+    padding: 1.5rem;
+  }
+
+  .create-grant-option-header {
+    h3 {
+      font-size: 1.3rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+    }
+  }
+} 

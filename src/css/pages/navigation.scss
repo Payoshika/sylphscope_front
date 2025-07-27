@@ -8,6 +8,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
+
+  .btn{
+    @include Padding0_5rem;
+  }
 }
 
 .nav-brand {
@@ -25,9 +29,27 @@
 }
 
 .nav-links {
-  display: flex;
-  align-items: center;
-  gap: 1.6rem;
+  @include RowJustifyCenterFlexbox;
+  gap: 0.5rem;
+}
+
+.nav-link {
+  background-color: $background-color;
+  color: $text-color;
+  border-radius: 0;
+  border: none;
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    border-bottom: 1px solid $primary-color;
+    background-color: $background-color;
+    color: $text-color;
+    box-shadow: none;
+  }
+  &:focus, &:active {
+    outline: none;
+    border: none;
+    box-shadow: none;
+  }
 }
 
 .nav-link-icon { display: none; }
@@ -42,7 +64,7 @@
 .nav-logo-svg { display: none; }
 .nav-link-label { display: block; }
 
-@include smartphone {
+@include extrasmall {
   .nav-logo-text { display: none; }
   .nav-logo-svg { display: block; }
   .nav-brand .user-type { display: none; }

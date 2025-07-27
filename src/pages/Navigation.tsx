@@ -40,34 +40,42 @@ const Navigation: React.FC = () => {
             {isAuthenticated ? (
               <>
                 {user && user.roles?.[0] === "ROLE_STUDENT" && (
-                  <Link to="/student-dashboard" className="btn btn--small btn--ghost">
+                  <Link to="/student-dashboard" className="btn btn--small nav-link">
                     <span className="nav-link-icon"><HugeiconsIcon icon={DashboardSquare01Icon} /></span>
                     <span className="nav-link-label">Dashboard</span>
                   </Link>
                 )}
                 {user && user.roles?.[0] === "ROLE_PROVIDER" && (
                   <>
-                    <Link to="/grant-management" className="btn btn--small btn--ghost">
-                      <span className="nav-link-icon"><HugeiconsIcon icon={DashboardSquare01Icon} /></span>
-                      <span className="nav-link-label">Dashboard</span>
-                    </Link>
-                    <Link to="/organisation" className="btn btn--small btn--ghost">
-                      <span className="nav-link-icon"><HugeiconsIcon icon={Profile02Icon} /></span>
-                      <span className="nav-link-label">Organisation</span>
-                    </Link>
-                    <Link to="/staff-profile" className="btn btn--small btn--ghost">
-                      <span className="nav-link-icon"><HugeiconsIcon icon={UserSquareIcon} /></span>
-                      <span className="nav-link-label">Staff Profile</span>
-                    </Link>
+                      <Link to="/grant-management" className="btn btn--small nav-link">
+                        <span className="nav-link-icon"><HugeiconsIcon icon={DashboardSquare01Icon} /></span>
+                        <span className="nav-link-label">Dashboard</span>
+                      </Link>
+                      <Link to="/organisation" className="btn btn--small nav-link">
+                        <span className="nav-link-icon"><HugeiconsIcon icon={Profile02Icon} /></span>
+                        <span className="nav-link-label">Organisation</span>
+                      </Link>
+                    <Link to="/staff-profile" className="btn btn--small nav-link">
+                        <span className="nav-link-icon"><HugeiconsIcon icon={UserSquareIcon} /></span>
+                        <span className="nav-link-label">Staff Profile</span>
+                      </Link>
                   </>
                 )}
-                <Link to="/messages" className="btn btn--small btn--ghost">
+                {user && user.roles?.[0] === "ROLE_STUDENT" && (
+                  <Link to="/student-dashboard/messages" className="btn btn--small nav-link">
                     <span className="nav-link-icon"><HugeiconsIcon icon={Mail01Icon} /></span>
                     <span className="nav-link-label">Message</span>
-                </Link>
+                  </Link>
+                )}
+                {user && user.roles?.[0] === "ROLE_PROVIDER" && (
+                  <Link to="/grant-management/messages" className="btn btn--small nav-link">
+                    <span className="nav-link-icon"><HugeiconsIcon icon={Mail01Icon} /></span>
+                    <span className="nav-link-label">Message</span>
+                  </Link>
+                )}
                 <button
                       onClick={handleLogout}
-                      className="btn btn--small btn--outline"
+                      className="btn btn--small btn--outline nav-link"
                     >
                       <span className="nav-link-icon"><HugeiconsIcon icon={Logout02Icon} /></span>
                       <span className="nav-link-label">Sign Out</span>
