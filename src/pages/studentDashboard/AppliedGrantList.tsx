@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import Card from "../../components/basicComponents/Card";
-import Button from "../../components/basicComponents/Button";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import { getGrantProgramAndApplicationByStudentId } from "../../services/ApplicationService";
 import type { GrantProgramApplicationDto } from "../../types/application";
 import type { Student } from "../../types/student";
+import type { Provider } from "../../types/provider";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
+import GrantListTable from "../../components/basicComponents/GrantListTable";
 
 const AppliedGrantList: React.FC = () => {
   const { student } = useOutletContext<{ student: Student }>();
   const [appliedGrants, setAppliedGrants] = useState<GrantProgramApplicationDto[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sortState, setSortState] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +29,78 @@ const AppliedGrantList: React.FC = () => {
     fetchAppliedGrants();
   }, [student?.id]);
 
+  // Map to GrantListTable expected props
+  const grants = appliedGrants.map((item) => ({
+    ...item.grantProgram,
+    status: item.application.status,
+    application: item.application,
+  }));
+  const providers: Record<string, Provider> = {};
+  appliedGrants.forEach((item) => {
+    providers[item.grantProgram.providerId] = {
+      id: item.grantProgram.providerId,
+      organisationName: item.grantProgram.providerId,
+      contactEmail: "",
+      contactPhone: "",
+      websiteUrl: "",
+      organisationDescription: "",
+      logoUrl: "",
+      createdAt: ""
+    };
+  });
+
+  const getNextSchedule = (grant: any) => {
+    const { schedule } = grant;
+    if (!schedule) return "-";
+    if (schedule.applicationStartDate && new Date(schedule.applicationStartDate) > new Date()) {
+      return `Application opens: ${schedule.applicationStartDate.slice(0, 10)}`;
+    }
+    if (schedule.applicationEndDate && new Date(schedule.applicationEndDate) > new Date()) {
+      return `Application closes: ${schedule.applicationEndDate.slice(0, 10)}`;
+    }
+    if (schedule.decisionDate && new Date(schedule.decisionDate) > new Date()) {
+      return `Decision: ${schedule.decisionDate.slice(0, 10)}`;
+    }
+    if (schedule.fundDisbursementDate && new Date(schedule.fundDisbursementDate) > new Date()) {
+      return `Fund Disbursement: ${schedule.fundDisbursementDate.slice(0, 10)}`;
+    }
+    return "-";
+  };
+
+  const handleViewDetail = (grantId: string) => {
+    navigate(`/student-application/${grantId}`);
+  };
+
+  const handleSort = (key: string, direction: 'asc' | 'desc') => {
+    setSortState({ key, direction });
+    setAppliedGrants(prev => {
+      const sorted = [...prev].sort((a, b) => {
+        let aValue: any = a.grantProgram[key as keyof typeof a.grantProgram];
+        let bValue: any = b.grantProgram[key as keyof typeof b.grantProgram];
+        // Special handling for provider organisation name
+        if (key === 'organisation') {
+          aValue = providers[a.grantProgram.providerId]?.organisationName || '';
+          bValue = providers[b.grantProgram.providerId]?.organisationName || '';
+        }
+        // Special handling for schedule
+        if (key === 'schedule') {
+          aValue = getNextSchedule(a.grantProgram);
+          bValue = getNextSchedule(b.grantProgram);
+        }
+        // Special handling for amount
+        if (key === 'amount') {
+          aValue = a.grantProgram.award && a.grantProgram.award.length > 0 ? a.grantProgram.award[0] : 0;
+          bValue = b.grantProgram.award && b.grantProgram.award.length > 0 ? b.grantProgram.award[0] : 0;
+        }
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return direction === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+        }
+        return direction === 'asc' ? aValue - bValue : bValue - aValue;
+      });
+      return sorted;
+    });
+  };
+
   return (
     <div className="content">
       <TitleAndHeadLine
@@ -37,43 +110,18 @@ const AppliedGrantList: React.FC = () => {
       />
       {loading ? (
         <p>Loading applied grants...</p>
-      ) : appliedGrants.length === 0 ? (
+      ) : grants.length === 0 ? (
         <p>No applied grants to display.</p>
       ) : (
-        <div className="grant-list">
-          {appliedGrants.map(({ grantProgram, application }) => (
-            <Card
-              key={grantProgram.id}
-              title={grantProgram.title}
-              subtitle={application.status}
-            >
-              <p>{grantProgram.description}</p>
-              <p>
-                <strong>Application Period:</strong>{" "}
-                {grantProgram.schedule?.applicationStartDate?.slice(0, 10)} - {grantProgram.schedule?.applicationEndDate?.slice(0, 10)}
-              </p>
-              <p>
-                <strong>Provider:</strong> {grantProgram.providerId}
-              </p>
-              <p>
-                <strong>Grant ID:</strong> {grantProgram.id}
-              </p>
-              <p>
-                <strong>Application Status:</strong> {application.status}
-              </p>
-              <p>
-                <strong>Submitted At:</strong> {application.submittedAt?.slice(0, 10)}
-              </p>
-              <Button
-                text="View Application"
-                type="button"
-                onClick={() => navigate(`/student-application/${grantProgram.id}`)}
-              />
-            </Card>
-          ))}
-        </div>
+        <GrantListTable
+          grants={grants}
+          providers={providers}
+          getNextSchedule={getNextSchedule}
+          onViewDetail={handleViewDetail}
+          onSort={handleSort}
+        />
       )}
     </div>
   );
-}
+};
 export default AppliedGrantList;

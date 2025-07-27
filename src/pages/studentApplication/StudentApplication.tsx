@@ -18,7 +18,6 @@ const steps = [
   { key: "overview", label: "Grant Overview" },
   { key: "eligibility", label: "Eligibility Criteria" },
   { key: "questions", label: "Questions" },
-  { key: "message", label: "Message"},
 ];
 
 const getInputTypeForQuestion = (questionId: string, questions: QuestionEligibilityInfoDto[], questionGroups: QuestionGroupEligibilityInfoDto[]) => {

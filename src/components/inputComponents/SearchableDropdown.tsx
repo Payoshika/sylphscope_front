@@ -77,7 +77,7 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
   required = false,
   searchable = true,
   showCategories = true,
-  className = "",
+  className = "multi-select",
   dropdownClassName = "",
   onValidationChange,
 
@@ -289,21 +289,21 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
   const customInputRenderer = renderCustomInput || defaultRenderCustomInput;
 
   return (
-    <div className="form-group" ref={dropdownRef}>
-      <label htmlFor={id} className="form-label">
+    <div className={`form-group ${className}`} ref={dropdownRef}>
+      <label htmlFor={id} className="multi-select__label">
         {label}
         {required && <span className="required-asterisk">*</span>}
       </label>
 
       {searchable ? (
-        <div className={`${className}__search-container`}>
-          <div className={`${className}__search-wrapper`}>
+        <div className="multi-select__search-container">
+          <div className="multi-select__search-wrapper">
             <input
               ref={searchInputRef}
               type="text"
               id={id}
               name={name}
-              className={getInputClass()}
+              className="multi-select__search-input"
               placeholder={placeholder}
               value={displayValue}
               onChange={handleSearchChange}
@@ -316,10 +316,9 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
               aria-haspopup="listbox"
               aria-autocomplete="list"
             />
-
             <button
               type="button"
-              className={`${className}__dropdown-toggle`}
+              className="multi-select__dropdown-toggle"
               onClick={() => !disabled && setIsOpen(!isOpen)}
               disabled={disabled}
               aria-label={`Toggle ${label.toLowerCase()} dropdown`}
@@ -327,19 +326,18 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
               <span className="dropdown-arrow">{isOpen ? "▲" : "▼"}</span>
             </button>
           </div>
-
-          <div className={getDropdownClass()}>
+          <div className={`multi-select__dropdown${isOpen ? " multi-select__dropdown--open" : ""}`}>
             {isOpen && (
-              <div className={`${className}__options`}>
+              <div className="multi-select__options">
                 {categorizedOptions ? (
                   // Categorized display
                   Object.entries(categorizedOptions).map(
                     ([categoryKey, categoryData]) => (
                       <div
                         key={categoryKey}
-                        className={`${className}__category`}
+                        className="multi-select__category"
                       >
-                        <div className={`${className}__category-header`}>
+                        <div className="multi-select__category-header">
                           {categoryData.label}
                         </div>
                         {categoryData.options.map((option, index) => {
@@ -349,13 +347,13 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
                           return (
                             <div
                               key={option.value}
-                              className={`${className}__option ${
+                              className={`multi-select__option ${
                                 value === option.value
-                                  ? `${className}__option--selected`
+                                  ? "multi-select__option--selected"
                                   : ""
                               } ${
                                 globalIndex === highlightedIndex
-                                  ? `${className}__option--highlighted`
+                                  ? "multi-select__option--highlighted"
                                   : ""
                               }`}
                               onClick={() => handleOptionSelect(option.value)}
@@ -381,13 +379,13 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
                   filteredOptions.map((option, index) => (
                     <div
                       key={option.value}
-                      className={`${className}__option ${
+                      className={`multi-select__option ${
                         value === option.value
-                          ? `${className}__option--selected`
+                          ? "multi-select__option--selected"
                           : ""
                       } ${
                         index === highlightedIndex
-                          ? `${className}__option--highlighted`
+                          ? "multi-select__option--highlighted"
                           : ""
                       }`}
                       onClick={() => handleOptionSelect(option.value)}
@@ -403,7 +401,7 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
                     </div>
                   ))
                 ) : (
-                  <div className={`${className}__no-results`}>
+                  <div className="multi-select__no-results">
                     No {label.toLowerCase()} found matching "{searchTerm}"
                   </div>
                 )}

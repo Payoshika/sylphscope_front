@@ -27,6 +27,13 @@
   }
 }
 
+.settings-content {
+  width: 100%;
+  @include Padding4rem;
+  max-width: 120rem;
+  margin: 0 auto;
+}
+
 // Tab Navigation - modified to use existing mixins
 .settings-tabs {
   @include RowJustifyStartFlexbox;

@@ -13,20 +13,22 @@ interface GrantListTableProps {
   onSearch?: (query: string) => void;
   onSort?: (headerKey: string, direction: 'asc' | 'desc') => void;
   onViewDetail?: (grantId: string) => void;
+  headers?: { label: string; key: string }[];
 }
 
-const HEADERS = [
+const DEFAULT_HEADERS = [
   { label: "Grant Name", key: "title" },
   { label: "Organisation", key: "organisation" },
   { label: "Application Status", key: "status" },
   { label: "Expected next schedule", key: "schedule" },
-  { label: "Grant Amount", key: "amount" },
-  { label: "", key: "viewdetail" }
+  { label: "Grant Amount", key: "amount" }
 ];
 
-const GrantListTable: React.FC<GrantListTableProps> = ({ grants, providers, onApply, getNextSchedule, onSearch, onSort, onViewDetail }) => {
+const GrantListTable: React.FC<GrantListTableProps> = ({ grants, providers, onApply, getNextSchedule, onSearch, onSort, onViewDetail, headers }) => {
   const [search, setSearch] = useState("");
   const [sortState, setSortState] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
+
+  const HEADERS = headers || DEFAULT_HEADERS;
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -59,32 +61,31 @@ const GrantListTable: React.FC<GrantListTableProps> = ({ grants, providers, onAp
         {HEADERS.map((header, i) => (
           <div className="grantlist-header-cell" key={header.key}>
             <span>{header.label}</span>
-            {i !== HEADERS.length - 1 && (
-              <button
-                className="grantlist-sort-btn"
-                onClick={() => handleSort(header.key)}
-                aria-label={`Sort by ${header.label}`}
-                type="button"
-              >
-                {sortState?.key === header.key ? (sortState.direction === 'asc' ? <HugeiconsIcon icon={Sorting01Icon} size={18}/> : <HugeiconsIcon icon={Sorting02Icon} size={18}/>) : <HugeiconsIcon icon={Sorting05Icon} size={18}/>}            </button>
-            )}
+            <button
+              className="grantlist-sort-btn"
+              onClick={() => handleSort(header.key)}
+              aria-label={`Sort by ${header.label}`}
+              type="button"
+            >
+              {sortState?.key === header.key ? (sortState.direction === 'asc' ? <HugeiconsIcon icon={Sorting01Icon} size={18}/> : <HugeiconsIcon icon={Sorting02Icon} size={18}/>) : <HugeiconsIcon icon={Sorting05Icon} size={18}/>}            </button>
           </div>
         ))}
       </div>
       {grants.map((grant, rowIndex) => {
         const provider = providers[grant.providerId];
         return (
-          <div className="grantlist-grid-row" key={grant.id}>
+          <div
+            className="grantlist-grid-row grantlist-row-clickable"
+            key={grant.id}
+            tabIndex={0}
+            onClick={() => onViewDetail?.(grant.id)}
+            onKeyDown={e => { if (e.key === 'Enter') onViewDetail?.(grant.id); }}
+          >
             <div className="grantlist-grid-cell grantlist-value-cell"><span>{grant.title}</span></div>
             <div className="grantlist-grid-cell grantlist-value-cell"><span>{provider?.organisationName || grant.providerId}</span></div>
             <div className="grantlist-grid-cell grantlist-value-cell"><span>{grant.status}</span></div>
             <div className="grantlist-grid-cell grantlist-value-cell"><span>{getNextSchedule(grant)}</span></div>
-            <div className="grantlist-grid-cell grantlist-value-cell"><span>{grant.award && grant.award.length > 0 ? grant.award.join(" - ") : "-"}</span></div>
-            <div className="grantlist-grid-cell grantlist-value-cell grantlist-contact-cell">
-              <button className="grantlist-contact-btn" title="View Detail" onClick={() => onViewDetail?.(grant.id)}>
-                View Detail
-              </button>
-            </div>
+            <div className="grantlist-grid-cell grantlist-value-cell"><span>{grant.award && grant.award.length > 0 ? grant.award.join(" - ") : "-"}{grant.numOfAward ? ` / ${grant.numOfAward}` : ""}</span></div>
           </div>
         );
       })}

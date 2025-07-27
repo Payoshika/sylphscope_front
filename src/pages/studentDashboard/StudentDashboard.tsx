@@ -5,6 +5,7 @@ import StudentProfile from "./StudentProfile";
 import AppliedGrantList from "./AppliedGrantList";
 import FurtherInfo from "./FurtherInfo";
 import Message from "./Message";
+import Settings from "../settings/Settings";
 import { useOutletContext, Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import type { Student } from "../../types/student";
 import type { GrantProgram } from "../../types/grantProgram";
@@ -16,7 +17,6 @@ const steps = [
     { key: "list", label: "Available Grants" },
     { key: "applied", label: "Applied Grants" },
     { key: "messages", label: "Messages" },
-    { key: "notifications", label: "Notifications" },
     { key: "settings", label: "Settings" },
 ];
 
@@ -64,6 +64,10 @@ const StudentDashboard = () => {
         <Route
             path="messages"
             element={<Message userName={student.firstName + " " + student.lastName} />}
+        />
+        <Route
+            path="settings"
+            element={<Settings />}
         />
         </Routes>
       </main>

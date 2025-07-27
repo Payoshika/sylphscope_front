@@ -123,6 +123,13 @@ const GrantList: React.FC<GrantListProps> = () => {
           onApply={handleApply}
           getNextSchedule={getNextSchedule}
           onSort={handleSort}
+          headers={[
+            { label: "Grant Name", key: "title" },
+            { label: "Organisation", key: "organisation" },
+            { label: "Eligibility", key: "status" },
+            { label: "Expected next schedule", key: "schedule" },
+            { label: "Grant Amount / Receivers", key: "amount" },
+          ]}
         />
       )}
     </div>

@@ -1,6 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import Textarea from "../../components/inputComponents/Textarea";
+import Button from "../../components/basicComponents/Button";
+import SearchableDropdown from "../../components/inputComponents/SearchableDropdown";
+import { ArrowLeft03Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
+
 
 interface MessageSummary {
   id: string;
@@ -32,21 +37,39 @@ const mockDetail: MessageDetail = {
   ],
 };
 
+const mockReceivers = [
+  { id: "org1", name: "Graham Ker Foundation" },
+  { id: "org2", name: "UofG Charity" },
+  { id: "org3", name: "Grant Provider C" },
+];
+
 interface MessageProps {
-    userName: string;
+  userName: string;
 }
 
 const Message: React.FC<MessageProps> = ({ userName }) => {
-  const [activeTab, setActiveTab] = useState<"list" | "box">("list");
   const [selectedMessage, setSelectedMessage] = useState<MessageDetail | null>(null);
   const [reply, setReply] = useState("");
   const [conversation, setConversation] = useState(mockDetail.conversation);
+  const [showChatMobile, setShowChatMobile] = useState(false); // for xs screens
+  const [isCreating, setIsCreating] = useState(false);
+  const [newReceiver, setNewReceiver] = useState("");
+  const [newMessage, setNewMessage] = useState("");
+
+  // Show first message by default
+  useEffect(() => {
+    if (mockMessages.length > 0 && !selectedMessage && !isCreating) {
+      setSelectedMessage(mockDetail);
+      setConversation(mockDetail.conversation);
+    }
+  }, [selectedMessage, isCreating]);
 
   const handleSelectMessage = (id: string) => {
     // In real app, fetch message detail by id
     setSelectedMessage(mockDetail);
     setConversation(mockDetail.conversation);
-    setActiveTab("box");
+    setShowChatMobile(true);
+    setIsCreating(false);
   };
 
   const handleReply = (e: React.FormEvent) => {
@@ -59,6 +82,25 @@ const Message: React.FC<MessageProps> = ({ userName }) => {
     setReply("");
   };
 
+  const handleCreateNew = () => {
+    setIsCreating(true);
+    setSelectedMessage(null);
+    setShowChatMobile(true);
+    setNewReceiver("");
+    setNewMessage("");
+  };
+
+  const handleSendNew = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newReceiver || !newMessage.trim()) return;
+    // In real app, send new message
+    alert(`Message sent to ${mockReceivers.find(r => r.id === newReceiver)?.name}: ${newMessage}`);
+    setIsCreating(false);
+    setNewReceiver("");
+    setNewMessage("");
+    setShowChatMobile(false);
+  };
+
   return (
     <div className="content">
       <TitleAndHeadLine
@@ -66,65 +108,130 @@ const Message: React.FC<MessageProps> = ({ userName }) => {
         headline="Check your messages and reply to organisations"
         student={true}
       />
-      <div className="message-tabs">
-        <button
-          className={`message-tab-btn${activeTab === "list" ? " active" : ""}`}
-          onClick={() => setActiveTab("list")}
+      <div className="message-2col-layout">
+        {/* Message List (left col) */}
+        <div
+          className={`message-list-col${showChatMobile ? " hide-xs" : ""}`}
         >
-          Message List
-        </button>
-        <button
-          className={`message-tab-btn${activeTab === "box" ? " active" : ""}`}
-          onClick={() => setActiveTab("box")}
-          disabled={!selectedMessage}
-        >
-          Message Box
-        </button>
-      </div>
-      {activeTab === "list" && (
-        <div className="message-list">
-          {mockMessages.map((msg) => (
-            <div
-              key={msg.id}
-              className="message-list-item"
-              onClick={() => handleSelectMessage(msg.id)}
-            >
-              <div className="message-list-org">{msg.organisation}</div>
-              <div className="message-list-sender">{msg.sender}</div>
-              <div className="message-list-latest">{msg.latest}</div>
-            </div>
-          ))}
-        </div>
-      )}
-      {activeTab === "box" && selectedMessage && (
-        <div className="message-box">
-          <div className="message-box-header">
-            <strong>{selectedMessage.organisation}</strong> - {selectedMessage.sender}
-          </div>
-          <div className="message-conversation">
-            {conversation.map((msg, idx) => (
-              <div key={idx} className="message-conversation-item">
-                <span className="message-conversation-from">{msg.from}:</span>
-                <span className="message-conversation-content">{msg.content}</span>
-                <span className="message-conversation-time">{msg.time}</span>
+          <Button
+            text={"+\u00A0\u00A0Create New Message"}
+            variant="primary"
+            fullWidth
+            onClick={handleCreateNew}
+            size="regular"
+          />
+          <div className="message-list">
+            {mockMessages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`message-list-item${selectedMessage?.id === msg.id && !isCreating ? " selected" : ""}`}
+                onClick={() => handleSelectMessage(msg.id)}
+              >
+                <div className="message-list-org">{msg.organisation}</div>
+                <div className="message-list-sender">{msg.sender}</div>
+                <div className="message-list-latest">{msg.latest}</div>
               </div>
             ))}
           </div>
-          <form onSubmit={handleReply} className="message-reply-form">
-            <Textarea
-              id="reply-content"
-              name="reply-content"
-              label="Reply"
-              value={reply}
-              onChange={(e) => setReply(e.target.value)}
-              required
-            />
-            <button type="submit" className="btn btn--primary" style={{ marginTop: "1rem" }}>
-              Send Reply
-            </button>
-          </form>
         </div>
-      )}
+        {/* Chat Box (right col) */}
+        <div
+          className={`message-chat-col${showChatMobile ? " show-xs" : ""}`}
+        >
+          {isCreating ? (
+            <div className="message-box">
+              <div className="message-box-header">
+                <button
+                    type="button"
+                    className="btn btn-ghost btn-regular message-back-btn"
+                    onClick={() => setShowChatMobile(false)}
+                  >
+                    <HugeiconsIcon icon={ArrowLeft03Icon} size={24} />
+                </button>
+                <p>New Message</p>
+              </div>
+              <form onSubmit={handleSendNew} className="message-reply-form">
+                <SearchableDropdown
+                  id="receiver-searchable"
+                  name="receiver-searchable"
+                  label="Receiver"
+                  value={newReceiver}
+                  onChange={setNewReceiver}
+                  options={mockReceivers.map(r => ({ value: r.id, label: r.name }))}
+                  placeholder="Select receiver..."
+                  required
+                  searchFunction={(query, options) =>
+                    options.filter(opt =>
+                      opt.label.toLowerCase().includes(query.toLowerCase())
+                    )
+                  }
+                />
+                <Textarea
+                  id="new-message-content"
+                  name="new-message-content"
+                  label="Message"
+                  value={newMessage}
+                  onChange={e => setNewMessage(e.target.value)}
+                  required
+                />
+                <div className="message-send-btn-wrapper">
+                  <Button
+                    text="Send Message"
+                    variant="primary"
+                    size="regular"
+                    type="submit"
+                  />
+                </div>
+              </form>
+            </div>
+          ) : selectedMessage ? (
+            <div className="message-box">
+              {/* Back button for xs screens */}
+              <div className="message-box-header">
+                <button
+                  type="button"
+                  className="btn btn-ghost btn-regular message-back-btn"
+                  onClick={() => setShowChatMobile(false)}
+                >
+                  <HugeiconsIcon icon={ArrowLeft03Icon} size={24} />
+                </button>
+                <p>{selectedMessage.organisation} - {selectedMessage.sender}</p>
+              </div>
+              <div className="message-conversation">
+                {conversation.map((msg, idx) => (
+                  <div key={idx} className="message-conversation-item">
+                    <span className="message-conversation-from">{msg.from}:</span>
+                    <span className="message-conversation-content">{msg.content}</span>
+                    <span className="message-conversation-time">{msg.time}</span>
+                  </div>
+                ))}
+              </div>
+              <form onSubmit={handleReply} className="message-reply-form">
+                <Textarea
+                  id="reply-content"
+                  name="reply-content"
+                  label="Reply"
+                  value={reply}
+                  onChange={(e) => setReply(e.target.value)}
+                  required
+                />
+                <div className="message-send-btn-wrapper">
+                  <Button
+                    text="Send Reply"
+                    variant="primary"
+                    size="regular"
+                    type="submit"
+                  />
+                </div>
+              </form>
+            </div>
+          ) : (
+            <div className="message-box message-box-placeholder">
+              <div className="message-box-header">Select a message to view the conversation</div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
