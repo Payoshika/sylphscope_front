@@ -5,6 +5,7 @@ interface NumberInputProps {
   name: string;
   label: string;
   value: number | "";
+  disabled: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   min?: number;
   max?: number;
@@ -22,6 +23,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
   label,
   value,
   onChange,
+  disabled,
   min,
   max,
   suffix, // <-- Add this prop
@@ -35,6 +37,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
         name={name}
         value={value}
         onChange={onChange}
+        disabled={disabled}
         className="input"
         step="any"
         min={min}

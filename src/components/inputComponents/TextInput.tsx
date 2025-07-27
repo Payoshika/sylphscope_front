@@ -13,6 +13,7 @@ interface TextInputProps {
   error?: boolean | string;
   required?: boolean;
   autoComplete?: string;
+  className?: string;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -28,12 +29,14 @@ const TextInput: React.FC<TextInputProps> = ({
   error = false,
   required = false,
   autoComplete,
+  className,
 }) => {
   const getInputClass = () => {
     let baseClass = "input";
     if (size === "small") baseClass += " input--small";
     if (size === "large") baseClass += " input--large";
     if (error) baseClass += " input--error";
+    if (className) baseClass += ` ${className}`;
     return baseClass;
   };
 

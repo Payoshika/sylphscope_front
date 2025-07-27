@@ -1,3 +1,6 @@
+import type { QuestionEligibilityInfoDto, QuestionGroupEligibilityInfoDto } from "../data/questionEligibilityInfoDto";
+
+
 export const GrantStatus = {
     DRAFT: "DRAFT",
     OPEN: "OPEN",
@@ -44,3 +47,9 @@ export interface SelectionCriterion {
   evaluationType: EvaluationType;
   evaluationScale: EvaluationScale;
 }
+
+export interface GrantProgramAvailableQuestionsDto {
+  questions: QuestionEligibilityInfoDto[];
+  questionGroups: QuestionGroupEligibilityInfoDto[];
+}
+

@@ -1,12 +1,18 @@
-import React from "react";
 import TextInput from "../components/inputComponents/TextInput";
 import NumberInput from "../components/inputComponents/NumberInput";
 import Textarea from "../components/inputComponents/Textarea";
 import Select from "../components/inputComponents/Select";
 import SearchableMultiSelect from "../components/inputComponents/SearchableMultiSelect";
 import DatePicker from "../components/inputComponents/datePickers/DatePicker";
-import YesNoChoice from "../components/inputComponents/YesNoChoice";
 import { toDateValue } from "../components/inputComponents/datePickers/utils";
+import type { SearchableOption } from "../components/inputComponents/SearchableDropdown";
+
+const defaultSearchFunction = (query: string, options: SearchableOption[]) => {
+  return options.filter(opt =>
+    opt.label.toLowerCase().includes(query.toLowerCase())
+  );
+};
+
 
 export function renderInput(question: any, options: any, value: any, onChange: (id: string, value: any) => void) {
   const inputType = question.inputType;
@@ -42,7 +48,7 @@ export function renderInput(question: any, options: any, value: any, onChange: (
         label={question.questionText}
         value={value !== undefined && value !== null ? value : ""}
         onChange={(e) => onChange(id, e.target.value === "" ? "" : Number(e.target.value))}
-        required={question.isRequired}
+        disabled={false}
         />
       );
     case "DATE":
@@ -53,7 +59,6 @@ export function renderInput(question: any, options: any, value: any, onChange: (
           label={question.questionText}
           value={toDateValue(value)}
           onChange={(val) => onChange(id, val)}
-          required={question.isRequired}
         />
       );
     case "RADIO":
@@ -68,7 +73,6 @@ export function renderInput(question: any, options: any, value: any, onChange: (
             value: opt.value,
             label: opt.label,
           }))}
-          required={question.isRequired}
         />
       );
     case "MULTISELECT":
@@ -83,7 +87,7 @@ export function renderInput(question: any, options: any, value: any, onChange: (
             value: opt.value,
             label: opt.label,
           }))}
-          required={question.isRequired}
+          searchFunction={defaultSearchFunction}
         />
       );
     default:

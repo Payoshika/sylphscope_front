@@ -1,5 +1,5 @@
 import { apiClient } from "../utility/ApiClient";
-import type { ApplicationDto, GrantProgramApplicationDto, StudentAnswerDto } from "../types/application";
+import type { ApplicationDto, GrantProgramApplicationDto, StudentAnswerDto, EligibilityCriteriaWithQuestionDto } from "../types/application";
 
 export const createApplicationByStudentAndGrantProgramId = async (
   studentId: string,

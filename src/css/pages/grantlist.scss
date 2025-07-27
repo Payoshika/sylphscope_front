@@ -1,0 +1,154 @@
+@use "../global/base" as *;
+@use "../global/mixins" as *;
+
+.grantlist-outer {
+  width: 100%;
+  padding: 2rem;
+  margin: 2rem 0;
+  @include Box;
+  @include BoxShallowShadow;
+  
+}
+
+.grantlist-header-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1.2rem;
+  margin-bottom: 1.2rem;
+  font-weight: 600;
+  color: $text-color;
+  font-size: 1.05rem;
+}
+
+.grantlist-grid-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1.2rem;
+  margin-bottom: 1.1rem;
+}
+
+.grantlist-header-cell {
+  padding: 0.5rem 0.7rem;
+  font-weight: 600;
+  color: $text-color;
+  font-size: 1.05rem;
+  @include RowJustifyStartFlexbox;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+}
+
+.grantlist-grid-cell {
+  width: 100%; // Ensures the cell fills the grid column=
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  height: 6rem;
+  box-sizing: border-box;
+  font-weight: 500;
+  // Handle text overflow in grid cells
+  @include Padding2rem;
+  @include SmallBox;
+  @include BoxShallowShadow;
+}
+
+.grantlist-value-cell {
+  justify-content: flex-start;
+}
+
+.grantlist-contact-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grantlist-sort-btn {
+  background: none;
+  border: none;
+  padding: 0 0.2rem;
+  margin-left: 0.3rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  color: $text-color;
+  font-size: 1em;
+  .grantlist-icon {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+.grantlist-contact-btn {
+  background: $background-color;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.15s;
+  .grantlist-icon {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  &:hover {
+    background: #e0e0e0;
+  }
+}
+
+@media (max-width: 700px) {
+  .grantlist-header-row, .grantlist-grid-row {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+  .grantlist-grid-cell {
+    font-size: 0.98rem;
+    padding: 0.7rem 0.7rem;
+  }
+}
+
+// Card layout for extrasmall screens
+@include extrasmall {
+  .grantlist-header-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .grantlist-grid-row {
+    display: block;
+    background: $background-color;
+    border-radius: 12px;
+    @include BoxShallowShadow;
+    margin-bottom: 1.2rem;
+    padding: 1.2rem 1rem;
+    border: 1px solid #e0e0e0;
+  }
+  .grantlist-grid-cell {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    height: auto;
+    padding: 0.4rem 0;
+    font-size: 1.1rem;
+    width: 100%;
+    margin-bottom: 0.2rem;
+  }
+  .grantlist-value-cell span {
+    font-weight: 600;
+    color: $text-color;
+    margin-left: 0.7rem;
+  }
+  .grantlist-contact-cell {
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+  }
+}
+

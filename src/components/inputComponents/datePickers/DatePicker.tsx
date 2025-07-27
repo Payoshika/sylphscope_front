@@ -17,7 +17,7 @@ const DatePicker: React.FC<ExtendedDatePickerProps> = ({
   id,
   name,
   label,
-  value,
+  value = { day: "", month: "", year: "" },
   onChange,
   disabled = false,
   error = false,

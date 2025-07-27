@@ -189,14 +189,15 @@
 
 // Dropdown option items
 @mixin dropdown-option {
-  padding: 1rem 1.6rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-bottom: 1px solid rgba($border-color, 0.3);
-  display: flex;
-  align-items: start;
-  justify-content: space-between;
-
+  & {
+    padding: 1rem 1.6rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba($border-color, 0.3);
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+  }
   &:last-child {
     border-bottom: none;
   }

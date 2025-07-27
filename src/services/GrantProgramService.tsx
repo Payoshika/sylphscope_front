@@ -1,5 +1,5 @@
 import { apiClient } from "../utility/ApiClient";
-import type { GrantProgram, SelectionCriterion } from "../types/grantProgram";
+import type { GrantProgram, GrantProgramAvailableQuestionsDto, SelectionCriterion } from "../types/grantProgram";
 import type { QuestionEligibilityInfoDto, EligibilityCriteriaDTO, Question, Option,QuestionGroupEligibilityInfoDto} from "../data/questionEligibilityInfoDto";
 
 //grant related functions
@@ -30,7 +30,12 @@ export const getGrantPrograms = async (
   page: number = 0,
   size: number = 10
 ): Promise<{ content: GrantProgram[]; totalElements: number; totalPages: number; number: number }> => {
-  const response = await apiClient.get(`/api/grant-programs?page=${page}&size=${size}`);
+  const response = await apiClient.get<{ content: GrantProgram[]; totalElements: number; totalPages: number; number: number }>(
+    `/api/grant-programs?page=${page}&size=${size}`
+  );
+  if (!response.data) {
+    throw new Error("Failed to fetch grant programs");
+  }
   return response.data;
 };
 
@@ -39,7 +44,12 @@ export const getGrantProgramsByStudentId = async (
   page: number = 0,
   size: number = 10
 ): Promise<{ content: GrantProgram[]; totalElements: number; totalPages: number; number: number }> => {
-  const response = await apiClient.get(`/api/grant-programs/student/${studentId}?page=${page}&size=${size}`);
+  const response = await apiClient.get<{ content: GrantProgram[]; totalElements: number; totalPages: number; number: number }>(
+    `/api/grant-programs/student/${studentId}?page=${page}&size=${size}`
+  );
+  if (!response.data) {
+    throw new Error("Failed to fetch grant programs for student");
+  }
   return response.data;
 };
 
@@ -127,4 +137,16 @@ export const updateGrantProgramSchedule = async (
     fundDisbursementDate: toIsoDateString(schedule.fundDisbursementDate),
   };
   return apiClient.put(`/api/grant-programs/${grantProgramId}/schedule`, payload);
+};
+
+export const getQuestionByGrantProgramId = async (
+  grantProgramId: string
+): Promise<GrantProgramAvailableQuestionsDto> => {
+  const response = await apiClient.get<GrantProgramAvailableQuestionsDto>(
+    `/api/grant-programs/${grantProgramId}/available-questions`
+  );
+  if (!response.data) {
+    throw new Error("No data returned for available questions");
+  }
+  return response.data;
 };

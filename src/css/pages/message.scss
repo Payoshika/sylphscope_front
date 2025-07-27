@@ -1,0 +1,127 @@
+@use "../global/base" as *;
+@use "../global/mixins" as *;
+
+.message-tabs {
+  display: flex;
+  @include RowJustifyStartFlexbox;
+}
+
+.message-tab-btn {
+  background: $background-color;
+  border: 1px solid $border-color;
+  border-radius: 8px 8px 0 0;
+  padding: 0.7rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $text-color;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  &.active {
+    background: $primary-color;
+    color: #fff;
+    border-bottom: 2px solid $primary-color;
+  }
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.message-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.message-list-item {
+  background: $background-color;
+  border: 1px solid $border-color;
+  border-radius: 10px;
+  padding: 1.2rem 1.5rem;
+  cursor: pointer;
+  transition: box-shadow 0.15s, border 0.15s;
+  @include RowJustifyStartFlexbox;
+  &:hover {
+    border-color: $primary-color;
+    box-shadow: 0 4px 16px rgba($primary-color, 0.08);
+  }
+  .message-list-org {
+    font-weight: 600;
+    color: $primary-color;
+    margin-bottom: 0.2rem;
+  }
+  .message-list-sender {
+    font-weight: 500;
+    color: $text-color;
+    margin-bottom: 0.2rem;
+  }
+  .message-list-latest {
+    color: $secondary-color;
+    font-size: 0.98rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.message-box {
+  background: $background-color;
+  border: 1px solid $border-color;
+  border-radius: 10px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.message-box-header {
+  font-weight: 600;
+  font-size: 1.15rem;
+  margin-bottom: 1.2rem;
+  color: $primary-color;
+}
+
+.message-conversation {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.message-conversation-item {
+  background: #f7f7f7;
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  display: flex;
+  flex-direction: column;
+  font-size: 1.05rem;
+  .message-conversation-from {
+    font-weight: 600;
+    color: $primary-color;
+    margin-bottom: 0.2rem;
+  }
+  .message-conversation-content {
+    color: $text-color;
+    margin-bottom: 0.2rem;
+  }
+  .message-conversation-time {
+    color: $secondary-color;
+    font-size: 0.92rem;
+    align-self: flex-end;
+  }
+}
+
+.message-reply-form {
+  margin-top: 1.2rem;
+}
+
+@media (max-width: 700px) {
+  .message-box {
+    padding: 1rem 0.5rem;
+    max-width: 100%;
+  }
+  .message-list-item {
+    padding: 0.8rem 0.7rem;
+  }
+}

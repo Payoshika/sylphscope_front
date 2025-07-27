@@ -13,8 +13,7 @@ import { Routes, Route, useNavigate, useLocation, useParams, Navigate } from "re
 import type { GrantProgram, Schedule } from "../../types/grantProgram";
 import { GrantStatus } from "../../types/grantProgram";
 import { createGrantProgram, updateGrantProgram,getGrantProgramById } from "../../services/GrantProgramService";
-import type { ComparisonOperator, EligibilityGroupFormState,QuestionGroupEligibilityInfoDto, QuestionEligibilityInfoDto, EligibilityCriteriaDTO, QuestionCondition, SelectionCriterion, Option, InputType, DataType, Question } from "../../data/questionEligibilityInfoDto";
-import ChooseOrCreateQuestion from "./ChooseOrCreateQuestions";
+import type { QuestionGroupEligibilityInfoDto, QuestionEligibilityInfoDto, EligibilityCriteriaDTO } from "../../data/questionEligibilityInfoDto";
 
 const steps = [
   { key: "title", label: "Title" },
@@ -44,6 +43,7 @@ const initialGrantProgram: GrantProgram = {
   questionIds: [],
   selectionCriteria: [],
   questionGroupsIds: [],
+  evaluationScale: "HUNDRED"
 };
 
 // ...existing imports...
@@ -166,8 +166,7 @@ const CreateGrantProgram = () => {
           eligibilities={eligibilities}
           selectedQuestions={selectedQuestions}
           setSelectedQuestions={setSelectedQuestions}
-          grantProgramId={grantProgramId ?? ""}
-              />
+            />
             }
           />
           <Route

@@ -30,15 +30,23 @@
   gap: 1.6rem;
 }
 
+.nav-link-icon { display: none; }
+
 .nav-user {
   display: flex;
   align-items: center;
   gap: 1.2rem;
 }
 
+.nav-logo-text { display: block; }
+.nav-logo-svg { display: none; }
+.nav-link-label { display: block; }
+
 @include smartphone {
+  .nav-logo-text { display: none; }
+  .nav-logo-svg { display: block; }
+  .nav-brand .user-type { display: none; }
   .nav-container {
-    flex-direction: column;
     gap: 1.6rem;
     text-align: center;
   }
@@ -52,4 +60,7 @@
     flex-direction: column;
     gap: 0.8rem;
   }
+
+  .nav-link-label { display: none; }
+  .nav-link-icon { display: block; }
 }

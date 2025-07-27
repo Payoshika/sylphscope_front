@@ -11,6 +11,7 @@ import { updateProvider } from "../../services/ProviderService";
 const steps = [
   { key: "name", label: "Organisation Name" },
   { key: "description", label: "Description" },
+  { key: "staff", label: "Staff" },
 
 ];
 

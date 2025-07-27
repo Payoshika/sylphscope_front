@@ -64,7 +64,6 @@
   border-radius: 4px;
   transition: color 0.2s;
   &:hover {
-    color: darken($error-color, 10%);
     background: $subtle-color;
   }
 }

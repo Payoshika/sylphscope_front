@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { getProviderById } from "../../services/ProviderService";
 import type { Provider } from "../../types/provider";
+import type { GrantProgram } from "../../types/grantProgram";
 
 interface OrganisationInfoProps {
-  grantProgram: { providerId: string };
+  grantProgram: GrantProgram | null;
 }
 
 const OrganisationInfo: React.FC<OrganisationInfoProps> = ({ grantProgram }) => {
