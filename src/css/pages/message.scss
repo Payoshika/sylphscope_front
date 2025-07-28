@@ -32,6 +32,9 @@
   flex-direction: column;
   gap: 1.2rem;
 }
+.message-list-empty{
+  text-align: center;
+}
 
 .message-list-item {
   cursor: pointer;
@@ -114,14 +117,14 @@
 .message-2col-layout {
   display: grid;
   grid-template-columns: 1fr 2.33fr;
-  @include extrasmall {
-    grid-template-columns: 1fr;
-  }
   gap: 2rem;
   width: 100%;
   @include Box;
   @include BoxShadow;
   @include Padding2rem;
+  @include extrasmall {
+    grid-template-columns: 1fr;
+  }
 }
 
 .message-list-col {

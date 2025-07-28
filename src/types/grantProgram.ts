@@ -25,6 +25,8 @@ export interface GrantProgram {
   schedule: Schedule;
   createdAt: string; 
   updatedAt: string; 
+  assignedStaffIds: string[];
+  contactPerson: ProviderStaffDto;
   questionIds: string[];
   questionGroupsIds: string[];
   selectionCriteria: SelectionCriterion[];
@@ -51,5 +53,23 @@ export interface SelectionCriterion {
 export interface GrantProgramAvailableQuestionsDto {
   questions: QuestionEligibilityInfoDto[];
   questionGroups: QuestionGroupEligibilityInfoDto[];
+}
+
+export type StaffRole = "MANAGER" | "ADMINISTRATOR" | "ASSESSOR" | "VOLUNTEER";
+
+export interface AssignedStaff {
+  staffId: string;
+  roleOnProgram: StaffRole;
+  assignedAt: string; // ISO date string
+}
+
+export interface ProviderStaffDto {
+  id: string;
+  firstName: string;
+  lastName: string;
+  middleName?: string;
+  email: string;
+  role: StaffRole;
+  providerId: string;
 }
 

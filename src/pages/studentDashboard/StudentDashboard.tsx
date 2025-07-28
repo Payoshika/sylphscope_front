@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import StudentDashboardNav from "./StudentDashboardNav";
 import GrantList from "./GrantList";
 import StudentProfile from "./StudentProfile";
@@ -8,8 +7,6 @@ import Message from "./Message";
 import Settings from "../settings/Settings";
 import { useOutletContext, Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import type { Student } from "../../types/student";
-import type { GrantProgram } from "../../types/grantProgram";
-import { updateStudentByStudentId } from "../../services/StudentService";
 
 const steps = [
     { key: "profile", label: "Basic Profile" },
@@ -63,7 +60,7 @@ const StudentDashboard = () => {
         />
         <Route
             path="messages"
-            element={<Message userName={student.firstName + " " + student.lastName} />}
+            element={<Message/>}
         />
         <Route
             path="settings"

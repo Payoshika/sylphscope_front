@@ -5,81 +5,98 @@ import Button from "../../components/basicComponents/Button";
 import SearchableDropdown from "../../components/inputComponents/SearchableDropdown";
 import { ArrowLeft03Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
+import type { Student } from "../../types/student";
+import type { GrantProgram } from "../../types/grantProgram";
+import type { Message as MessageType, MessageContent } from "../../types/message";
+import { useOutletContext } from "react-router-dom";
+import { getAppliedGrantProgram } from "../../services/GrantProgramService";
+import { getMessagesForStudent, createNewMessage, addMessageContentToMessage } from "../../services/StudentService";
 
-
-interface MessageSummary {
-  id: string;
-  organisation: string;
-  sender: string;
-  latest: string;
-}
-
-interface MessageDetail {
-  id: string;
-  organisation: string;
-  sender: string;
-  conversation: { from: string; content: string; time: string }[];
-}
-
-const mockMessages: MessageSummary[] = [
-  { id: "1", organisation: "Graham Ker Foundation", sender: "John Doe", latest: "Thank you for your application!" },
-  { id: "2", organisation: "UofG Charity", sender: "Jane Smith", latest: "Please provide your transcript." },
-  { id: "3", organisation: "Grant Provider C", sender: "Alice Lee", latest: "Your application is under review." },
-];
-
-const mockDetail: MessageDetail = {
-  id: "1",
-  organisation: "Graham Ker Foundation",
-  sender: "John Doe",
-  conversation: [
-    { from: "John Doe", content: "Thank you for your application!", time: "2024-06-01 10:00" },
-    { from: "You", content: "Thank you for the update!", time: "2024-06-01 10:05" },
-  ],
-};
-
-const mockReceivers = [
-  { id: "org1", name: "Graham Ker Foundation" },
-  { id: "org2", name: "UofG Charity" },
-  { id: "org3", name: "Grant Provider C" },
-];
-
-interface MessageProps {
-  userName: string;
-}
-
-const Message: React.FC<MessageProps> = ({ userName }) => {
-  const [selectedMessage, setSelectedMessage] = useState<MessageDetail | null>(null);
+const Message: React.FC = () => {
+  const { student } = useOutletContext<{ student: Student }>();
+  const [selectedMessage, setSelectedMessage] = useState<MessageType | null>(null);
   const [reply, setReply] = useState("");
-  const [conversation, setConversation] = useState(mockDetail.conversation);
-  const [showChatMobile, setShowChatMobile] = useState(false); // for xs screens
+  const [messages, setMessages] = useState<MessageType[]>([]);
+  const [showChatMobile, setShowChatMobile] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [newReceiver, setNewReceiver] = useState("");
   const [newMessage, setNewMessage] = useState("");
+  const [grantPrograms, setGrantPrograms] = useState<GrantProgram[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isSending, setIsSending] = useState(false);
+  const [isReplying, setIsReplying] = useState(false);
 
-  // Show first message by default
+  // Fetch messages and grant programs
   useEffect(() => {
-    if (mockMessages.length > 0 && !selectedMessage && !isCreating) {
-      setSelectedMessage(mockDetail);
-      setConversation(mockDetail.conversation);
-    }
-  }, [selectedMessage, isCreating]);
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const [appliedPrograms, studentMessages] = await Promise.all([
+          getAppliedGrantProgram(student.id),
+          getMessagesForStudent(student.id)
+        ]);
+        
+        setGrantPrograms(appliedPrograms.filter(program => program.contactPerson));
+        setMessages(studentMessages);
 
-  const handleSelectMessage = (id: string) => {
-    // In real app, fetch message detail by id
-    setSelectedMessage(mockDetail);
-    setConversation(mockDetail.conversation);
+        // Select first message by default if available and no message is currently selected
+        if (studentMessages.length > 0 && !selectedMessage && !isCreating) {
+          setSelectedMessage(studentMessages[0]);
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to fetch messages");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (student?.id) {
+      fetchData();
+    }
+  }, [student?.id, selectedMessage, isCreating]);
+
+  const handleSelectMessage = (message: MessageType) => {
+    setSelectedMessage(message);
     setShowChatMobile(true);
     setIsCreating(false);
   };
 
-  const handleReply = (e: React.FormEvent) => {
+  const handleReply = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!reply.trim()) return;
-    setConversation((prev) => [
-      ...prev,
-      { from: "You", content: reply, time: new Date().toLocaleString() },
-    ]);
-    setReply("");
+    if (!reply.trim() || !selectedMessage) return;
+
+    try {
+      setIsReplying(true);
+
+      const messageContent = {
+        senderName: student.firstName + " " + student.lastName,
+        receiverName: selectedMessage.providerStaffName,
+        text: reply
+      };
+
+      // Add reply to the message
+      const newContent = await addMessageContentToMessage(selectedMessage.id, messageContent);
+
+      // Update both selected message and messages list
+      const updatedMessage = {
+        ...selectedMessage,
+        messages: [...selectedMessage.messages, newContent],
+        updatedAt: new Date().toISOString()
+      };
+
+      setSelectedMessage(updatedMessage);
+      setMessages(prev => prev.map(msg => 
+        msg.id === selectedMessage.id ? updatedMessage : msg
+      ));
+
+      setReply("");
+    } catch (err) {
+      alert("Failed to send reply. Please try again.");
+    } finally {
+      setIsReplying(false);
+    }
   };
 
   const handleCreateNew = () => {
@@ -90,16 +107,62 @@ const Message: React.FC<MessageProps> = ({ userName }) => {
     setNewMessage("");
   };
 
-  const handleSendNew = (e: React.FormEvent) => {
+  const handleSendNew = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newReceiver || !newMessage.trim()) return;
-    // In real app, send new message
-    alert(`Message sent to ${mockReceivers.find(r => r.id === newReceiver)?.name}: ${newMessage}`);
-    setIsCreating(false);
-    setNewReceiver("");
-    setNewMessage("");
-    setShowChatMobile(false);
+    
+    const selectedProgram = grantPrograms.find(program => program.contactPerson?.id === newReceiver);
+    if (selectedProgram && selectedProgram.contactPerson) {
+      try {
+        setIsSending(true);
+        
+        // Create new message with content
+        const newMessageData = await createNewMessage(
+          {
+            studentId: student.id,
+            studentName: `${student.firstName} ${student.lastName}`,
+            providerId: selectedProgram.providerId,
+            providerStaffId: selectedProgram.contactPerson.id,
+            providerStaffName: `${selectedProgram.contactPerson.firstName} ${selectedProgram.contactPerson.lastName}`,
+            grantProgramId: selectedProgram.id,
+            grantProgramTitle: selectedProgram.title
+          },
+          {
+            senderName: `${student.firstName} ${student.lastName}`,
+            receiverName: `${selectedProgram.contactPerson.firstName} ${selectedProgram.contactPerson.lastName}`,
+            text: newMessage
+          }
+        );
+
+        // Update messages list with new message
+        setMessages(prev => [...prev, newMessageData]);
+        
+        setIsCreating(false);
+        setNewReceiver("");
+        setNewMessage("");
+        setShowChatMobile(false);
+      } catch (err) {
+        alert("Failed to send message. Please try again.");
+      } finally {
+        setIsSending(false);
+      }
+    }
   };
+
+  if (isLoading) {
+    return <div className="content">Loading messages...</div>;
+  }
+
+  if (error) {
+    return <div className="content">Error: {error}</div>;
+  }
+
+  const receiverOptions = grantPrograms
+    .filter(program => program.contactPerson)
+    .map(program => ({
+      value: program.contactPerson!.id,
+      label: `${program.contactPerson!.firstName} ${program.contactPerson!.lastName} (${program.title})`
+    }));
 
   return (
     <div className="content">
@@ -121,17 +184,26 @@ const Message: React.FC<MessageProps> = ({ userName }) => {
             size="regular"
           />
           <div className="message-list">
-            {mockMessages.map((msg) => (
+            {messages.map((msg) => (
               <div
                 key={msg.id}
                 className={`message-list-item${selectedMessage?.id === msg.id && !isCreating ? " selected" : ""}`}
-                onClick={() => handleSelectMessage(msg.id)}
+                onClick={() => handleSelectMessage(msg)}
               >
-                <div className="message-list-org">{msg.organisation}</div>
-                <div className="message-list-sender">{msg.sender}</div>
-                <div className="message-list-latest">{msg.latest}</div>
+                <div className="message-list-org">{msg.providerName}</div>
+                <div className="message-list-sender">
+                  {msg.messages.length > 0 ? msg.messages[msg.messages.length - 1].senderName : ""}
+                </div>
+                <div className="message-list-latest">
+                  {msg.messages.length > 0 ? msg.messages[msg.messages.length - 1].text : "No messages yet"}
+                </div>
               </div>
             ))}
+            {messages.length === 0 && (
+              <div className="message-list-empty">
+                <p>No messages available</p>
+              </div>
+            )}
           </div>
         </div>
         {/* Chat Box (right col) */}
@@ -142,11 +214,11 @@ const Message: React.FC<MessageProps> = ({ userName }) => {
             <div className="message-box">
               <div className="message-box-header">
                 <button
-                    type="button"
-                    className="btn btn-ghost btn-regular message-back-btn"
-                    onClick={() => setShowChatMobile(false)}
-                  >
-                    <HugeiconsIcon icon={ArrowLeft03Icon} size={24} />
+                  type="button"
+                  className="btn btn-ghost btn-regular message-back-btn"
+                  onClick={() => setShowChatMobile(false)}
+                >
+                  <HugeiconsIcon icon={ArrowLeft03Icon} size={24} />
                 </button>
                 <p>New Message</p>
               </div>
@@ -157,7 +229,7 @@ const Message: React.FC<MessageProps> = ({ userName }) => {
                   label="Receiver"
                   value={newReceiver}
                   onChange={setNewReceiver}
-                  options={mockReceivers.map(r => ({ value: r.id, label: r.name }))}
+                  options={receiverOptions}
                   placeholder="Select receiver..."
                   required
                   searchFunction={(query, options) =>
@@ -176,17 +248,17 @@ const Message: React.FC<MessageProps> = ({ userName }) => {
                 />
                 <div className="message-send-btn-wrapper">
                   <Button
-                    text="Send Message"
+                    text={isSending ? "Sending..." : "Send Message"}
                     variant="primary"
                     size="regular"
                     type="submit"
+                    disabled={isSending}
                   />
                 </div>
               </form>
             </div>
           ) : selectedMessage ? (
             <div className="message-box">
-              {/* Back button for xs screens */}
               <div className="message-box-header">
                 <button
                   type="button"
@@ -195,32 +267,41 @@ const Message: React.FC<MessageProps> = ({ userName }) => {
                 >
                   <HugeiconsIcon icon={ArrowLeft03Icon} size={24} />
                 </button>
-                <p>{selectedMessage.organisation} - {selectedMessage.sender}</p>
+                <p>{selectedMessage.providerName} - {selectedMessage.providerStaffName}</p>
               </div>
               <div className="message-conversation">
-                {conversation.map((msg, idx) => (
-                  <div key={idx} className="message-conversation-item">
-                    <span className="message-conversation-from">{msg.from}:</span>
-                    <span className="message-conversation-content">{msg.content}</span>
-                    <span className="message-conversation-time">{msg.time}</span>
+                {selectedMessage.messages.map((msg) => (
+                  <div key={msg.id} className="message-conversation-item">
+                    <span className="message-conversation-from">{msg.senderName}:</span>
+                    <span className="message-conversation-content">{msg.text}</span>
+                    <span className="message-conversation-time">
+                      {new Date(msg.createdAt).toLocaleString()}
+                    </span>
                   </div>
                 ))}
+                {selectedMessage.messages.length === 0 && (
+                  <div className="message-conversation-empty">
+                    <p>No messages yet</p>
+                  </div>
+                )}
               </div>
               <form onSubmit={handleReply} className="message-reply-form">
                 <Textarea
                   id="reply-content"
                   name="reply-content"
-                  label="Reply"
+                  label="Create message"
                   value={reply}
                   onChange={(e) => setReply(e.target.value)}
                   required
+                  disabled={isReplying}
                 />
                 <div className="message-send-btn-wrapper">
                   <Button
-                    text="Send Reply"
+                    text={isReplying ? "Sending..." : "Send Message"}
                     variant="primary"
                     size="regular"
                     type="submit"
+                    disabled={isReplying}
                   />
                 </div>
               </form>

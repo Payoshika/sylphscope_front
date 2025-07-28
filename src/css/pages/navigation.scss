@@ -39,8 +39,9 @@
   border-radius: 0;
   border: none;
   transition: all 0.2s ease-in-out;
+  border: none;
   &:hover {
-    border-bottom: 1px solid $primary-color;
+    border-bottom: 2px solid $primary-color;
     background-color: $background-color;
     color: $text-color;
     box-shadow: none;

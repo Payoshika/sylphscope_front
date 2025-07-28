@@ -6,6 +6,7 @@ import ChooseOrCreateQuestions from "./ChooseOrCreateQuestions";
 import SelectionCriteria from "./SelectionCriteria";
 import GrantSchedule from "./GrantSchedule";
 import GrantAmount from "./GrantAmount";
+import AssignedStaff from "./AssignedStaff";
 
 // Import other step components...
 import { useState, useEffect } from "react";
@@ -16,14 +17,14 @@ import { createGrantProgram, updateGrantProgram,getGrantProgramById } from "../.
 import type { QuestionGroupEligibilityInfoDto, QuestionEligibilityInfoDto, EligibilityCriteriaDTO } from "../../data/questionEligibilityInfoDto";
 
 const steps = [
-  { key: "title", label: "Title" },
-  { key: "amount", label: "Amount" }, 
+  { key: "name", label: "Grant Name" },
   { key: "description", label: "Description" },
-  { key: "eligibility", label: "Eligibility" },
-  { key: "questions", label: "Questions" },
-  { key: "selection", label: "Selection" },
+  { key: "amount", label: "Grant Amount" },
   { key: "schedule", label: "Schedule" },
-  { key: "review", label: "Review & Submit" },
+  { key: "eligibility", label: "Eligibility" },
+  { key: "selection-criteria", label: "Selection Criteria" },
+  { key: "questions", label: "Questions" },
+  { key: "assigned-staff", label: "Assigned Staff" },
 ];
 
 const initialGrantProgram: GrantProgram = {
@@ -38,6 +39,15 @@ const initialGrantProgram: GrantProgram = {
     decisionDate: null,
     fundDisbursementDate: null,
   } as Schedule,
+  assignedStaffIds: [],
+  contactPerson: {
+    id: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    role: "MANAGER",
+    providerId: "",
+  },
   createdAt: "",
   updatedAt: "",
   questionIds: [],
@@ -99,9 +109,9 @@ const CreateGrantProgram = () => {
       />
       <main className="grant-create-content">
         <Routes>
-          <Route path="/" element={<Navigate to="title" replace />} />
+          <Route path="/" element={<Navigate to="name" replace />} />
           <Route
-            path="title"
+            path="name"
             element={
               <GrantName
           id="title"
@@ -114,9 +124,11 @@ const CreateGrantProgram = () => {
             }
           />
           <Route
-            path="amount"
+            path="description"
             element={
-              <GrantAmount
+              <GrantDescription
+          id="description"
+          name="description"
           grantProgram={grantProgram}
           onGrantProgramChange={setGrantProgram}
           onUpdateGrant={handleUpdateGrant}
@@ -124,11 +136,9 @@ const CreateGrantProgram = () => {
             }
           />
           <Route
-            path="description"
+            path="amount"
             element={
-              <GrantDescription
-          id="description"
-          name="description"
+              <GrantAmount
           grantProgram={grantProgram}
           onGrantProgramChange={setGrantProgram}
           onUpdateGrant={handleUpdateGrant}
@@ -190,6 +200,10 @@ const CreateGrantProgram = () => {
               getGrantProgram={getGrantProgram}
             />
           }
+        />
+        <Route
+          path="assigned-staff"
+          element={<AssignedStaff grantProgramId={grantProgram?.id || ""} grantProgram={grantProgram} onGrantProgramChange={setGrantProgram} />}
         />
         </Routes>
       </main>
