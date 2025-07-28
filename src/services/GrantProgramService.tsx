@@ -200,3 +200,15 @@ export const getAppliedGrantProgram = async (studentId: string): Promise<GrantPr
     }
     return response.data;
 };
+
+export const createNewGrantProgram = async (providerStaffId: string, grantProgramDto: Omit<GrantProgram, 'id' | 'createdAt' | 'updatedAt' | 'contactPerson' | 'assignedStaffIds'>): Promise<GrantProgram> => {
+    const requestBody = {
+        providerStaffId: providerStaffId,
+        grantProgramDto: grantProgramDto
+    };
+    const response = await apiClient.post<GrantProgram>('/api/grant-programs', requestBody);
+    if (!response.data) {
+        throw new Error("Failed to create grant program");
+    }
+    return response.data;
+};

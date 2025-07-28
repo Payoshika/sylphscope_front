@@ -45,7 +45,6 @@ function App() {
                 <Route path="/grant-management/*" element={<GrantManagement />} />
                 <Route path="/create-grant/:grantProgramId/*" element={<CreateGrantProgram />} />
                 <Route path="/organisation/*" element={<CreateOrganisation />} />
-                <Route path="/provider-messages" element={<Message userName="" />} />
               </Route>
             </Route>
             <Route element={<ProtectedLayout />}>

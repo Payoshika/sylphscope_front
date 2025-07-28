@@ -80,7 +80,7 @@ const GrantManagement = () => {
           />
           <Route
             path="messages"
-            element={<Message userName={providerStaff.firstName + " " + providerStaff.lastName} />}
+            element={<Message />}
           />
           <Route
             path="review"

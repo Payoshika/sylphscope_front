@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import Button from "../../components/basicComponents/Button";
 import SearchableDropdown from "../../components/inputComponents/SearchableDropdown";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { createNewGrantProgram } from "../../services/GrantProgramService";
+import type { GrantProgram, StaffRole } from "../../types/grantProgram";
+import type { Provider } from "../../types/provider";
+import type { ProviderStaff, User } from "../../types/user";
 
 interface GrantOption {
   id: string;
@@ -23,9 +27,44 @@ const CreateGrant: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<"duplicate" | null>(null);
   const [selectedGrantToDuplicate, setSelectedGrantToDuplicate] = useState("");
   const navigate = useNavigate();
-
-  const handleCreateNew = () => {
-    navigate("/create-grant/new");
+  const { provider, providerStaff} = useOutletContext<{ provider: Provider; providerStaff: ProviderStaff;}>();
+  const handleCreateNew = async () => {
+    try {
+      // Create a new grant program with initial values
+      const newGrantProgram: Omit<GrantProgram, 'id' | 'createdAt' | 'updatedAt'> = {
+        title: '',
+        description: '',
+        providerId: provider.id,
+        providerName: provider.organisationName,
+        status: 'DRAFT',
+        schedule: {
+          applicationStartDate: null,
+          applicationEndDate: null,
+          decisionDate: null,
+          fundDisbursementDate: null
+        },
+        assignedStaffIds: [],
+        contactPerson: {
+          id: providerStaff.id,
+          userId:"",
+          providerId: provider.id,
+          firstName: providerStaff.firstName,
+          lastName: providerStaff.lastName,
+          role: providerStaff.role as StaffRole,
+        },
+        questionIds: [],
+        questionGroupsIds: [],
+        selectionCriteria: [],
+        evaluationScale: 'HUNDRED'
+      };
+      const createdProgram = await createNewGrantProgram(providerStaff.id, newGrantProgram);
+      console.log("createdProgram is ")
+      console.log(createdProgram);
+      navigate(`/create-grant/${createdProgram.id}`);
+    } catch (error) {
+      console.error('Failed to create new grant program:', error);
+      alert('Failed to create new grant program. Please try again.');
+    }
   };
 
   const handleDuplicate = () => {
@@ -62,6 +101,7 @@ const CreateGrant: React.FC = () => {
             />
           </div>
         </div>
+
         {/* Duplicate Option */}
         <div className={`create-grant-option${selectedOption === "duplicate" ? " selected" : ""}`}>
           <div className="create-grant-option-header">

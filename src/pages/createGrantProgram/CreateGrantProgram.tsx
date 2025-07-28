@@ -11,7 +11,7 @@ import AssignedStaff from "./AssignedStaff";
 // Import other step components...
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation, useParams, Navigate } from "react-router-dom";
-import type { GrantProgram, Schedule } from "../../types/grantProgram";
+import type { GrantProgram, Schedule, StaffRole } from "../../types/grantProgram";
 import { GrantStatus } from "../../types/grantProgram";
 import { createGrantProgram, updateGrantProgram,getGrantProgramById } from "../../services/GrantProgramService";
 import type { QuestionGroupEligibilityInfoDto, QuestionEligibilityInfoDto, EligibilityCriteriaDTO } from "../../data/questionEligibilityInfoDto";
@@ -32,6 +32,7 @@ const initialGrantProgram: GrantProgram = {
   title: "",
   description: "",
   providerId: "",
+  providerName: "",
   status: GrantStatus.DRAFT,
   schedule: {
     applicationStartDate: null,
@@ -42,11 +43,11 @@ const initialGrantProgram: GrantProgram = {
   assignedStaffIds: [],
   contactPerson: {
     id: "",
+    userId: "",
+    providerId: "",
     firstName: "",
     lastName: "",
-    email: "",
-    role: "MANAGER",
-    providerId: "",
+    role:"MANAGER" as StaffRole
   },
   createdAt: "",
   updatedAt: "",

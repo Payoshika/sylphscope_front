@@ -21,6 +21,7 @@ export interface GrantProgram {
   title: string;
   description: string;
   providerId: string;
+  providerName: string;
   status: GrantStatus;
   schedule: Schedule;
   createdAt: string; 
@@ -65,11 +66,11 @@ export interface AssignedStaff {
 
 export interface ProviderStaffDto {
   id: string;
+  userId: string;
+  providerId: string;
   firstName: string;
   lastName: string;
   middleName?: string;
-  email: string;
   role: StaffRole;
-  providerId: string;
 }
 

@@ -6,7 +6,6 @@ import { getStaffByProviderId, getAssignedStaff, updateContactPerson, updateAssi
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import SearchableMultiSelect from "../../components/inputComponents/SearchableMultiSelect";
 import Select from "../../components/inputComponents/Select";
-import CrossSign from "../../components/icons/CrossSign";
 import Button from "../../components/basicComponents/Button";
 
 interface AssignedStaffProps {

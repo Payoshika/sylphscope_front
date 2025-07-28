@@ -1,7 +1,5 @@
-import type { GrantProgramDto } from "./grantProgram";
-import type { EligibilityCriteriaRequestDto } from "./eligibilityCriteria";
-import type { QuestionDto } from "./question";
-import type { QuestionGroupDto } from "./questionGroup";
+import type { GrantProgram } from "./grantProgram";
+import type { EligibilityCriteriaDTO } from "../data/questionEligibilityInfoDto";
 import type { QuestionEligibilityInfoDto, QuestionGroupEligibilityInfoDto } from "../data/questionEligibilityInfoDto";
 
 export type ApplicationStatus =
@@ -52,12 +50,12 @@ export interface ApplicationDto {
 }
 
 export interface GrantProgramApplicationDto {
-  grantProgram: GrantProgramDto;
+  grantProgram: GrantProgram;
   application: ApplicationDto;
 }
 
 export interface EligibilityCriteriaWithQuestionDto {
-  eligibilityCriteria: EligibilityCriteriaRequestDto;
+  eligibilityCriteria: EligibilityCriteriaDTO;
   question: QuestionEligibilityInfoDto | null;
   questionGroup: QuestionGroupEligibilityInfoDto | null;
 }
