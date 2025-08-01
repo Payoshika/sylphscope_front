@@ -181,7 +181,7 @@ const CreateGrantProgram = () => {
             }
           />
           <Route
-          path="selection"
+          path="selection-criteria"
           element={
             <SelectionCriteria
               grantProgram={grantProgram}

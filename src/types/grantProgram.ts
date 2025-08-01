@@ -41,11 +41,11 @@ export type EvaluationType = "AUTO" | "MANUAL"; // Adjust as needed
 export type EvaluationScale = "HUNDRED" | "TEN" | "FIVE" | "A2E";
 
 export interface SelectionCriterion {
-  id: string;
+  id?: string;
   criterionName: string;
   grantProgramId: string;
   questionType: string;
-  questionId: string;
+  questionId?: string;
   weight: number;
   evaluationType: EvaluationType;
   evaluationScale: EvaluationScale;

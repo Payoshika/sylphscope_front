@@ -212,3 +212,23 @@ export const createNewGrantProgram = async (providerStaffId: string, grantProgra
     }
     return response.data;
 };
+
+export const searchGrantProgramsByTitle = async (title: string): Promise<{ content: GrantProgram[]; totalElements: number; totalPages: number; number: number }> => {
+    const response = await apiClient.get<{ content: GrantProgram[]; totalElements: number; totalPages: number; number: number }>(
+        `/api/grant-programs/search?keyword=${encodeURIComponent(title)}`
+    );
+    if (!response.data) {
+        throw new Error("Failed to search grant programs");
+    }
+    return response.data;
+};
+
+export const searchAppliedGrantProgramByKeyword = async (studentId: string, keyword: string): Promise<GrantProgram[]> => {
+    const response = await apiClient.get<GrantProgram[]>(
+        `/api/grant-programs/student/${studentId}/applied/search?keyword=${encodeURIComponent(keyword)}`
+    );
+    if (!response.data) {
+        throw new Error("Failed to search applied grant programs");
+    }
+    return response.data;
+};

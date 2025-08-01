@@ -4,7 +4,7 @@
 // Form Groups
 .form-group {
   width: 100% ;
-  &:not(.date-picker__field .form-group):not(.month-picker__field .form-group):not(.signup-form .form-group):not(.signin-form .form-group):not(.staff-controls .form-group) {
+  &:not(.date-picker__field .form-group):not(.month-picker__field .form-group):not(.signup-form .form-group):not(.signin-form .form-group):not(.staff-controls .form-group):not(.grantlist-search-row) {
     @include Box;
     @include BoxShallowShadow;
   }

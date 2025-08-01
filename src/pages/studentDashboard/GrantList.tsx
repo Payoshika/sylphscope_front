@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from "react";
-import type { Student } from "../../types/student";
-import type { GrantProgram } from "../../types/grantProgram";
-import type { Provider } from "../../types/provider";
-import { useNavigate, useOutletContext } from "react-router-dom";
-import { getGrantProgramsByStudentId } from "../../services/GrantProgramService";
-import { getProviderById } from "../../services/ProviderService";
-import { createApplicationByStudentAndGrantProgramId } from "../../services/ApplicationService";
-import TitleAndHeadLine from "../../components/TitleAndHeadLine";
-import GrantListTable from "../../components/basicComponents/GrantListTable";
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import type { GrantProgram } from '../../types/grantProgram';
+import type { Provider } from '../../types/provider';
+import { getGrantProgramsByStudentId, searchGrantProgramsByTitle } from '../../services/GrantProgramService';
+import { getProviderById } from '../../services/ProviderService';
+import GrantListTable from '../../components/basicComponents/GrantListTable';
+import TitleAndHeadLine from '../../components/TitleAndHeadLine';
+import type { Student } from '../../types/student';
 
-interface GrantListProps {}
-
-const GrantList: React.FC<GrantListProps> = () => {
+const GrantList: React.FC = () => {
   const { student } = useOutletContext<{
     student: Student;
     setStudent: (s: Student) => void;
@@ -19,119 +16,134 @@ const GrantList: React.FC<GrantListProps> = () => {
   }>();
   const [grantPrograms, setGrantPrograms] = useState<GrantProgram[]>([]);
   const [providers, setProviders] = useState<Record<string, Provider>>({});
-  const [pageInfo, setPageInfo] = useState({ totalElements: 0, totalPages: 0, number: 0 });
-  const [sortState, setSortState] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchGrants = async () => {
-      if (!student?.id) return;
-      const data = await getGrantProgramsByStudentId(student.id, 0, 10);
-      setGrantPrograms(data.content);
-      setPageInfo({
-        totalElements: data.totalElements,
-        totalPages: data.totalPages,
-        number: data.number,
-      });
-      // Fetch provider info for each grant
-      const providerIds = Array.from(new Set(data.content.map(g => g.providerId)));
-      const providerMap: Record<string, Provider> = {};
-      await Promise.all(providerIds.map(async (id) => {
-        try {
-          const res = await getProviderById(id);
-          if (res.data) {
-            providerMap[id] = res.data;
-          }
-        } catch {}
-      }));
-      setProviders(providerMap);
-    };
-    fetchGrants();
+    fetchGrantPrograms();
   }, [student?.id]);
 
-  const handleApply = async (grantId: string) => {
-    if (!student?.id) return;
+  const fetchGrantPrograms = async () => {
     try {
-      await createApplicationByStudentAndGrantProgramId(student.id, grantId);
-      alert("Application created successfully!");
-    } catch (err) {
-      alert("Failed to create application.");
+      setIsLoading(true);
+      const response = await getGrantProgramsByStudentId(student.id, 0, 10);
+      setGrantPrograms(response.content);
+      
+      // Fetch provider details for each grant program
+      const providerPromises = response.content.map(grant => 
+        getProviderById(grant.providerId).then(response => response.data)
+      );
+      const providerResults = await Promise.all(providerPromises);
+      
+      const providerMap: Record<string, Provider> = {};
+      providerResults.forEach(provider => {
+        if (provider) {
+          providerMap[provider.id] = provider;
+        }
+      });
+      setProviders(providerMap);
+    } catch (error) {
+      console.error('Failed to fetch grant programs:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const getNextSchedule = (grant: GrantProgram) => {
-    const { schedule } = grant;
-    if (!schedule) return "-";
-    if (schedule.applicationStartDate && new Date(schedule.applicationStartDate) > new Date()) {
-      return `Application opens: ${schedule.applicationStartDate.slice(0, 10)}`;
+  const handleSearch = async (searchTerm: string) => {
+    try {
+      setIsLoading(true);
+      if (!searchTerm.trim()) {
+        await fetchGrantPrograms();
+        return;
+      }
+      
+      const searchResponse = await searchGrantProgramsByTitle(searchTerm);
+      const searchResults = searchResponse.content;
+      setGrantPrograms(searchResults);
+      
+      // Fetch provider details for search results
+      const providerPromises = searchResults.map(grant => 
+        getProviderById(grant.providerId).then(response => response.data)
+      );
+      const providerResults = await Promise.all(providerPromises);
+      
+      const providerMap: Record<string, Provider> = {};
+      providerResults.forEach(provider => {
+        if (provider) {
+          providerMap[provider.id] = provider;
+        }
+      });
+      setProviders(providerMap);
+    } catch (error) {
+      console.error('Failed to search grant programs:', error);
+      // On error, fetch all grants
+      // await fetchGrantPrograms();
+    } finally {
+      setIsLoading(false);
     }
-    if (schedule.applicationEndDate && new Date(schedule.applicationEndDate) > new Date()) {
-      return `Application closes: ${schedule.applicationEndDate.slice(0, 10)}`;
-    }
-    if (schedule.decisionDate && new Date(schedule.decisionDate) > new Date()) {
-      return `Decision: ${schedule.decisionDate.slice(0, 10)}`;
-    }
-    if (schedule.fundDisbursementDate && new Date(schedule.fundDisbursementDate) > new Date()) {
-      return `Fund Disbursement: ${schedule.fundDisbursementDate.slice(0, 10)}`;
-    }
-    return "-";
   };
 
   const handleSort = (key: string, direction: 'asc' | 'desc') => {
-    setSortState({ key, direction });
     setGrantPrograms(prev => {
       const sorted = [...prev].sort((a, b) => {
         let aValue: any = a[key as keyof GrantProgram];
         let bValue: any = b[key as keyof GrantProgram];
-        // Special handling for provider organisation name
+        
         if (key === 'organisation') {
           aValue = providers[a.providerId]?.organisationName || '';
           bValue = providers[b.providerId]?.organisationName || '';
         }
-        // Special handling for schedule
-        if (key === 'schedule') {
-          aValue = getNextSchedule(a);
-          bValue = getNextSchedule(b);
-        }
-        // Special handling for amount
-        if (key === 'amount') {
-          aValue = a.award && a.award.length > 0 ? a.award[0] : 0;
-          bValue = b.award && b.award.length > 0 ? b.award[0] : 0;
-        }
+        
         if (typeof aValue === 'string' && typeof bValue === 'string') {
-          return direction === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+          return direction === 'asc' ? 
+            aValue.localeCompare(bValue) : 
+            bValue.localeCompare(aValue);
         }
-        return direction === 'asc' ? aValue - bValue : bValue - aValue;
+        return direction === 'asc' ? 
+          (aValue > bValue ? 1 : -1) : 
+          (bValue > aValue ? 1 : -1);
       });
       return sorted;
     });
   };
 
+  const getNextSchedule = (grant: GrantProgram): string => {
+    const now = new Date();
+    const dates = [
+      { date: grant.schedule.applicationStartDate, label: 'Application Start' },
+      { date: grant.schedule.applicationEndDate, label: 'Application End' },
+      { date: grant.schedule.decisionDate, label: 'Decision' },
+      { date: grant.schedule.fundDisbursementDate, label: 'Fund Disbursement' }
+    ].filter(d => d.date && new Date(d.date) > now)
+     .sort((a, b) => new Date(a.date!).getTime() - new Date(b.date!).getTime());
+    
+    return dates.length > 0 ? 
+      `${dates[0].label}: ${new Date(dates[0].date!).toLocaleDateString()}` : 
+      'No upcoming dates';
+  };
+
+  const handleViewDetail = (grantId: string) => {
+    navigate(`/student-application/${grantId}`);
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="content">
       <TitleAndHeadLine
         title="Available Grants"
-        headline="apply to the ones you are eligible"
-        student={true}
+        headline="Explore and apply for available grant programs"
       />
-      {grantPrograms.length === 0 ? (
-        <p>No grants to display.</p>
-      ) : (
-        <GrantListTable
-          grants={grantPrograms}
-          providers={providers}
-          onApply={handleApply}
-          getNextSchedule={getNextSchedule}
-          onSort={handleSort}
-          headers={[
-            { label: "Grant Name", key: "title" },
-            { label: "Organisation", key: "organisation" },
-            { label: "Eligibility", key: "status" },
-            { label: "Expected next schedule", key: "schedule" },
-            { label: "Grant Amount / Receivers", key: "amount" },
-          ]}
-        />
-      )}
+      <GrantListTable
+        grants={grantPrograms}
+        providers={providers}
+        onSearch={handleSearch}
+        onSort={handleSort}
+        onViewDetail={handleViewDetail}
+        getNextSchedule={getNextSchedule}
+      />
     </div>
   );
 };

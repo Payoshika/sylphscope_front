@@ -14,6 +14,7 @@ interface TextInputProps {
   required?: boolean;
   autoComplete?: string;
   className?: string;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -30,6 +31,7 @@ const TextInput: React.FC<TextInputProps> = ({
   required = false,
   autoComplete,
   className,
+  onKeyDown,
 }) => {
   const getInputClass = () => {
     let baseClass = "input";
@@ -57,6 +59,7 @@ const TextInput: React.FC<TextInputProps> = ({
         disabled={disabled}
         required={required}
         autoComplete={autoComplete}
+        onKeyDown={onKeyDown}
       />
       {error && typeof error === "string" && (
         <div className="error-message">{error}</div>

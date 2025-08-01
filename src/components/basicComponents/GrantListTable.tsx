@@ -1,19 +1,18 @@
-import React, { useState } from "react";
-import type { GrantProgram } from "../../types/grantProgram";
-import type { Provider } from "../../types/provider";
-import {Sorting05Icon, Sorting01Icon, Sorting02Icon } from '@hugeicons/core-free-icons';
+import React, { useState } from 'react';
+import InputText from '../inputComponents/TextInput';
+import Button from './Button';
 import { HugeiconsIcon } from '@hugeicons/react';
-import InputText from "../inputComponents/TextInput";
+import { Sorting01Icon, Sorting02Icon, Sorting05Icon } from '@hugeicons/core-free-icons';
 
 interface GrantListTableProps {
-  grants: GrantProgram[];
-  providers: Record<string, Provider>;
+  grants: any[];
+  providers: Record<string, any>;
   onApply?: (grantId: string) => void;
-  getNextSchedule: (grant: GrantProgram) => string;
-  onSearch?: (query: string) => void;
-  onSort?: (headerKey: string, direction: 'asc' | 'desc') => void;
+  getNextSchedule?: (grant: any) => string;
+  onSearch: (searchTerm: string) => void;
+  onSort?: (key: string, direction: 'asc' | 'desc') => void;
   onViewDetail?: (grantId: string) => void;
-  headers?: { label: string; key: string }[];
+  headers?: Array<{ label: string; key: string }>;
 }
 
 const DEFAULT_HEADERS = [
@@ -24,68 +23,111 @@ const DEFAULT_HEADERS = [
   { label: "Grant Amount", key: "amount" }
 ];
 
-const GrantListTable: React.FC<GrantListTableProps> = ({ grants, providers, onApply, getNextSchedule, onSearch, onSort, onViewDetail, headers }) => {
-  const [search, setSearch] = useState("");
+const GrantListTable: React.FC<GrantListTableProps> = ({ 
+  grants, 
+  providers, 
+  onApply, 
+  getNextSchedule, 
+  onSearch,
+  onSort,
+  onViewDetail,
+  headers = DEFAULT_HEADERS
+}) => {
+  const [search, setSearch] = useState('');
   const [sortState, setSortState] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
-
-  const HEADERS = headers || DEFAULT_HEADERS;
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
-    onSearch?.(e.target.value);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSearch(search);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      onSearch(search);
+    }
   };
 
   const handleSort = (key: string) => {
-    let direction: 'asc' | 'desc' = 'asc';
-    if (sortState && sortState.key === key && sortState.direction === 'asc') {
-      direction = 'desc';
-    }
-    setSortState({ key, direction });
-    onSort?.(key, direction);
+    const newDirection = sortState?.key === key && sortState.direction === 'asc' ? 'desc' : 'asc';
+    setSortState({ key, direction: newDirection });
+    onSort?.(key, newDirection);
   };
 
   return (
     <div className="grantlist-outer">
       <div className="grantlist-search-row">
-        <InputText
-          id="grantlist-search"
-          name="grantlist-search"
-          label=""
-          value={search}
-          onChange={handleSearchChange}
-          placeholder="Search Grant by keyword"
-          size="large"
-        />
+        <div className="search-container">
+          <InputText
+            id="grantlist-search"
+            name="grantlist-search"
+            label=""
+            value={search}
+            onChange={handleSearchChange}
+            onKeyDown={handleKeyDown}
+            placeholder="Search Grant by keyword"
+            size="large"
+          />
+          <Button
+            text="Search"
+            onClick={handleSearchSubmit}
+            type="button"
+            variant="primary"
+          />
+        </div>
       </div>
       <div className="grantlist-header-row">
-        {HEADERS.map((header, i) => (
+        {headers.map((header, i) => (
           <div className="grantlist-header-cell" key={header.key}>
             <span>{header.label}</span>
-            <button
-              className="grantlist-sort-btn"
-              onClick={() => handleSort(header.key)}
+            <button 
+              className="grantlist-sort-btn" 
+              onClick={() => handleSort(header.key)} 
               aria-label={`Sort by ${header.label}`}
               type="button"
             >
-              {sortState?.key === header.key ? (sortState.direction === 'asc' ? <HugeiconsIcon icon={Sorting01Icon} size={18}/> : <HugeiconsIcon icon={Sorting02Icon} size={18}/>) : <HugeiconsIcon icon={Sorting05Icon} size={18}/>}            </button>
+              <HugeiconsIcon 
+                icon={sortState?.key === header.key 
+                  ? (sortState.direction === 'asc' ? Sorting01Icon : Sorting02Icon) 
+                  : Sorting05Icon
+                } 
+                size={18}
+              />
+            </button>
           </div>
         ))}
       </div>
       {grants.map((grant, rowIndex) => {
         const provider = providers[grant.providerId];
         return (
-          <div
-            className="grantlist-grid-row grantlist-row-clickable"
-            key={grant.id}
-            tabIndex={0}
+          <div 
+            className="grantlist-grid-row grantlist-row-clickable" 
+            key={grant.id} 
+            tabIndex={0} 
             onClick={() => onViewDetail?.(grant.id)}
             onKeyDown={e => { if (e.key === 'Enter') onViewDetail?.(grant.id); }}
           >
-            <div className="grantlist-grid-cell grantlist-value-cell"><span>{grant.title}</span></div>
-            <div className="grantlist-grid-cell grantlist-value-cell"><span>{provider?.organisationName || grant.providerId}</span></div>
-            <div className="grantlist-grid-cell grantlist-value-cell"><span>{grant.status}</span></div>
-            <div className="grantlist-grid-cell grantlist-value-cell"><span>{getNextSchedule(grant)}</span></div>
-            <div className="grantlist-grid-cell grantlist-value-cell"><span>{grant.award && grant.award.length > 0 ? grant.award.join(" - ") : "-"}{grant.numOfAward ? ` / ${grant.numOfAward}` : ""}</span></div>
+            <div className="grantlist-grid-cell grantlist-value-cell">
+              <span>{grant.title}</span>
+            </div>
+            <div className="grantlist-grid-cell grantlist-value-cell">
+              <span>{provider?.organisationName || grant.providerId}</span>
+            </div>
+            <div className="grantlist-grid-cell grantlist-value-cell">
+              <span>{grant.status}</span>
+            </div>
+            <div className="grantlist-grid-cell grantlist-value-cell">
+              <span>{getNextSchedule?.(grant)}</span>
+            </div>
+            <div className="grantlist-grid-cell grantlist-value-cell">
+              <span>
+                {grant.award && grant.award.length > 0 ? grant.award.join(" - ") : "-"}
+                {grant.numOfAward ? ` / ${grant.numOfAward}` : ""}
+              </span>
+            </div>
           </div>
         );
       })}
