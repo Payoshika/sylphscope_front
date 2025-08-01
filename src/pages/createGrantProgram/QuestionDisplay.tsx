@@ -7,6 +7,7 @@ import NumberInput from "../../components/inputComponents/NumberInput";
 import DatePicker from "../../components/inputComponents/datePickers/DatePicker";
 import SearchableMultiSelect from "../../components/inputComponents/SearchableMultiSelect";
 import CrossSign from "../../components/icons/CrossSign";
+import type { SearchableOption } from "../../components/inputComponents/SearchableDropdown";
 
 interface QuestionDisplayProps {
   question: QuestionEligibilityInfoDto;
@@ -62,11 +63,11 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
             id={`question-${q.id}-date`}
             name={q.name}
             label={q.questionText}
-            value=""
+            value={{ day: "", month: "", year: "" }}
             onChange={() => {}}
             disabled={!inputAllowed}
           />
-        );
+        )
       case "RADIO":
         return (
           <Select
@@ -86,10 +87,11 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
             name={q.name}
             label={q.questionText}
             value={[]}
-            onChange={() => {}}
+            onChange={() => { } }
             options={options.map(opt => ({ label: opt.label, value: opt.value }))}
-            disabled={!inputAllowed}
-          />
+            disabled={!inputAllowed} searchFunction={function (query: string, options: SearchableOption[]): SearchableOption[] {
+              throw new Error("Function not implemented.");
+            } }          />
         );
       default:
         return (

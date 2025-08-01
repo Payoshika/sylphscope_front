@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import type { GrantProgram, EvaluationScale } from "../../types/grantProgram";
 import type { QuestionEligibilityInfoDto } from "../../data/questionEligibilityInfoDto";
 import type { SelectionCriterion } from "../../types/grantProgram";
-import TitleAndHeadLine from "./TitleAndHeadLine";
+import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import Button from "../../components/basicComponents/Button";
 import { getSelectionCriteria, updateSelectionCriteria } from "../../services/GrantProgramService";
 import Select from "../../components/inputComponents/Select";
@@ -74,7 +74,6 @@ const SelectionCriteria: React.FC<SelectionCriteriaProps> = ({
 
   // Collect all questionIds and questionGroupIds from selectedSelectionCriteria
   const disabledQuestionIds = selectedSelectionCriteria.map(c => c.questionId);
-  const disabledGroupIds = selectedSelectionCriteria.map(c => c.questionGroupId).filter(Boolean);
 
   const handleEvaluationTypeChange = (questionId: string, value: "MANUAL" | "AUTO") => {
   setSelectedSelectionCriteria(prev =>
@@ -93,6 +92,7 @@ const SelectionCriteria: React.FC<SelectionCriteriaProps> = ({
     }
     setCustomCriteriaError("");
     const newCriterion: SelectionCriterion = {
+      id: undefined,
       grantProgramId: grantProgram.id,
       criterionName: customCriteriaName.trim(),
       questionType: "SINGLE",
@@ -101,6 +101,7 @@ const SelectionCriteria: React.FC<SelectionCriteriaProps> = ({
       evaluationType: "MANUAL",
       evaluationScale: evaluationScale,
     };
+    
     setSelectedSelectionCriteria(prev => {
       const updated = [...prev, newCriterion];
       const equalWeight = Math.floor(100 / updated.length);
@@ -119,7 +120,6 @@ const SelectionCriteria: React.FC<SelectionCriteriaProps> = ({
   const handleAddSelectionCriterion = (question: QuestionEligibilityInfoDto) => {
     if (
       disabledQuestionIds.includes(question.question.id) ||
-      disabledGroupIds.includes(question.question.id) ||
       selectedSelectionCriteria.some(c => c.questionId === question.question.id)
     )
       return;
@@ -198,7 +198,6 @@ const renderSelectedQuestionButtons = () => (
     {selectedQuestions.map((question) => {
       const isDisabled =
         disabledQuestionIds.includes(question.question.id) ||
-        disabledGroupIds.includes(question.question.id) ||
         selectedSelectionCriteria.some(c => c.questionId === question.question.id);
       return (
         <div className="selection-criteria__question-btn" key={question.question.id}>
@@ -207,7 +206,7 @@ const renderSelectedQuestionButtons = () => (
             type="button"
             disabled={isDisabled}
             variant={isDisabled ? "primary" : "outline"}
-            className="selection-criteria__btn"
+            // className="selection-criteria__btn"
             onClick={() => handleAddSelectionCriterion(question)}
           />
         </div>
@@ -223,7 +222,7 @@ const renderSelectedQuestionButtons = () => (
             placeholder="Custom selection criteria name"
             value={customCriteriaName}
             onChange={e => setCustomCriteriaName(e.target.value)}
-            autoFocus
+            // autoFocus
           />
           <Button
             text="Add"
@@ -248,7 +247,7 @@ const renderSelectedQuestionButtons = () => (
           text="Create Custom Selection Criteria"
           type="button"
           variant="outline"
-          className="selection-criteria__btn"
+          // className="selection-criteria__btn"
           onClick={() => setShowCustomCriteriaInput(true)}
         />
       )}
@@ -268,17 +267,18 @@ const renderSelectedCriteriaInputs = () =>
         name={`weight-${criterion.questionId}`}
         label={criterion.criterionName}
         value={criterion.weight ?? 0}
-        onChange={e => handleWeightChange(criterion.questionId, Number(e.target.value))}
+        onChange={e => handleWeightChange(criterion.questionId ?? "", Number(e.target.value))}
         min={0}
         max={100}
         suffix="%"
-        className="selection-criteria__input"
+        disabled={false}
+        // className="selection-criteria__input"
       />
       <Select
         id={`evaluation-type-${criterion.questionId}`}
         name={`evaluationType-${criterion.questionId}`}
         value={criterion.evaluationType}
-        onChange={e => handleEvaluationTypeChange(criterion.questionId, e.target.value as "MANUAL" | "AUTO")}
+        onChange={e => handleEvaluationTypeChange(criterion.questionId ?? "", e.target.value as "MANUAL" | "AUTO")}
         options={evaluationTypeOptions}
         className="selection-criteria__evaluation-type"
         label="Evaluation Type"
@@ -287,7 +287,7 @@ const renderSelectedCriteriaInputs = () =>
       <button
         type="button"
         className="selection-criteria__remove-btn"
-        onClick={() => handleRemoveSelectionCriterion(criterion.questionId)}
+        onClick={() => handleRemoveSelectionCriterion(criterion.questionId ?? "")}
         aria-label="Remove selection criterion"
       >
         <CrossSign width={22} height={22} />
@@ -309,7 +309,7 @@ const handleSaveSelectionCriteria = async () => {
     const response = await updateSelectionCriteria(grantProgram.id, selectedSelectionCriteria);
     console.log("response is ", response)
     if (response?.data) {
-      setGrantProgram((prev) => ({ ...prev, selectionCriteria: response.data }));
+      setGrantProgram((prev) => ({ ...prev, selectionCriteria: response.data as SelectionCriterion[] }));
     }
     console.log("current Grant program is ", grantProgram);
     setSubmitSuccess("Selection criteria saved.");

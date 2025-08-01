@@ -1,0 +1,109 @@
+@use "../global/base" as *;
+@use "../global/mixins" as *;
+
+.section-box {
+  width: 100%;
+  h3 {
+    color: $text-color;
+    @include MarginBottom1rem;
+  }
+  p{
+    margin-bottom: 0;
+  }
+}
+
+.staff-management-container {
+    width: 100%;
+    @include Box;
+    @include BoxShallowShadow;
+    @include Padding2rem;
+  @include ColJustifyStartFlexbox;
+}
+
+.staff-list {
+  @include ColJustifyStartFlexbox;
+  @include Gap1rem;
+  width: 100%;
+}
+
+.staff-list-item {
+  width: 100%;
+  transition: all 0.2s ease;
+  @include RowJustifyStartFlexbox;
+}
+
+.staff-info {
+  @include ColJustifyStartFlexbox;
+  @include Gap0_5rem;
+  align-items: flex-start;
+}
+
+.staff-name {
+  color: $primary-color;
+}
+
+.staff-date {
+  color: $text-color;
+}
+
+.staff-controls {
+  @include RowJustifyStartFlexbox;
+  @include Gap1rem;
+  align-items: center;
+  .form-group {
+    margin-bottom: 0;
+  }
+}
+
+.remove-staff-btn {
+  background: none;
+  border: none;
+  @include Padding0_5rem;
+  cursor: pointer;
+  border-radius: 0.4rem;
+  transition: all 0.2s ease;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  svg {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+}
+
+.staff-list-empty {
+  text-align: center;
+  @include Padding2rem;
+  color: $secondary-color;
+}
+
+.save-section {
+  @include RowJustifyCenterFlexbox;
+  @include MarginTop2rem;
+
+  .error-message {
+    color: $error-color;
+    @include MarginLeft1rem;
+  }
+}
+
+@include extrasmall {
+  .staff-list-item {
+    flex-direction: column;
+    @include Gap1rem;
+  }
+
+  .staff-controls {
+    width: 100%;
+    justify-content: space-between;
+
+    select {
+      min-width: 0;
+      flex: 1;
+      @include MarginRight1rem;
+    }
+  }
+} 

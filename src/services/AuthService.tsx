@@ -27,7 +27,6 @@ class AuthService {
   ): Promise<ApiResponse<LoginResponse>> {
     try {
       console.log("🚀 Starting login process...");
-
       const response = await apiClient.post<LoginResponse>(
         `${this.BASE_PATH}/login`,
         credentials,
@@ -53,7 +52,7 @@ class AuthService {
 
         // Create user object from the response
         const user: User = {
-          id: parseInt(response.data.id),
+          id: response.data.id,
           username: response.data.username,
           email: response.data.email || "",
           roles: response.data.roles,
@@ -64,10 +63,8 @@ class AuthService {
 
         // Don't emit login event here - let validateSession handle it
         // This prevents premature state updates before MFA verification
-
         console.log("✅ Authentication token stored");
       }
-
       return response;
     } catch (error) {
       console.error("❌ Login failed:", error);
@@ -99,7 +96,7 @@ class AuthService {
 
         // Create user object from the response
         const user: User = {
-          id: parseInt(response.data.id),
+          id: response.data.id,
           username: response.data.username,
           email: "", // Not provided in JwtResponse
           roles: response.data.roles,
@@ -286,7 +283,7 @@ class AuthService {
 
         // Update user object with fresh data from response
         const user: User = {
-          id: parseInt(response.data.id),
+          id: response.data.id,
           username: response.data.username,
           email: response.data.email || "",
           roles: response.data.roles,

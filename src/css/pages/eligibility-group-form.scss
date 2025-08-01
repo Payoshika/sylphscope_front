@@ -66,7 +66,6 @@
   transition: color 0.2s;
   position: relative;
   &:hover {
-    color: darken($error-color, 10%);
   }
 }
 

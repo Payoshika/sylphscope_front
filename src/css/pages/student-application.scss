@@ -1,0 +1,41 @@
+@use "../global/base" as *;
+@use "../global/mixins" as *;
+
+.eligibility-form {
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  transition: border-color 0.2s;
+
+  .form-group{
+    @include MarginBottom1rem;
+  }
+
+  p{
+    @include MarginBottom0rem;
+    font-size: 1.4rem;
+  }
+}
+
+.eligibility-form--eligible {
+  border-color: $student-color;
+}
+
+.eligibility-form--ineligible {
+  border-color: $error-color;
+}
+
+.eligibility-message-eligible{
+    color : $student-color;
+}
+
+.eligibility-message-ineligible{
+    color: $error-color;
+}
+
+.criteria-info{
+    @include RowJustifyStartFlexbox;
+    gap:1rem;
+    @include MarginBottom1rem;
+}

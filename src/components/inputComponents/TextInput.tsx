@@ -13,6 +13,8 @@ interface TextInputProps {
   error?: boolean | string;
   required?: boolean;
   autoComplete?: string;
+  className?: string;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -28,12 +30,15 @@ const TextInput: React.FC<TextInputProps> = ({
   error = false,
   required = false,
   autoComplete,
+  className,
+  onKeyDown,
 }) => {
   const getInputClass = () => {
     let baseClass = "input";
     if (size === "small") baseClass += " input--small";
     if (size === "large") baseClass += " input--large";
     if (error) baseClass += " input--error";
+    if (className) baseClass += ` ${className}`;
     return baseClass;
   };
 
@@ -54,6 +59,7 @@ const TextInput: React.FC<TextInputProps> = ({
         disabled={disabled}
         required={required}
         autoComplete={autoComplete}
+        onKeyDown={onKeyDown}
       />
       {error && typeof error === "string" && (
         <div className="error-message">{error}</div>

@@ -17,10 +17,14 @@ import Navigation from "./pages/Navigation";
 import ProtectedLayout from "./pages/ProtectedLayout";
 import ToastContainer from "./components/ToastItem";
 import MfaVerification from "./components/MfaVarification";
-import CreateGrantProgram from "./pages/createGrantProgram/CreateGrantProgram"
-import CreateOrganisation from "./pages/createOrganisation/CreateOrganisation"
+import CreateGrantProgram from "./pages/createGrantProgram/CreateGrantProgram";
+import CreateOrganisation from "./pages/createOrganisation/CreateOrganisation";
 import GrantManagement from "./pages/grantManagement/GrantManagement";
+import StudentDashboard from "./pages/studentDashboard/StudentDashboard";
+import StudentApplication from "./pages/studentApplication/StudentApplication";
 import ProviderLayout from "./pages/ProviderLayout";
+import StudentLayout from "./pages/StudentLayout";
+import Message from "./pages/grantManagement/Message";
 
 function App() {
   return (
@@ -42,8 +46,19 @@ function App() {
                 <Route path="/create-grant/:grantProgramId/*" element={<CreateGrantProgram />} />
                 <Route path="/organisation/*" element={<CreateOrganisation />} />
               </Route>
+            </Route>
+            <Route element={<ProtectedLayout />}>
+              <Route element={<StudentLayout />}>
+                <Route path="/student-dashboard/*" element={<StudentDashboard />} />
+              </Route>
+            </Route>
+            <Route element={<ProtectedLayout />}>
+              <Route element={<StudentLayout />}>
+                <Route path="/student-application/:grantProgramId/*" element={<StudentApplication />} />
+              </Route>
+            </Route>
+            <Route element={<ProtectedLayout />}>
               <Route path="settings" element={<Settings />} />
-              {/* Other protected routes */}
             </Route>
             {/* Catch all - redirect to signin */}
             <Route path="*" element={<Navigate to="/signin" replace />} />

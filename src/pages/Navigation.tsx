@@ -2,7 +2,11 @@ import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import AuthService from "../services/AuthService";
-
+import FigorousLogo from "../components/icons/FigorousLogo";
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Mail01Icon } from '@hugeicons/core-free-icons';
+import {DashboardSquare01Icon} from '@hugeicons/core-free-icons';
+import {Profile02Icon, UserSquareIcon, Logout02Icon} from '@hugeicons/core-free-icons';
 const Navigation: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -26,7 +30,8 @@ const Navigation: React.FC = () => {
       <div className="card__body">
         <div className="nav-container">
           <div className="nav-brand">
-            <h2 className="no-margin">Figorous</h2>
+            <span className="nav-logo-text"><h2 className="no-margin">Figorous</h2></span>
+            <span className="nav-logo-svg"><FigorousLogo role={role} /></span>
             {user && role && (
               <p className={`user-type ${role}-color`}>for {role}</p>
             )}
@@ -34,20 +39,50 @@ const Navigation: React.FC = () => {
           <div className="nav-links">
             {isAuthenticated ? (
               <>
-                <Link to="/grant-management" className="btn btn--small btn--ghost">
-                  Grant Management
-                </Link>
-                <Link to="/organisation" className="btn btn--small btn--ghost">
-                  Your Organisation
-                </Link>
-                <div className="nav-user">
-                  <button
-                    onClick={handleLogout}
-                    className="btn btn--small btn--outline"
-                  >
-                    Sign Out
-                  </button>
-                </div>
+                {user && user.roles?.[0] === "ROLE_STUDENT" && (
+                  <Link to="/student-dashboard" className="btn btn--small nav-link">
+                    <span className="nav-link-icon"><HugeiconsIcon icon={DashboardSquare01Icon} /></span>
+                    <span className="nav-link-label">Dashboard</span>
+                  </Link>
+                )}
+                {user && user.roles?.[0] === "ROLE_PROVIDER" && (
+                  <>
+                      <Link to="/grant-management" className="btn btn--small nav-link">
+                        <span className="nav-link-icon"><HugeiconsIcon icon={DashboardSquare01Icon} /></span>
+                        <span className="nav-link-label">Dashboard</span>
+                      </Link>
+                      <Link to="/organisation" className="btn btn--small nav-link">
+                        <span className="nav-link-icon"><HugeiconsIcon icon={Profile02Icon} /></span>
+                        <span className="nav-link-label">Organisation</span>
+                      </Link>
+                    <Link to="/staff-profile" className="btn btn--small nav-link">
+                        <span className="nav-link-icon"><HugeiconsIcon icon={UserSquareIcon} /></span>
+                        <span className="nav-link-label">Staff Profile</span>
+                      </Link>
+                  </>
+                )}
+                {user && user.roles?.[0] === "ROLE_STUDENT" && (
+                  <Link to="/student-dashboard/messages" className="btn btn--small nav-link">
+                    <span className="nav-link-icon"><HugeiconsIcon icon={Mail01Icon} /></span>
+                    <span className="nav-link-label">Message</span>
+                  </Link>
+                )}
+                {user && user.roles?.[0] === "ROLE_PROVIDER" && (
+                  <Link to="/grant-management/messages" className="btn btn--small nav-link">
+                    <span className="nav-link-icon"><HugeiconsIcon icon={Mail01Icon} /></span>
+                    <span className="nav-link-label">Message</span>
+                  </Link>
+                )}
+                <button
+                      onClick={handleLogout}
+                      className="btn btn--small btn--outline nav-link"
+                    >
+                      <span className="nav-link-icon"><HugeiconsIcon icon={Logout02Icon} /></span>
+                      <span className="nav-link-label">Sign Out</span>
+                </button>
+                {/* <div className="nav-user">
+
+                </div> */}
               </>
             ) : (
               <>

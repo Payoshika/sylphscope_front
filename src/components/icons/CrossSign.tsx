@@ -20,7 +20,7 @@ const CrossSign: React.FC<
             strokeWidth={3}
             strokeLinecap="round"
             strokeLinejoin="round"
-            style={{ transform: "rotate(45deg)" }}
+            style={{ transform: "rotate(45deg)"}}
             {...props}
         >
             <line x1="12" y1="5" x2="12" y2="19" />
@@ -28,5 +28,6 @@ const CrossSign: React.FC<
         </svg>
     );
 };
+
 
 export default CrossSign;

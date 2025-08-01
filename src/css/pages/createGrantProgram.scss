@@ -5,6 +5,7 @@
   min-height: 100vh;
   @include RowJustifyStartFlexbox;
   align-items: stretch;
+  flex-wrap: nowrap;
 }
 
 .grant-nav {
@@ -14,6 +15,11 @@
   @include BoxShadow;
   padding-left: 0;
   align-items: start;
+  @include smartphone {
+    flex-wrap: nowrap;
+    width: 100%;
+    overflow-x: scroll;
+  }
 }
 
 .grant-nav__item {
@@ -22,7 +28,9 @@
   border-left: none;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-  p {color: $background-color;}
+  white-space: nowrap;
+  p {color: $text-color;}
+  background-color: $background-color;
   text-decoration: none;
   transition: 0.2s;
   p {
@@ -30,6 +38,12 @@
   }
   &--active {
     background: $text-color;
+    p {color: $background-color;}
+  }
+  @include smartphone {
+    border-left: 2px solid #5f5f68;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
   }
 }
 
@@ -62,6 +76,7 @@
     align-self: self-start;
     margin-bottom: 0;
     @include RowJustifyStartFlexbox;
+    flex-wrap: nowrap;
     gap: 1rem;
   }
 }

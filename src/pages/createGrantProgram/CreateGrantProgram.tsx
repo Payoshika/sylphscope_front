@@ -6,25 +6,25 @@ import ChooseOrCreateQuestions from "./ChooseOrCreateQuestions";
 import SelectionCriteria from "./SelectionCriteria";
 import GrantSchedule from "./GrantSchedule";
 import GrantAmount from "./GrantAmount";
+import AssignedStaff from "./AssignedStaff";
 
 // Import other step components...
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation, useParams, Navigate } from "react-router-dom";
-import type { GrantProgram, Schedule } from "../../types/grantProgram";
+import type { GrantProgram, Schedule, StaffRole } from "../../types/grantProgram";
 import { GrantStatus } from "../../types/grantProgram";
 import { createGrantProgram, updateGrantProgram,getGrantProgramById } from "../../services/GrantProgramService";
-import type { ComparisonOperator, EligibilityGroupFormState,QuestionGroupEligibilityInfoDto, QuestionEligibilityInfoDto, EligibilityCriteriaDTO, QuestionCondition, SelectionCriterion, Option, InputType, DataType, Question } from "../../data/questionEligibilityInfoDto";
-import ChooseOrCreateQuestion from "./ChooseOrCreateQuestions";
+import type { QuestionGroupEligibilityInfoDto, QuestionEligibilityInfoDto, EligibilityCriteriaDTO } from "../../data/questionEligibilityInfoDto";
 
 const steps = [
-  { key: "title", label: "Title" },
-  { key: "amount", label: "Amount" }, 
+  { key: "name", label: "Grant Name" },
   { key: "description", label: "Description" },
-  { key: "eligibility", label: "Eligibility" },
-  { key: "questions", label: "Questions" },
-  { key: "selection", label: "Selection" },
+  { key: "amount", label: "Grant Amount" },
   { key: "schedule", label: "Schedule" },
-  { key: "review", label: "Review & Submit" },
+  { key: "eligibility", label: "Eligibility" },
+  { key: "selection-criteria", label: "Selection Criteria" },
+  { key: "questions", label: "Questions" },
+  { key: "assigned-staff", label: "Assigned Staff" },
 ];
 
 const initialGrantProgram: GrantProgram = {
@@ -32,6 +32,7 @@ const initialGrantProgram: GrantProgram = {
   title: "",
   description: "",
   providerId: "",
+  providerName: "",
   status: GrantStatus.DRAFT,
   schedule: {
     applicationStartDate: null,
@@ -39,11 +40,21 @@ const initialGrantProgram: GrantProgram = {
     decisionDate: null,
     fundDisbursementDate: null,
   } as Schedule,
+  assignedStaffIds: [],
+  contactPerson: {
+    id: "",
+    userId: "",
+    providerId: "",
+    firstName: "",
+    lastName: "",
+    role:"MANAGER" as StaffRole
+  },
   createdAt: "",
   updatedAt: "",
   questionIds: [],
   selectionCriteria: [],
   questionGroupsIds: [],
+  evaluationScale: "HUNDRED"
 };
 
 // ...existing imports...
@@ -99,9 +110,9 @@ const CreateGrantProgram = () => {
       />
       <main className="grant-create-content">
         <Routes>
-          <Route path="/" element={<Navigate to="title" replace />} />
+          <Route path="/" element={<Navigate to="name" replace />} />
           <Route
-            path="title"
+            path="name"
             element={
               <GrantName
           id="title"
@@ -114,9 +125,11 @@ const CreateGrantProgram = () => {
             }
           />
           <Route
-            path="amount"
+            path="description"
             element={
-              <GrantAmount
+              <GrantDescription
+          id="description"
+          name="description"
           grantProgram={grantProgram}
           onGrantProgramChange={setGrantProgram}
           onUpdateGrant={handleUpdateGrant}
@@ -124,11 +137,9 @@ const CreateGrantProgram = () => {
             }
           />
           <Route
-            path="description"
+            path="amount"
             element={
-              <GrantDescription
-          id="description"
-          name="description"
+              <GrantAmount
           grantProgram={grantProgram}
           onGrantProgramChange={setGrantProgram}
           onUpdateGrant={handleUpdateGrant}
@@ -166,12 +177,11 @@ const CreateGrantProgram = () => {
           eligibilities={eligibilities}
           selectedQuestions={selectedQuestions}
           setSelectedQuestions={setSelectedQuestions}
-          grantProgramId={grantProgramId ?? ""}
-              />
+            />
             }
           />
           <Route
-          path="selection"
+          path="selection-criteria"
           element={
             <SelectionCriteria
               grantProgram={grantProgram}
@@ -191,6 +201,10 @@ const CreateGrantProgram = () => {
               getGrantProgram={getGrantProgram}
             />
           }
+        />
+        <Route
+          path="assigned-staff"
+          element={<AssignedStaff grantProgramId={grantProgram?.id || ""} grantProgram={grantProgram} onGrantProgramChange={setGrantProgram} />}
         />
         </Routes>
       </main>

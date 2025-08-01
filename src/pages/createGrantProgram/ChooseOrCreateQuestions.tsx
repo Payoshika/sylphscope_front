@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import type {
-  GrantProgram,
   QuestionEligibilityInfoDto,
   QuestionGroupEligibilityInfoDto,
   EligibilityCriteriaDTO,
@@ -9,11 +8,12 @@ import type {
   DataType,
 } from "../../data/questionEligibilityInfoDto";
 import Button from "../../components/basicComponents/Button";
-import TitleAndHeadLine from "./TitleAndHeadLine";
+import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import Modal from "../../components/basicComponents/Modal";
 import QuestionForm from "./QuestionForm";
 import QuestionDisplay from "./QuestionDisplay";
 import { updateQuestion } from "../../services/GrantProgramService";
+import type { GrantProgram } from "../../types/grantProgram";
 
 interface ChooseOrCreateQuestionProps {
   grantProgram: GrantProgram;
@@ -44,21 +44,20 @@ const ChooseOrCreateQuestion: React.FC<ChooseOrCreateQuestionProps> = ({
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [localQuestionIds, setLocalQuestionIds] = useState<string[]>(grantProgram.questionIds || []);
 
-useEffect(() => {
-  setLocalQuestionIds(grantProgram.questionIds || []);
-  setSelectedQuestions(
-    questions.filter(q => localQuestionIds.includes(q.question.id))
-  );
-}, [grantProgram.questionIds]);
+  useEffect(() => {
+    setLocalQuestionIds(grantProgram.questionIds || []);
+    setSelectedQuestions(
+      questions.filter(q => (grantProgram.questionIds || []).includes(q.question.id as string))
+    );
+  }, [grantProgram.questionIds, questions]);
 
-const handleChooseQuestion = (question: QuestionEligibilityInfoDto) => {
-  if (!selectedQuestions.some(q => q.question.id === question.question.id)) {
-    setSelectedQuestions(prev => [...prev, question]);
-    setLocalQuestionIds(prev => [...prev, question.question.id]);
-    onChooseQuestion?.(question);
-  }
-};
-
+  const handleChooseQuestion = (question: QuestionEligibilityInfoDto) => {
+    if (!selectedQuestions.some(q => q.question.id === question.question.id)) {
+      setSelectedQuestions(prev => [...prev, question]);
+      setLocalQuestionIds(prev => [...prev, question.question.id as string]);
+      onChooseQuestion?.(question);
+    }
+  };
 
   const handleChooseGroup = (group: QuestionGroupEligibilityInfoDto) => {
     setSelectedQuestions(prev => {
@@ -70,10 +69,10 @@ const handleChooseQuestion = (question: QuestionEligibilityInfoDto) => {
     onChooseGroup?.(group);
   };
 
-const handleRemoveQuestion = (questionId: string) => {
-  setSelectedQuestions(prev => prev.filter(q => q.question.id !== questionId));
-  setLocalQuestionIds(prev => prev.filter(id => id !== questionId));
-};
+  const handleRemoveQuestion = (questionId: string) => {
+    setSelectedQuestions(prev => prev.filter(q => q.question.id !== questionId));
+    setLocalQuestionIds(prev => prev.filter(id => id !== questionId));
+  };
 
   const handleCreateCustomQuestion = (question: {
     name: string;
@@ -150,8 +149,8 @@ const handleRemoveQuestion = (questionId: string) => {
           text={question.question.name}
           onClick={() => handleChooseQuestion(question)}
           type="button"
-          disabled={isQuestionDisabled(question.question.id)}
-          variant={isQuestionDisabled(question.question.id) ? "primary" : "outline"}
+          disabled={isQuestionDisabled(question.question.id ?? "")}
+          variant={isQuestionDisabled(question.question.id ?? "") ? "primary" : "outline"}
         />
       ));
 
@@ -177,7 +176,7 @@ const handleRemoveQuestion = (questionId: string) => {
           <QuestionDisplay
             question={question}
             inputAllowed={true}
-            onRemove={() => handleRemoveQuestion(question.question.id)}
+            onRemove={() => handleRemoveQuestion(question.question.id ?? "")}
           />
         </div>
       ));

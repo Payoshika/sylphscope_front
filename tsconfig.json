@@ -19,5 +19,5 @@
     "jsx": "react-jsx",
     "strict": false,
   },
-   "exclude": ["dist", "build", "node_modules", "**/*.test.ts", "**/*.test.tsx"]
+   "exclude": ["dist", "build", "node_modules", "jspm_packages", "tmp", "bower_components", "**/*.test.ts", "**/*.test.tsx"]
 }

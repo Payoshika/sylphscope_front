@@ -1,5 +1,5 @@
 import { apiClient } from "../utility/ApiClient";
-import type { GrantProgram, SelectionCriterion } from "../types/grantProgram";
+import type { GrantProgram, GrantProgramAvailableQuestionsDto, SelectionCriterion, AssignedStaff, ProviderStaffDto } from "../types/grantProgram";
 import type { QuestionEligibilityInfoDto, EligibilityCriteriaDTO, Question, Option,QuestionGroupEligibilityInfoDto} from "../data/questionEligibilityInfoDto";
 
 //grant related functions
@@ -26,6 +26,33 @@ export const updateGrantProgram = async (id: string | number, grantProgram: Gran
   return apiClient.put(`/api/grant-programs/${id}`, grantProgram);
 };
 
+export const getGrantPrograms = async (
+  page: number = 0,
+  size: number = 10
+): Promise<{ content: GrantProgram[]; totalElements: number; totalPages: number; number: number }> => {
+  const response = await apiClient.get<{ content: GrantProgram[]; totalElements: number; totalPages: number; number: number }>(
+    `/api/grant-programs?page=${page}&size=${size}`
+  );
+  if (!response.data) {
+    throw new Error("Failed to fetch grant programs");
+  }
+  return response.data;
+};
+
+export const getGrantProgramsByStudentId = async (
+  studentId: string,
+  page: number = 0,
+  size: number = 10
+): Promise<{ content: GrantProgram[]; totalElements: number; totalPages: number; number: number }> => {
+  const response = await apiClient.get<{ content: GrantProgram[]; totalElements: number; totalPages: number; number: number }>(
+    `/api/grant-programs/student/${studentId}?page=${page}&size=${size}`
+  );
+  if (!response.data) {
+    throw new Error("Failed to fetch grant programs for student");
+  }
+  return response.data;
+};
+
 //Question Related functions
 export const createQuestion = async (question: Question, options: Option[] = []) => {
   const { id, ...questionData } = question;
@@ -47,7 +74,7 @@ export const fetchEligibilityQuestions = async (): Promise<QuestionEligibilityIn
 };
 
 export const fetchEligibilityQuestionGroups = async (): Promise<QuestionGroupEligibilityInfoDto[]> => {
-  const response = await apiClient.get<QuestionGroupEligibilityInfoDto[]>("/api/questions/question-groups-for-eligibility");
+  const response = await apiClient.get<QuestionGroupEligibilityInfoDto[]>("/api/question-groups/groups-for-eligibility");
   return response.data || [];
 };
 
@@ -110,4 +137,98 @@ export const updateGrantProgramSchedule = async (
     fundDisbursementDate: toIsoDateString(schedule.fundDisbursementDate),
   };
   return apiClient.put(`/api/grant-programs/${grantProgramId}/schedule`, payload);
+};
+
+export const getQuestionByGrantProgramId = async (
+  grantProgramId: string
+): Promise<GrantProgramAvailableQuestionsDto> => {
+  const response = await apiClient.get<GrantProgramAvailableQuestionsDto>(
+    `/api/grant-programs/${grantProgramId}/available-questions`
+  );
+  if (!response.data) {
+    throw new Error("No data returned for available questions");
+  }
+  return response.data;
+};
+
+export const getStaffByProviderId = async (providerId: string): Promise<ProviderStaffDto[]> => {
+    const response = await apiClient.get<ProviderStaffDto[]>(`/api/providers/${providerId}/staff`);
+    if (!response.data) {
+        throw new Error("Failed to fetch staff list");
+    }
+    return response.data;
+};
+
+export const getAssignedStaff = async (grantProgramId: string): Promise<AssignedStaff[]> => {
+    const response = await apiClient.get<AssignedStaff[]>(`/api/grant-programs/${grantProgramId}/assigned-staff`);
+    console.log("assigned staff", response);
+    console.log("assigned staff data", response.data);
+    if (!response.data) {
+        throw new Error("Failed to fetch assigned staff");
+    }
+    return response.data;
+};
+
+export const getContactPerson = async (grantProgramId: string): Promise<ProviderStaffDto> => {
+    const response = await apiClient.get<ProviderStaffDto>(`/api/grant-programs/${grantProgramId}/contact-person`);
+    if (!response.data) {
+        throw new Error("Failed to fetch contact person");
+    }
+    return response.data;
+};
+
+export const updateContactPerson = async (grantProgramId: string, providerStaffDto: ProviderStaffDto): Promise<GrantProgram> => {
+    const response = await apiClient.put<GrantProgram>(`/api/grant-programs/${grantProgramId}/contact-person`, providerStaffDto);
+    if (!response.data) {
+        throw new Error("Failed to update contact person");
+    }
+    return response.data;
+};
+
+export const updateAssignedStaff = async (grantProgramId: string, assignedStaffList: AssignedStaff[]): Promise<GrantProgram> => {
+    const response = await apiClient.put<GrantProgram>(`/api/grant-programs/${grantProgramId}/assigned-staff`, assignedStaffList);
+    if (!response.data) {
+        throw new Error("Failed to update assigned staff");
+    }
+    return response.data;
+};
+
+export const getAppliedGrantProgram = async (studentId: string): Promise<GrantProgram[]> => {
+    const response = await apiClient.get<GrantProgram[]>(`/api/grant-programs/student/${studentId}/applied`);
+    if (!response.data) {
+        throw new Error("Failed to fetch applied grant programs");
+    }
+    return response.data;
+};
+
+export const createNewGrantProgram = async (providerStaffId: string, grantProgramDto: Omit<GrantProgram, 'id' | 'createdAt' | 'updatedAt' | 'contactPerson' | 'assignedStaffIds'>): Promise<GrantProgram> => {
+    const requestBody = {
+        providerStaffId: providerStaffId,
+        grantProgramDto: grantProgramDto
+    };
+    const response = await apiClient.post<GrantProgram>('/api/grant-programs', requestBody);
+    if (!response.data) {
+        throw new Error("Failed to create grant program");
+    }
+    return response.data;
+};
+
+export const searchGrantProgramsByTitle = async (title: string): Promise<{ content: GrantProgram[]; totalElements: number; totalPages: number; number: number }> => {
+    const response = await apiClient.get<{ content: GrantProgram[]; totalElements: number; totalPages: number; number: number }>(
+        `/api/grant-programs/search?keyword=${encodeURIComponent(title)}`
+    );
+    if (!response.data) {
+        throw new Error("Failed to search grant programs");
+    }
+    return response.data;
+};
+
+export const searchAppliedGrantProgramByKeyword = async (studentId: string, keyword: string): Promise<GrantProgram[]> => {
+    const response = await apiClient.get<GrantProgram[]>(
+        `/api/grant-programs/student/${studentId}/applied/search?keyword=${encodeURIComponent(keyword)}`
+    );
+    if (!response.data) {
+        throw new Error("Failed to search applied grant programs");
+    }
+    return response.data;
 };

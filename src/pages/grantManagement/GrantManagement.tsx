@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import GrantManagementNav from "./GrantManagementNav";
 import ListGrants from "./ListGrants";
+import Message from "./Message";
+import CreateGrant from "./CreateGrant";
+import ReviewApplication from "./ReviewApplication";
+import StaffProfile from "./StaffProfile";
 import { useOutletContext } from "react-router-dom";
 import type { Provider } from "../../types/provider";
 import type { ProviderStaff } from "../../types/user";
@@ -9,8 +13,11 @@ import { Routes, Route, useNavigate, useLocation, Navigate } from "react-router-
 import { getGrantProgramsByProviderId } from "../../services/GrantProgramService";
 
 const steps = [
+  { key: "create", label: "Create Grant" },
   { key: "list", label: "List Grants" },
-  // Add more steps as needed
+  { key: "review", label: "Review Application" },
+  { key: "messages", label: "Messages" },
+  { key: "staff-profile", label: "Staff Profile" },
 ];
 
 const GrantManagement = () => {
@@ -66,6 +73,22 @@ const GrantManagement = () => {
                 loading={loadingGrants}
               />
             }
+          />
+          <Route
+            path="create"
+            element={<CreateGrant />}
+          />
+          <Route
+            path="messages"
+            element={<Message />}
+          />
+          <Route
+            path="review"
+            element={<ReviewApplication provider={provider} />}
+          />
+          <Route
+            path="staff-profile"
+            element={<StaffProfile />}
           />
           {/* Add more routes as needed */}
         </Routes>

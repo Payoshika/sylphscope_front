@@ -64,7 +64,15 @@ const Signin: React.FC = () => {
 
         if (validationResult === true) {
           // Fully authenticated - redirect to main app
-          navigate("/components");
+          if (response.data && response.data.roles && response.data.roles.length > 0) {
+            const role = response.data.roles[0];
+            if (role === "ROLE_PROVIDER") {
+              navigate("/grant-management");
+              window.location.replace("/grant-management");
+            } else if (role === "ROLE_STUDENT") {
+              window.location.replace("/student-dashboard");
+            }
+          }
         } else if (validationResult === "mfa_required") {
           // MFA required - redirect to verification
           navigate("/mfa-verification");

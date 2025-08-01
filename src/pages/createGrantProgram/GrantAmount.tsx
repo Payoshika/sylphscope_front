@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import type { GrantProgram } from "../../types/grantProgram";
 import NumberInput from "../../components/inputComponents/NumberInput";
 import Button from "../../components/basicComponents/Button";
-import TitleAndHeadLine from "./TitleAndHeadLine";
+import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import Select from "../../components/inputComponents/Select";
+import { useNavigate } from "react-router-dom";
 
 interface GrantAmountProps {
   grantProgram: GrantProgram;
@@ -35,6 +36,7 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleFixedTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFixedType(e.target.value);
@@ -72,6 +74,7 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
       const response = await onUpdateGrant(grantProgram.id, updated);
       onGrantProgramChange(response.data);
       setSubmitSuccess("Grant amount saved.");
+      navigate("../description");
     } catch (err) {
       setSubmitError("Failed to save grant amount.");
     } finally {

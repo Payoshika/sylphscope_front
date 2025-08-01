@@ -3,7 +3,7 @@ import Textarea from "../../components/inputComponents/Textarea";
 import Button from "../../components/basicComponents/Button";
 import type { GrantProgram } from "../../types/grantProgram";
 import { useNavigate } from "react-router-dom";
-import TitleAndHeadLine from "./TitleAndHeadLine";
+import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 
 interface GrantDescriptionProps {
   id: string;
@@ -42,7 +42,7 @@ const GrantDescription: React.FC<GrantDescriptionProps> = ({
     setSubmitSuccess(null);
     try {
       if (grantProgram.id && grantProgram.id !== "") {
-        response = await onUpdateGrant(grantProgram.id, grantProgram);
+        const response = await onUpdateGrant(grantProgram.id, grantProgram);
         onGrantProgramChange({ ...grantProgram, ...response.data });
         setSubmitSuccess("Grant description updated successfully.");
         navigate("../eligibility");
@@ -74,6 +74,7 @@ const GrantDescription: React.FC<GrantDescriptionProps> = ({
       <Button
         text={isSubmitting ? "Saving..." : "Save Description"}
         disabled={isSubmitting || !grantProgram.description}
+        type="submit"
       />
       {submitError && <div className="error-message">{submitError}</div>}
       {submitSuccess && <div className="success-message">{submitSuccess}</div>}
