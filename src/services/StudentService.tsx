@@ -10,6 +10,14 @@ export const getStudentByUserId = async (userId: string): Promise<Student> => {
     return response.data;
 };
 
+export const getStudentById = async (studentId: string): Promise<Student> => {
+    const response = await apiClient.get<Student>(`/api/students/${studentId}`);
+    if (!response.data) {
+        throw new Error("Student not found");
+    }
+    return response.data;
+};
+
 export const updateStudentByStudentId = async (studentId: string, student: Student): Promise<Student> => {
     console.log("updating student")
     console.log(student);

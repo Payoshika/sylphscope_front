@@ -378,6 +378,54 @@
   padding-bottom: 6rem;
 }
 
+@mixin PaddingTop1rem {
+  padding-top: 1rem;
+}
+@mixin PaddingTop2rem {
+  padding-top: 2rem;
+}
+
+@mixin PaddingTop3rem {
+  padding-top: 3rem;
+}
+
+@mixin PaddingTop4rem {
+  padding-top: 4rem;
+}
+
+@mixin PaddingTop5rem {
+  padding-top: 5rem;
+}
+
+@mixin PaddingTop6rem {
+  padding-top: 6rem;
+}
+
+@mixin PaddingBottom1rem {
+  padding-bottom: 1rem;
+}
+
+@mixin PaddingBottom2rem {
+  padding-bottom: 2rem;
+}
+
+@mixin PaddingBottom3rem {
+  padding-bottom: 3rem;
+}
+
+@mixin PaddingBottom4rem {
+  padding-bottom: 4rem;
+}
+
+@mixin PaddingBottom5rem {
+  padding-bottom: 5rem;
+}
+
+@mixin PaddingBottom6rem {
+  padding-bottom: 6rem;
+}
+
+
 @mixin Gap0_5rem {
   gap: 0.5rem;
 }

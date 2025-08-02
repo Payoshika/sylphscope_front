@@ -1,5 +1,5 @@
 import { apiClient } from "../utility/ApiClient";
-import type { ApplicationDto, GrantProgramApplicationDto, StudentAnswerDto, EligibilityCriteriaWithQuestionDto } from "../types/application";
+import type { ApplicationDto, GrantProgramApplicationDto, StudentAnswerDto, EligibilityCriteriaWithQuestionDto, EvaluationOfAnswerDto } from "../types/application";
 
 
 export const getApplicationsByGrantProgramId = async (
@@ -10,6 +10,20 @@ export const getApplicationsByGrantProgramId = async (
   );
   if (!response.data) {
     throw new Error("Failed to fetch applications by grant program ID");
+  }
+  console.log("applications for grant program");
+  console.log(response.data);
+  return response.data;
+};
+
+export const getApplicationById = async (
+  applicationId: string
+): Promise<ApplicationDto> => {
+  const response = await apiClient.get<ApplicationDto>(
+    `/api/applications/${applicationId}`
+  );
+  if (!response.data) {
+    throw new Error("Failed to fetch application by ID");
   }
   return response.data;
 };
@@ -103,5 +117,46 @@ export const updateAnswers = async (
   if (!response.data) {
     throw new Error("Failed to update answers");
   }
+  return response.data;
+};
+
+export const getEvaluationOfAnswerDtoForApplicationAndEvaluatorId = async (
+  applicationId: string,
+  evaluatorId: string
+): Promise<EvaluationOfAnswerDto[]> => {
+  const response = await apiClient.get<EvaluationOfAnswerDto[]>(
+    `/api/evaluation-of-answers/application/${applicationId}/evaluator/${evaluatorId}`
+  );
+  if (!response.data) {
+    throw new Error("Failed to fetch evaluations by application ID and evaluator ID");
+  }
+  console.log("Evaluations for application", applicationId, "and evaluator", evaluatorId, ":", response.data);
+  return response.data;
+};
+
+export const updateEvaluations = async (
+  evaluationDtos: EvaluationOfAnswerDto[]
+): Promise<EvaluationOfAnswerDto[]> => {
+  const response = await apiClient.put<EvaluationOfAnswerDto[]>(
+    `/api/evaluation-of-answers/batch`,
+    evaluationDtos
+  );
+  if (!response.data) {
+    throw new Error("Failed to update evaluations");
+  }
+  console.log("Updated", response.data.length, "evaluations");
+  return response.data;
+};
+
+export const getEvaluationsByGrantProgramId = async (
+  grantProgramId: string
+): Promise<EvaluationOfAnswerDto[]> => {
+  const response = await apiClient.get<EvaluationOfAnswerDto[]>(
+    `/api/evaluation-of-answers/grant-program/${grantProgramId}`
+  );
+  if (!response.data) {
+    throw new Error("Failed to fetch evaluations by grant program ID");
+  }
+  console.log("Evaluations for grant program", grantProgramId, ":", response.data);
   return response.data;
 };

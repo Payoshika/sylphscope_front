@@ -3,32 +3,29 @@ import type { GrantProgramApplicationDto } from "../../types/application";
 import type { Provider } from "../../types/provider";
 import {Sorting05Icon, Sorting01Icon, Sorting02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import InputText from "../inputComponents/TextInput";
 
 interface ApplicationListTableProps {
   applications: GrantProgramApplicationDto[];
   provider: Provider;
   onViewDetail?: (applicationId: string) => void;
-  onSearch?: (query: string) => void;
   onSort?: (headerKey: string, direction: 'asc' | 'desc') => void;
   headers: { label: string; key: string }[];
+  markingScores?: Record<string, number>;
+  applicantNames?: Record<string, string>;
+  appliedDates?: Record<string, string>;
 }
 
 const ApplicationListTable: React.FC<ApplicationListTableProps> = ({ 
   applications, 
   provider, 
   onViewDetail, 
-  onSearch, 
   onSort,
-  headers 
+  headers,
+  markingScores = {},
+  applicantNames = {},
+  appliedDates = {}
 }) => {
-  const [search, setSearch] = useState("");
   const [sortState, setSortState] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-    onSearch?.(e.target.value);
-  };
 
   const handleSort = (key: string) => {
     let direction: 'asc' | 'desc' = 'asc';
@@ -39,19 +36,12 @@ const ApplicationListTable: React.FC<ApplicationListTableProps> = ({
     onSort?.(key, direction);
   };
 
+  for(const app of applications) {
+    console.log(app.application);
+  }
+
   return (
     <div className="grantlist-outer">
-      <div className="grantlist-search-row">
-        <InputText
-          id="application-search"
-          name="application-search"
-          label=""
-          value={search}
-          onChange={handleSearchChange}
-          placeholder="Search applications by grant name"
-          size="large"
-        />
-      </div>
       <div className="grantlist-header-row">
         {headers.map((header) => (
           <div className="grantlist-header-cell" key={header.key}>
@@ -76,20 +66,16 @@ const ApplicationListTable: React.FC<ApplicationListTableProps> = ({
           onKeyDown={e => { if (e.key === 'Enter') onViewDetail?.(app.application.id); }}
         >
           <div className="grantlist-grid-cell grantlist-value-cell">
-            <span>{app.grantProgram.title}</span>
+            <span>{applicantNames[app.application.id] || `Student ${app.application.studentId}`}</span>
           </div>
           <div className="grantlist-grid-cell grantlist-value-cell">
-            <span>{new Date(app.application.submittedAt).toLocaleDateString('en-GB', {
-              year: 'numeric',
-              month: 'short',
-              day: 'numeric'
-            })}</span>
+            <span>{appliedDates[app.application.id] || "N/A"}</span>
           </div>
           <div className="grantlist-grid-cell grantlist-value-cell">
-            <span>{app.application.status.charAt(0).toUpperCase() + app.application.status.slice(1)}</span>
+            <span>{app.application.eligibilityResult?.eligible ? "Eligible" : "Not Eligible"}</span>
           </div>
           <div className="grantlist-grid-cell grantlist-value-cell">
-            <span>{app.application.eligibilityResult.isEligible ? "Eligible" : "Not Eligible"}</span>
+            <span>{markingScores[app.application.id] ? markingScores[app.application.id].toFixed(2) : "Not Marked"}</span>
           </div>
           <div className="grantlist-grid-cell grantlist-value-cell">
             <span>View Details</span>

@@ -74,7 +74,7 @@ const AppliedGrantList: React.FC = () => {
             studentId: student.id,
             applicationId: '',
             grantProgramId: grant.id,
-            isEligible: true,
+            eligible: true,
             evaluatedAt: grant.createdAt,
             updatedAt: grant.updatedAt,
             failedCriteria: [],
