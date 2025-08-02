@@ -54,7 +54,7 @@ const Eligibility: React.FC<EligibilityProps> = ({
           // For question group, eligible if all conditions are met
           if (item.questionGroup && item.eligibilityCriteria?.questionConditions) {
             isEligible = item.questionGroup.questions.every((q: any) => {
-              const cond = item.eligibilityCriteria.questionConditions.find(
+              const cond = item.eligibilityCriteria?.questionConditions?.find(
                 (c: any) => c.questionId === q.question.id
               );
               if (!item.questionGroup) return true;
@@ -96,21 +96,52 @@ const Eligibility: React.FC<EligibilityProps> = ({
               )}
               {item.questionGroup && (
                 <div>
-                  {item.questionGroup.questions.map((q: any) => (
-                    <div key={q.question.id}>
-                      {renderInput(
-                        q.question,
-                        q.options,
+                  {item.questionGroup.questions.map((q: any) => {
+                    // Find the specific condition for this question
+                    const questionCondition = item.eligibilityCriteria?.questionConditions?.find(
+                      (c: any) => c.questionId === q.question.id
+                    );
+                    
+                    // Determine eligibility for this specific question
+                    let questionIsEligible = true;
+                    if (questionCondition) {
+                      questionIsEligible = doesAnswerMeetCriteria(
                         answers?.[item.questionGroup?.id ?? ""]?.[q.question.id],
-                        (id, value) => handleAnswerChange(id, value, item.questionGroup?.id)
-                      )}
-                    </div>
-                  ))}
-                  {/* Render criteria info for group */}
+                        questionCondition.comparisonOperator,
+                        questionCondition.values
+                      );
+                    }
+
+                    return (
+                      <div key={q.question.id}>
+                        {renderInput(
+                          q.question,
+                          q.options,
+                          answers?.[item.questionGroup?.id ?? ""]?.[q.question.id],
+                          (id, value) => handleAnswerChange(id, value, item.questionGroup?.id)
+                        )}
+                        {/* Render criteria info for each question in the group */}
+                        {questionCondition && (
+                          <div className="criteria-info">
+                            <p className={`eligibility-message-${questionIsEligible ? "eligible" : "ineligible"}`}>
+                              {questionIsEligible ? "Eligible" : "Ineligible"}
+                            </p>
+                            <p>
+                              criteria: your answer should {questionCondition.comparisonOperator}{" "}
+                              {JSON.stringify(questionCondition.values)}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                  {/* Overall group eligibility message */}
                   {item.eligibilityCriteria?.questionConditions && (
                     <div className="criteria-info">
-                      <p className={`eligibility-message-${isEligible ? "eligible" : "ineligible"}`}>{isEligible ? "Eligible" : "Ineligible"}</p>
-                      <p>criteria: all group conditions must be met</p>
+                      <p className={`eligibility-message-${isEligible ? "eligible" : "ineligible"}`}>
+                        Overall: {isEligible ? "Eligible" : "Ineligible"}
+                      </p>
+                      <p>All group conditions must be met for overall eligibility</p>
                     </div>
                   )}
                 </div>

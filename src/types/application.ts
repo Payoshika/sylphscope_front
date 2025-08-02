@@ -1,4 +1,4 @@
-import type { GrantProgram } from "./grantProgram";
+import type { GrantProgram, EvaluationScale } from "./grantProgram";
 import type { EligibilityCriteriaDTO } from "../data/questionEligibilityInfoDto";
 import type { QuestionEligibilityInfoDto, QuestionGroupEligibilityInfoDto } from "../data/questionEligibilityInfoDto";
 
@@ -31,7 +31,7 @@ export interface EligibilityResultDto {
   studentId: string;
   applicationId: string;
   grantProgramId: string;
-  isEligible: boolean;
+  eligible: boolean;
   evaluatedAt: string; // ISO string
   updatedAt: string;   // ISO string
   failedCriteria: string[];
@@ -59,3 +59,18 @@ export interface EligibilityCriteriaWithQuestionDto {
   question: QuestionEligibilityInfoDto | null;
   questionGroup: QuestionGroupEligibilityInfoDto | null;
 }
+
+export interface EvaluationOfAnswerDto {
+  id: string;
+  studentAnswerId: string;
+  applicationId: string;
+  grantProgramId: string;
+  evaluatorId: string; // providerStaffId
+  questionId: string;
+  questionGroupId: string;
+  value: number;
+  evaluationScale: EvaluationScale;
+  createdAt: string; // ISO string
+  updatedAt: string; // ISO string
+}
+

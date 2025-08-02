@@ -4,6 +4,7 @@ import ListGrants from "./ListGrants";
 import Message from "./Message";
 import CreateGrant from "./CreateGrant";
 import ReviewApplication from "./ReviewApplication";
+import ReviewStudentAnswer from "./ReviewStudentAnswer";
 import StaffProfile from "./StaffProfile";
 import { useOutletContext } from "react-router-dom";
 import type { Provider } from "../../types/provider";
@@ -84,7 +85,11 @@ const GrantManagement = () => {
           />
           <Route
             path="review"
-            element={<ReviewApplication provider={provider} />}
+            element={<ReviewApplication provider={provider} grantPrograms={grantPrograms} />}
+          />
+          <Route
+            path="review-student-answer/:applicationId/"
+            element={<ReviewStudentAnswer/>}
           />
           <Route
             path="staff-profile"
