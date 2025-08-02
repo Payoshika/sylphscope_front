@@ -1,6 +1,32 @@
 import { apiClient } from "../utility/ApiClient";
 import type { ApplicationDto, GrantProgramApplicationDto, StudentAnswerDto, EligibilityCriteriaWithQuestionDto } from "../types/application";
 
+
+export const getApplicationsByGrantProgramId = async (
+  grantProgramId: string
+): Promise<ApplicationDto[]> => {
+  const response = await apiClient.get<ApplicationDto[]>(
+    `/api/applications/grant-program/${grantProgramId}`
+  );
+  if (!response.data) {
+    throw new Error("Failed to fetch applications by grant program ID");
+  }
+  return response.data;
+};
+
+export const getApplicationCountByGrantProgramId = async (
+  grantProgramId: string
+): Promise<number> => {
+  const response = await apiClient.get<number>(
+    `/api/applications/grant-program/${grantProgramId}/application-count`
+  );
+  if (typeof response.data !== 'number') {
+    throw new Error("Failed to fetch application count by grant program ID");
+  }
+  return response.data;
+};
+
+
 export const createApplicationByStudentAndGrantProgramId = async (
   studentId: string,
   grantProgramId: string

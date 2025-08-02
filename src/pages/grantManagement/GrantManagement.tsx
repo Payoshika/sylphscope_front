@@ -84,7 +84,7 @@ const GrantManagement = () => {
           />
           <Route
             path="review"
-            element={<ReviewApplication provider={provider} />}
+            element={<ReviewApplication provider={provider} grantPrograms={grantPrograms} />}
           />
           <Route
             path="staff-profile"

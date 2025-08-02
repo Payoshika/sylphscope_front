@@ -13,6 +13,7 @@ interface GrantListTableProps {
   onSort?: (key: string, direction: 'asc' | 'desc') => void;
   onViewDetail?: (grantId: string) => void;
   headers?: Array<{ label: string; key: string }>;
+  getActionText?: (grant: any) => string;
 }
 
 const DEFAULT_HEADERS = [
@@ -31,7 +32,8 @@ const GrantListTable: React.FC<GrantListTableProps> = ({
   onSearch,
   onSort,
   onViewDetail,
-  headers = DEFAULT_HEADERS
+  headers = DEFAULT_HEADERS,
+  getActionText
 }) => {
   const [search, setSearch] = useState('');
   const [sortState, setSortState] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
@@ -110,24 +112,44 @@ const GrantListTable: React.FC<GrantListTableProps> = ({
             onClick={() => onViewDetail?.(grant.id)}
             onKeyDown={e => { if (e.key === 'Enter') onViewDetail?.(grant.id); }}
           >
-            <div className="grantlist-grid-cell grantlist-value-cell">
-              <span>{grant.title}</span>
-            </div>
-            <div className="grantlist-grid-cell grantlist-value-cell">
-              <span>{provider?.organisationName || grant.providerId}</span>
-            </div>
-            <div className="grantlist-grid-cell grantlist-value-cell">
-              <span>{grant.status}</span>
-            </div>
-            <div className="grantlist-grid-cell grantlist-value-cell">
-              <span>{getNextSchedule?.(grant)}</span>
-            </div>
-            <div className="grantlist-grid-cell grantlist-value-cell">
-              <span>
-                {grant.award && grant.award.length > 0 ? grant.award.join(" - ") : "-"}
-                {grant.numOfAward ? ` / ${grant.numOfAward}` : ""}
-              </span>
-            </div>
+            {headers.map((header) => {
+              let cellContent = "";
+              
+              switch (header.key) {
+                case "title":
+                  cellContent = grant.title;
+                  break;
+                case "organisation":
+                  cellContent = provider?.organisationName || grant.providerId;
+                  break;
+                case "status":
+                  cellContent = grant.status;
+                  break;
+                case "schedule":
+                  cellContent = getNextSchedule?.(grant) || "-";
+                  break;
+                case "amount":
+                  cellContent = grant.award && grant.award.length > 0 ? grant.award.join(" - ") : "-";
+                  if (grant.numOfAward) {
+                    cellContent += ` / ${grant.numOfAward}`;
+                  }
+                  break;
+                case "applicants":
+                  cellContent = (grant.numOfAward ? grant.numOfAward : "-") + " / " + (grant.applicationCount?.toString() || "0");
+                  break;
+                case "actions":
+                  cellContent = getActionText?.(grant) || "View Detail";
+                  break;
+                default:
+                  cellContent = grant[header.key as keyof typeof grant]?.toString() || "-";
+              }
+              
+              return (
+                <div className="grantlist-grid-cell grantlist-value-cell" key={header.key}>
+                  <span>{cellContent}</span>
+                </div>
+              );
+            })}
           </div>
         );
       })}

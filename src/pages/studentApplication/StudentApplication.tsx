@@ -14,7 +14,7 @@ import Questions from "./Questions";
 import type { Answer, StudentAnswerDto } from "../../types/application";
 
 const steps = [
-    {key: "organisation", label: "Organisation Info"},
+  {key: "organisation", label: "Organisation Info"},
   { key: "overview", label: "Grant Overview" },
   { key: "eligibility", label: "Eligibility Criteria" },
   { key: "questions", label: "Questions" },
