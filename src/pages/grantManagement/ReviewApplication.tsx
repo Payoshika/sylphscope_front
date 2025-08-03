@@ -4,7 +4,7 @@ import type { ApplicationDto, GrantProgramApplicationDto, EvaluationOfAnswerDto 
 import type { GrantProgram } from "../../types/grantProgram";
 import type { Student } from "../../types/student";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { getApplicationsByGrantProgramId, getEvaluationsByGrantProgramId } from "../../services/ApplicationService";
+import { getApplicationsByGrantProgramId, getEvaluationsByGrantProgramId, addReceiver, rejectReceiver } from "../../services/ApplicationService";
 import { getStudentById } from "../../services/StudentService";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import ApplicationListTable from "../../components/basicComponents/ApplicationListTable";
@@ -119,6 +119,34 @@ const ReviewApplication: React.FC<ReviewApplicationProps> = ({ provider, grantPr
 
   const handleViewApplication = (applicationId: string) => {
     navigate(`/grant-management/review-student-answer/${applicationId}`);
+  };
+
+  const handleSelect = async (applicationId: string) => {
+    try {
+      await addReceiver(applicationId);
+      alert("Applicant selected successfully!");
+      // Refresh the applications list to show updated status
+      if (selectedGrantProgramId) {
+        await fetchApplications(selectedGrantProgramId);
+      }
+    } catch (error) {
+      console.error("Failed to select applicant:", error);
+      alert("Failed to select applicant");
+    }
+  };
+
+  const handleReject = async (applicationId: string) => {
+    try {
+      await rejectReceiver(applicationId);
+      alert("Applicant rejected successfully!");
+      // Refresh the applications list to show updated status
+      if (selectedGrantProgramId) {
+        await fetchApplications(selectedGrantProgramId);
+      }
+    } catch (error) {
+      console.error("Failed to reject applicant:", error);
+      alert("Failed to reject applicant");
+    }
   };
 
   const getApplicationStatus = (application: ApplicationDto) => {
@@ -349,12 +377,14 @@ const ReviewApplication: React.FC<ReviewApplicationProps> = ({ provider, grantPr
           markingScores={markingScores}
           applicantNames={applicantNames}
           appliedDates={appliedDates}
+          onSelect={handleSelect}
+          onReject={handleReject}
           headers={[
             { label: "Applicant Name", key: "applicantName" },
             { label: "Applied Date", key: "appliedDate" },
             { label: "Eligibility", key: "eligibility" },
             { label: "Marking Score", key: "markingScore" },
-            { label: "Actions", key: "actions" },
+            { label: "Status", key: "status" },
           ]}
         />
       ) : (

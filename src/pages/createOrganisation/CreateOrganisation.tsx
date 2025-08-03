@@ -7,6 +7,7 @@ import type { Provider } from "../../types/provider";
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import { updateProvider } from "../../services/ProviderService";
+import OrganisationStaff from "./OrganisationStaff";
 
 const steps = [
   { key: "name", label: "Organisation Name" },
@@ -79,6 +80,16 @@ const handleUpdateProvider = async (organisation: Provider) => {
                 organisation={organisation}
                 onOrganisationChange={setOrganisation}
                 onUpdateProvider={handleUpdateProvider}
+              />
+            }
+          />
+          <Route
+            path="staff"
+            element={
+              <OrganisationStaff
+                provider={organisation}
+                onNext={() => handleStepChange("description")}
+                onBack={() => handleStepChange("name")}
               />
             }
           />

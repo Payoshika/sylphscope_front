@@ -160,3 +160,42 @@ export const getEvaluationsByGrantProgramId = async (
   console.log("Evaluations for grant program", grantProgramId, ":", response.data);
   return response.data;
 };
+
+export const addReceiver = async (
+  applicationId: string
+): Promise<ApplicationDto> => {
+  const response = await apiClient.put<ApplicationDto>(
+    `/api/applications/${applicationId}/select`
+  );
+  if (!response.data) {
+    throw new Error("Failed to select applicant");
+  }
+  console.log("Application", applicationId, "status updated to SELECTED");
+  return response.data;
+};
+
+export const rejectReceiver = async (
+  applicationId: string
+): Promise<ApplicationDto> => {
+  const response = await apiClient.put<ApplicationDto>(
+    `/api/applications/${applicationId}/reject`
+  );
+  if (!response.data) {
+    throw new Error("Failed to reject applicant");
+  }
+  console.log("Application", applicationId, "status updated to NOT_SELECTED");
+  return response.data;
+};
+
+export const applyGrant = async (
+  applicationId: string
+): Promise<ApplicationDto> => {
+  const response = await apiClient.put<ApplicationDto>(
+    `/api/applications/${applicationId}/apply-grant`
+  );
+  if (!response.data) {
+    throw new Error("Failed to apply for grant");
+  }
+  console.log("Application", applicationId, "status updated to APPLIED");
+  return response.data;
+};
