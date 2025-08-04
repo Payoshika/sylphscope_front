@@ -31,7 +31,7 @@ const ReviewStudentAnswer: React.FC = () => {
   const [evaluations, setEvaluations] = useState<EvaluationOfAnswerDto[]>([]);
   const [savingEvaluations, setSavingEvaluations] = useState(false);
   const [studentAnswerIdMapping, setStudentAnswerIdMapping] = useState<Record<string, string>>({});
-
+  console.log("grantProgram", grantProgram);
   useEffect(() => {
     if (applicationId) {
       fetchApplicationData();

@@ -7,6 +7,7 @@ import SelectionCriteria from "./SelectionCriteria";
 import GrantSchedule from "./GrantSchedule";
 import GrantAmount from "./GrantAmount";
 import AssignedStaff from "./AssignedStaff";
+import ProgramStatus from "./ProgramStatus";
 
 // Import other step components...
 import { useState, useEffect } from "react";
@@ -22,9 +23,10 @@ const steps = [
   { key: "amount", label: "Grant Amount" },
   { key: "schedule", label: "Schedule" },
   { key: "eligibility", label: "Eligibility" },
-  { key: "selection-criteria", label: "Selection Criteria" },
   { key: "questions", label: "Questions" },
+  { key: "selection-criteria", label: "Selection Criteria" },
   { key: "assigned-staff", label: "Assigned Staff" },
+  { key: "make-public", label: "Make Public" },
 ];
 
 const initialGrantProgram: GrantProgram = {
@@ -205,6 +207,10 @@ const CreateGrantProgram = () => {
         <Route
           path="assigned-staff"
           element={<AssignedStaff grantProgramId={grantProgram?.id || ""} grantProgram={grantProgram} onGrantProgramChange={setGrantProgram} />}
+        />
+        <Route
+          path="make-public"
+          element={<ProgramStatus grantProgram={grantProgram} onGrantProgramChange={setGrantProgram} />}
         />
         </Routes>
       </main>

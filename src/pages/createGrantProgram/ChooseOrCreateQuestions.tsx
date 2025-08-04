@@ -14,6 +14,8 @@ import QuestionForm from "./QuestionForm";
 import QuestionDisplay from "./QuestionDisplay";
 import { updateQuestion } from "../../services/GrantProgramService";
 import type { GrantProgram } from "../../types/grantProgram";
+import { GrantStatus } from "../../types/grantProgram";
+import { useNavigate } from "react-router-dom";
 
 interface ChooseOrCreateQuestionProps {
   grantProgram: GrantProgram;
@@ -43,6 +45,10 @@ const ChooseOrCreateQuestion: React.FC<ChooseOrCreateQuestionProps> = ({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [localQuestionIds, setLocalQuestionIds] = useState<string[]>(grantProgram.questionIds || []);
+  const navigate = useNavigate();
+
+  // Check if the program is in draft status
+  const isReadOnly = grantProgram.status !== GrantStatus.DRAFT;
 
   useEffect(() => {
     setLocalQuestionIds(grantProgram.questionIds || []);
@@ -52,6 +58,7 @@ const ChooseOrCreateQuestion: React.FC<ChooseOrCreateQuestionProps> = ({
   }, [grantProgram.questionIds, questions]);
 
   const handleChooseQuestion = (question: QuestionEligibilityInfoDto) => {
+    if (isReadOnly) return;
     if (!selectedQuestions.some(q => q.question.id === question.question.id)) {
       setSelectedQuestions(prev => [...prev, question]);
       setLocalQuestionIds(prev => [...prev, question.question.id as string]);
@@ -60,6 +67,7 @@ const ChooseOrCreateQuestion: React.FC<ChooseOrCreateQuestionProps> = ({
   };
 
   const handleChooseGroup = (group: QuestionGroupEligibilityInfoDto) => {
+    if (isReadOnly) return;
     setSelectedQuestions(prev => {
       const newQuestions = group.questions.filter(
         q => !prev.some(selected => selected.question.id === q.question.id)
@@ -70,6 +78,7 @@ const ChooseOrCreateQuestion: React.FC<ChooseOrCreateQuestionProps> = ({
   };
 
   const handleRemoveQuestion = (questionId: string) => {
+    if (isReadOnly) return;
     setSelectedQuestions(prev => prev.filter(q => q.question.id !== questionId));
     setLocalQuestionIds(prev => prev.filter(id => id !== questionId));
   };
@@ -81,6 +90,7 @@ const ChooseOrCreateQuestion: React.FC<ChooseOrCreateQuestionProps> = ({
     questionDataType: DataType;
     options?: Option[];
   }) => {
+    if (isReadOnly) return;
     const newQuestion: QuestionEligibilityInfoDto = {
       question: {
         id: Math.random().toString(36).slice(2),
@@ -99,6 +109,7 @@ const ChooseOrCreateQuestion: React.FC<ChooseOrCreateQuestionProps> = ({
   };
 
   const handleSubmitQuestions = async () => {
+    if (isReadOnly) return;
     event?.preventDefault?.();
     setIsSubmitting(true);
     setSubmitError(null);
@@ -108,6 +119,7 @@ const ChooseOrCreateQuestion: React.FC<ChooseOrCreateQuestionProps> = ({
       if (result) {
         await onUpdateGrant();
         setSubmitSuccess("Questions updated successfully.");
+        navigate("../selection-criteria");
       } else {
         throw new Error("Update failed");
       }
@@ -149,7 +161,7 @@ const ChooseOrCreateQuestion: React.FC<ChooseOrCreateQuestionProps> = ({
           text={question.question.name}
           onClick={() => handleChooseQuestion(question)}
           type="button"
-          disabled={isQuestionDisabled(question.question.id ?? "")}
+          disabled={isQuestionDisabled(question.question.id ?? "") || isReadOnly}
           variant={isQuestionDisabled(question.question.id ?? "") ? "primary" : "outline"}
         />
       ));
@@ -162,7 +174,7 @@ const ChooseOrCreateQuestion: React.FC<ChooseOrCreateQuestionProps> = ({
         text={group.name}
         onClick={() => handleChooseGroup(group)}
         type="button"
-        disabled={isGroupDisabled(group.id)}
+        disabled={isGroupDisabled(group.id) || isReadOnly}
         variant={isGroupDisabled(group.id) ? "primary" : "outline"}
       />
     ));
@@ -188,7 +200,14 @@ const ChooseOrCreateQuestion: React.FC<ChooseOrCreateQuestionProps> = ({
         headline="Create Questions for applying to your programme"
         provider={true}
       />
-      <div className="form-group eligibility-lists">
+      
+      {isReadOnly && (
+        <div className="read-only-notice">
+          <p>This grant program is currently in "{grantProgram.status}" status and cannot be modified.</p>
+        </div>
+      )}
+      
+      <div className={`form-group eligibility-lists ${isReadOnly ? 'form-group--readonly' : ''}`}>
         {renderQuestionButtons()}
         {renderGroupButtons()}
         <p className="info-text">
@@ -202,11 +221,12 @@ const ChooseOrCreateQuestion: React.FC<ChooseOrCreateQuestionProps> = ({
         text="Create Custom Question"
         type="button"
         onClick={() => setShowModal(true)}
+        disabled={isReadOnly}
       />
       <Button
         text={isSubmitting ? "Saving..." : "Save Questions"}
         type="button"
-        disabled={isSubmitting }
+        disabled={isSubmitting || isReadOnly}
         onClick={handleSubmitQuestions}
       />
       {submitError && <div className="error-message">{submitError}</div>}

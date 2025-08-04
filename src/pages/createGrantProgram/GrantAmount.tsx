@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import type { GrantProgram } from "../../types/grantProgram";
+import { GrantStatus } from "../../types/grantProgram";
 import NumberInput from "../../components/inputComponents/NumberInput";
 import Button from "../../components/basicComponents/Button";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
@@ -16,7 +17,6 @@ const fixedOptions = [
   { value: "fixed", label: "Fixed Amount" },
   { value: "range", label: "Range" },
 ];
-
 
 const GrantAmount: React.FC<GrantAmountProps> = ({
   grantProgram,
@@ -38,7 +38,11 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // Check if the program is in draft status
+  const isReadOnly = grantProgram.status !== GrantStatus.DRAFT;
+
   const handleFixedTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (isReadOnly) return;
     setFixedType(e.target.value);
     if (e.target.value === "fixed") {
       setMaxAmount(minAmount);
@@ -46,21 +50,26 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
   };
 
   const handleMinAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isReadOnly) return;
     const value = Number(e.target.value);
     setMinAmount(value);
     if (fixedType === "fixed") setMaxAmount(value);
   };
 
   const handleMaxAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isReadOnly) return;
     setMaxAmount(Number(e.target.value));
   };
 
   const handleNumOfAwardChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isReadOnly) return;
     setNumOfAward(Number(e.target.value));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isReadOnly) return;
+    
     setIsSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(null);
@@ -74,7 +83,7 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
       const response = await onUpdateGrant(grantProgram.id, updated);
       onGrantProgramChange(response.data);
       setSubmitSuccess("Grant amount saved.");
-      navigate("../description");
+      navigate("../schedule");
     } catch (err) {
       setSubmitError("Failed to save grant amount.");
     } finally {
@@ -89,7 +98,14 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
         headline="Specify the grant amount and number of awards"
         provider={true}
       />
-      <form className="form-group" onSubmit={handleSubmit}>
+      
+      {isReadOnly && (
+        <div className="read-only-notice">
+          <p>This grant program is currently in "{grantProgram.status}" status and cannot be modified.</p>
+        </div>
+      )}
+      
+      <form className={`form-group ${isReadOnly ? 'form-group--readonly' : ''}`} onSubmit={handleSubmit}>
         <Select
           id="fixed-type"
           name="fixedType"
@@ -97,6 +113,7 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
           value={fixedType}
           onChange={handleFixedTypeChange}
           options={fixedOptions}
+          disabled={isReadOnly}
         />
         <NumberInput
           id="min-amount"
@@ -105,6 +122,7 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
           value={minAmount}
           onChange={handleMinAmountChange}
           min={0}
+          disabled={isSubmitting || isReadOnly}
         />
         {fixedType !== "fixed" && (
           <NumberInput
@@ -114,6 +132,7 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
             value={maxAmount}
             onChange={handleMaxAmountChange}
             min={minAmount}
+            disabled={isSubmitting || isReadOnly}
           />
         )}
         <NumberInput
@@ -123,10 +142,11 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
           value={numOfAward}
           onChange={handleNumOfAwardChange}
           min={1}
+          disabled={isSubmitting || isReadOnly}
         />
         <Button
           text={isSubmitting ? "Saving..." : "Save Grant Amount"}
-          disabled={isSubmitting}
+          disabled={isSubmitting || isReadOnly}
           type="submit"
         />
         {submitError && <div className="error-message">{submitError}</div>}

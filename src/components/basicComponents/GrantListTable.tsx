@@ -27,7 +27,6 @@ const DEFAULT_HEADERS = [
 const GrantListTable: React.FC<GrantListTableProps> = ({ 
   grants, 
   providers, 
-  onApply, 
   getNextSchedule, 
   onSearch,
   onSort,
@@ -82,7 +81,7 @@ const GrantListTable: React.FC<GrantListTableProps> = ({
         </div>
       </div>
       <div className="grantlist-header-row">
-        {headers.map((header, i) => (
+        {headers.map((header) => (
           <div className="grantlist-header-cell" key={header.key}>
             <span>{header.label}</span>
             <button 
@@ -102,7 +101,7 @@ const GrantListTable: React.FC<GrantListTableProps> = ({
           </div>
         ))}
       </div>
-      {grants.map((grant, rowIndex) => {
+      {grants.map((grant) => {
         const provider = providers[grant.providerId];
         return (
           <div 

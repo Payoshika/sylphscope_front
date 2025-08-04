@@ -23,15 +23,15 @@ const Questions: React.FC<QuestionsProps> = ({
   questionGroups, 
   application,
   answers, 
-  setAnswers, 
   handleAnswerChange, 
   handleSubmit, 
   isSubmitting, 
   submitError, 
   submitSuccess 
 }) => {
-  const isReadOnly = application?.status !== "draft";
-
+  const isReadOnly = application
+    ? application.status !== "draft"
+    : false;
   // Render individual questions
   const renderQuestions = () =>
     questions

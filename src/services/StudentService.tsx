@@ -52,6 +52,7 @@ export const createNewMessage = async (
         },
         messageContent: messageContent
     };
+    console.log("requestBody", requestBody);
 
     const response = await apiClient.post<Message>('/api/messages/create-with-content', requestBody);
     

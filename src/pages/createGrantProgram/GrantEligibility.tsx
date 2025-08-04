@@ -1,10 +1,11 @@
 import Button from "../../components/basicComponents/Button";
 import type { GrantProgram } from "../../types/grantProgram";
+import { GrantStatus } from "../../types/grantProgram";
 import { useNavigate } from "react-router-dom";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import { useState, useEffect} from "react";
 import { updateEligibilityCriteria, fetchEligibilityQuestions,fetchEligibilityQuestionGroups, getEligibilityCriteria, createQuestion } from "../../services/GrantProgramService";
-import type { ComparisonOperator, EligibilityGroupFormState,QuestionGroupEligibilityInfoDto,  QuestionEligibilityInfoDto, EligibilityCriteriaDTO, QuestionCondition, Option, InputType, DataType, Question } from "../../data/questionEligibilityInfoDto";
+import type { ComparisonOperator, EligibilityGroupFormState,QuestionGroupEligibilityInfoDto,  QuestionEligibilityInfoDto, EligibilityCriteriaDTO, QuestionCondition, Question } from "../../data/questionEligibilityInfoDto";
 import EligibilityGroupForm from "./EligibilityGroupForm";
 import EligibilityFormBuilder from "./EligibilityFormBuilder";
 import EligibilityForm from "./EligibilityForm";
@@ -34,29 +35,22 @@ type EligibilityFormState = {
 };
 
 const GrantEligibility: React.FC<GrantEligibilityProps> = ({
-  id,
-  name,
   grantProgram,
-  onUpdateGrant,
-  onGrantProgramChange,
   eligibilityQuestions, 
   setEligibilityQuestions,
   eligibilityQuestionGroups,
   setEligibilityQuestionGroups,
-  eligibilities,
   setEligibilities,
-  error = false,
-  required = true,
 }) => {
-  const [loadingQuestions, setLoadingQuestions] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [eligibilityForms, setEligibilityForms] = useState<EligibilityFormState[]>([]);
   const [eligibilityGroupForms, setEligibilityGroupForms] = useState<EligibilityGroupFormState[]>([]);
   const [showBuilderModal, setShowBuilderModal] = useState(false);
 
   const navigate = useNavigate();
+
+  // Check if the program is in draft status
+  const isReadOnly = grantProgram.status !== GrantStatus.DRAFT;
 
   useEffect(() => {
     fetchQuestions();
@@ -69,7 +63,6 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
   }, [eligibilityQuestions, eligibilityQuestionGroups]);
   
     const fetchQuestions = async () => {
-      setLoadingQuestions(true);
       try {
         const questions = await fetchEligibilityQuestions();
         setEligibilityQuestions(questions);
@@ -80,14 +73,12 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
       } catch (err) {
         console.error("Failed to fetch eligibility questions", err);
       } finally {
-        setLoadingQuestions(false);
       }
     };
 
     const fetchEligibility = async () => {
     try {
-        const grantProgramId = "686cf160f9b36c21721c30d8";
-        const eligibilityList = await getEligibilityCriteria(grantProgramId);
+        const eligibilityList = await getEligibilityCriteria(grantProgram.id);
         // You can set state here if you want to display the fetched criteria
         if (eligibilityList && Array.isArray(eligibilityList)) {
           setEligibilities(eligibilityList);
@@ -133,24 +124,22 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isReadOnly) return;
+    
     setIsSubmitting(true);
-    setSubmitError(null);
-    setSubmitSuccess(null);
       const criteriaList: EligibilityCriteriaDTO[] = [
     ...eligibilityForms.map(formState =>
-      convertToEligibilityCriteriaDTO(formState, grantProgram.id || "686cf160f9b36c21721c30d8")
+      convertToEligibilityCriteriaDTO(formState, grantProgram.id)
     ),
-    ...convertGroupFormsToCriteriaDTO(eligibilityGroupForms, grantProgram.id || "686cf160f9b36c21721c30d8")
+    ...convertGroupFormsToCriteriaDTO(eligibilityGroupForms, grantProgram.id)
   ];
     try {
-      await updateEligibilityCriteria(criteriaList, grantProgram.id || "686cf160f9b36c21721c30d8");
+      await updateEligibilityCriteria(criteriaList, grantProgram.id);
       setEligibilities(criteriaList);
-      setSubmitSuccess("Eligibility criteria updated successfully.");
       setEligibilityForms([]);
-      navigate(0);
+      navigate("../questions");
     } catch (error) {
       console.error("Failed to update eligibility criteria", error);
-      setSubmitError("Failed to update eligibility criteria");
     } finally {
       setIsSubmitting(false);
     }
@@ -158,6 +147,7 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
 
 
 const createEligibility = (data: QuestionEligibilityInfoDto) => {
+  if (isReadOnly) return;
   setEligibilityForms((prev) => [
     ...prev,
     {
@@ -169,6 +159,7 @@ const createEligibility = (data: QuestionEligibilityInfoDto) => {
 };
 
 const createEligibilityGroup = (group: QuestionGroupEligibilityInfoDto) => {
+  if (isReadOnly) return;
   setEligibilityGroupForms((prev) => [
     ...prev,
     {
@@ -189,6 +180,7 @@ const createEligibilityGroup = (group: QuestionGroupEligibilityInfoDto) => {
 };
 
 const updateEligibilityGroupForm = (updatedGroup: EligibilityGroupFormState) => {
+  if (isReadOnly) return;
   setEligibilityGroupForms(prev =>
     prev.map(group =>
       group.groupId === updatedGroup.groupId ? updatedGroup : group
@@ -198,6 +190,7 @@ const updateEligibilityGroupForm = (updatedGroup: EligibilityGroupFormState) => 
 };
 
 const duplicateEligibilityGroupForm = (groupId: string) => {
+  if (isReadOnly) return;
   setEligibilityGroupForms(prev => {
     const groupToDuplicate = prev.find(g => g.groupId === groupId);
     if (!groupToDuplicate) return prev;
@@ -223,6 +216,7 @@ const duplicateEligibilityGroupForm = (groupId: string) => {
 };
 
 const removeEligibilityForm = (index: number) => {
+  if (isReadOnly) return;
   setEligibilityForms((prev) => prev.filter((_, i) => i !== index));
 };
 
@@ -287,7 +281,14 @@ function convertToEligibilityFormState(
   return (
     <div className="content">
       <TitleAndHeadLine title="Create Eligibility Criteria" headline="Create Eligibility Criteria for the grant" provider={true} />
-    <form className="form-group eligibility-lists">
+      
+      {isReadOnly && (
+        <div className="read-only-notice">
+          <p>This grant program is currently in "{grantProgram.status}" status and cannot be modified.</p>
+        </div>
+      )}
+      
+    <form className={`form-group eligibility-lists ${isReadOnly ? 'form-group--readonly' : ''}`}>
     {eligibilityQuestions.map((eachData) => {
         const alreadyAdded = eligibilityForms.some(
         (form) => form.form.question.id === eachData.question.id
@@ -298,7 +299,7 @@ function convertToEligibilityFormState(
             text={eachData.question.name}
             onClick={() => createEligibility(eachData)}
             type="button"
-            disabled={alreadyAdded}
+            disabled={alreadyAdded || isReadOnly}
             variant={alreadyAdded ? "primary" : "outline"}
         />
         );
@@ -314,7 +315,7 @@ function convertToEligibilityFormState(
         text={group.name}
         onClick={() => createEligibilityGroup(group)}
         type="button"
-        disabled={alreadyAdded}
+        disabled={alreadyAdded || isReadOnly}
         variant={alreadyAdded ? "primary" : "outline"}
       />
     );
@@ -322,7 +323,7 @@ function convertToEligibilityFormState(
     </form>
     {eligibilityGroupForms.length > 0 && (
       <div className="eligibility-group-forms">
-        {eligibilityGroupForms.map((groupForm, idx) => (
+        {eligibilityGroupForms.map((groupForm) => (
           <EligibilityGroupForm
             key={groupForm.groupId}
             group={groupForm}
@@ -366,6 +367,7 @@ function convertToEligibilityFormState(
   text="Create Custom Condition"
   onClick={() => setShowBuilderModal(true)}
   type="button"
+  disabled={isReadOnly}
 />
 
 <Modal
@@ -378,7 +380,6 @@ function convertToEligibilityFormState(
     // Send question and options together
     const savedQuestion = await createQuestion(form.question as Question, form.options || []);
     if (!savedQuestion) {
-      setSubmitError("Failed to create question.");
       return;
     }
     const newQuestionEligibilityInfoDto: QuestionEligibilityInfoDto = {
@@ -401,7 +402,7 @@ function convertToEligibilityFormState(
 </Modal>
     <Button
         text={isSubmitting ? "Saving..." : "Save Eligibility"}
-        disabled={isSubmitting}
+        disabled={isSubmitting || isReadOnly}
         onClick={handleSubmit}
     />
     </div>

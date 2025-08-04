@@ -194,8 +194,20 @@ export const applyGrant = async (
     `/api/applications/${applicationId}/apply-grant`
   );
   if (!response.data) {
-    throw new Error("Failed to apply for grant");
+    throw new Error("Failed to apply grant");
   }
-  console.log("Application", applicationId, "status updated to APPLIED");
+  return response.data;
+};
+
+export const createEmptyApplication = async (
+  applicationDto: ApplicationDto
+): Promise<ApplicationDto> => {
+  const response = await apiClient.post<ApplicationDto>(
+    `/api/applications/empty`,
+    applicationDto
+  );
+  if (!response.data) {
+    throw new Error("Failed to create empty application");
+  }
   return response.data;
 };
