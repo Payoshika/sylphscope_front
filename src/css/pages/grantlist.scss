@@ -18,6 +18,7 @@
     @include RowJustifyStartFlexbox;
     @include Gap1rem;
     align-items: flex-end;
+    flex-wrap: nowrap;
 
     @include smartphone {
       flex-direction: column;

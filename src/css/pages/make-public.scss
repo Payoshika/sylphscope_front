@@ -1,0 +1,160 @@
+@use "../global/mixins" as *;
+@use "../global/base" as *;
+
+.make-public-section {
+  @include Padding2rem;
+  max-width: 800px;
+  margin: 0 auto;
+
+  .grant-summary {
+    @include MarginBottom2rem;
+
+    h3 {
+      @include MarginBottom1rem;
+      color: $text-color;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .summary-grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: 1fr;
+
+      @include smartphone {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .summary-item {
+        @include Padding1rem;
+        background-color: $background-color;
+        border: 1px solid $border-color;
+        border-radius: 0.5rem;
+
+        strong {
+          color: $text-color;
+          font-weight: 600;
+          margin-right: 0.5rem;
+        }
+
+        .status-badge {
+          @include PaddingX0_5rem;
+          padding-top: 0.25rem;
+          padding-bottom: 0.25rem;
+          border-radius: 0.25rem;
+          font-size: 0.875rem;
+          font-weight: 500;
+          text-transform: uppercase;
+
+          &.status-draft {
+            background-color: $warning-color;
+            color: white;
+          }
+
+          &.status-open {
+            background-color: $success-color;
+            color: white;
+          }
+
+          &.status-closed {
+            background-color: $error-color;
+            color: white;
+          }
+
+          &.status-archived {
+            background-color: $muted-color;
+            color: white;
+          }
+        }
+      }
+    }
+  }
+
+  .error-message {
+    @include MarginBottom1rem;
+    @include Padding1rem;
+    background-color: $error-color;
+    border-radius: 0.5rem;
+    color: white;
+    font-weight: 500;
+  }
+
+  .success-message {
+    @include MarginBottom1rem;
+    @include Padding1rem;
+    background-color: $success-color;
+    border-radius: 0.5rem;
+    color: white;
+    font-weight: 500;
+  }
+
+  .action-buttons {
+    @include RowJustifyStartFlexbox;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    .make-public-button {
+      background-color: $success-color;
+      color: white;
+      font-weight: 600;
+
+      &:hover:not(:disabled) {
+        background-color: color-mix(in srgb, $success-color 90%, black 10%);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+
+    .back-button {
+      color: $text-color;
+      border: 1px solid $border-color;
+
+      &:hover {
+        background-color: $background-color;
+      }
+    }
+
+    .status-notice {
+      @include Padding1rem;
+      background-color: $warning-color;
+      border-radius: 0.5rem;
+      color: white;
+      flex: 1;
+      min-width: 300px;
+
+      p {
+        margin-bottom: 0.5rem;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  @include smartphone {
+    @include Padding1rem;
+
+    .action-buttons {
+      flex-direction: column;
+
+      .make-public-button,
+      .back-button {
+        width: 100%;
+      }
+
+      .status-notice {
+        min-width: auto;
+      }
+    }
+  }
+
+  @include extrasmall {
+    .summary-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+} 

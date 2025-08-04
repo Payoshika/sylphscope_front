@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import type { Provider } from "../../types/provider";
 import type { GrantProgram } from "../../types/grantProgram";
-import { useNavigate, useOutletContext } from "react-router-dom";
-import { getGrantProgramsByProviderId } from "../../services/GrantProgramService";
+import { useNavigate } from "react-router-dom";
 import { getApplicationCountByGrantProgramId } from "../../services/ApplicationService";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import GrantListTable from "../../components/basicComponents/GrantListTable";
@@ -62,14 +61,11 @@ const ListGrants: React.FC<ListGrantsProps> = ({ provider, grantPrograms: initia
     navigate(`/create-grant/${grantId}`);
   };
 
-  const handleReviewApplicants = (grantId: string) => {
-    navigate(`/grant-management/mark-application/${grantId}`);
-  };
-
   const handleViewDetail = (grantId: string, status: string) => {
     // Check if the grant status allows for reviewing applicants
     if (status === 'OPEN' || status === 'IN_REVIEW' || status === 'CLOSED') {
-      handleReviewApplicants(grantId);
+      // handleReviewApplicants(grantId);
+      handleManageGrant(grantId);
     } else {
       handleManageGrant(grantId);
     }
@@ -166,11 +162,7 @@ const ListGrants: React.FC<ListGrantsProps> = ({ provider, grantPrograms: initia
             { label: "Applicants", key: "applicants" },
             { label: "Actions", key: "actions" },
           ]}
-          getActionText={(grant: GrantProgramWithApplicationCount) => {
-            const status = grant.status;
-            if (status === 'OPEN' || status === 'IN_REVIEW' || status === 'CLOSED') {
-              return "Review Applicants";
-            }
+          getActionText={() => {
             return "View Detail";
           }}
         />

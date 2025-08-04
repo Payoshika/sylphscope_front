@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { GrantProgram, EvaluationScale } from "../../types/grantProgram";
+import { GrantStatus } from "../../types/grantProgram";
 import type { QuestionEligibilityInfoDto } from "../../data/questionEligibilityInfoDto";
 import type { SelectionCriterion } from "../../types/grantProgram";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
@@ -9,7 +10,7 @@ import Select from "../../components/inputComponents/Select";
 import NumberInput from "../../components/inputComponents/NumberInput";
 import CrossSign from "../../components/icons/CrossSign";
 import TextInput from "../../components/inputComponents/TextInput";
-
+import { useNavigate } from "react-router-dom";
 interface SelectionCriteriaProps {
   grantProgram: GrantProgram;
   setGrantProgram: React.Dispatch<React.SetStateAction<GrantProgram>>;
@@ -32,7 +33,6 @@ const evaluationScaleOptions = [
 const SelectionCriteria: React.FC<SelectionCriteriaProps> = ({
   grantProgram,
   setGrantProgram,
-  onUpdateGrant,
   selectedQuestions,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,6 +45,10 @@ const SelectionCriteria: React.FC<SelectionCriteriaProps> = ({
   const [showCustomCriteriaInput, setShowCustomCriteriaInput] = useState(false);
   const [customCriteriaName, setCustomCriteriaName] = useState("");
   const [customCriteriaError, setCustomCriteriaError] = useState("");
+  const navigate = useNavigate();
+
+  // Check if the program is in draft status
+  const isReadOnly = grantProgram.status !== GrantStatus.DRAFT;
 
 
   useEffect(() => {
@@ -76,16 +80,18 @@ const SelectionCriteria: React.FC<SelectionCriteriaProps> = ({
   const disabledQuestionIds = selectedSelectionCriteria.map(c => c.questionId);
 
   const handleEvaluationTypeChange = (questionId: string, value: "MANUAL" | "AUTO") => {
-  setSelectedSelectionCriteria(prev =>
-    prev.map(c =>
-      c.questionId === questionId
-        ? { ...c, evaluationType: value }
-        : c
-    )
-  );
-};
+    if (isReadOnly) return;
+    setSelectedSelectionCriteria(prev =>
+      prev.map(c =>
+        c.questionId === questionId
+          ? { ...c, evaluationType: value }
+          : c
+      )
+    );
+  };
 
   const handleAddCustomCriterion = () => {
+    if (isReadOnly) return;
     if (!customCriteriaName.trim()) {
       setCustomCriteriaError("Please enter a name for the custom criterion.");
       return;
@@ -118,6 +124,7 @@ const SelectionCriteria: React.FC<SelectionCriteriaProps> = ({
 
   // Add criterion and show input for weight
   const handleAddSelectionCriterion = (question: QuestionEligibilityInfoDto) => {
+    if (isReadOnly) return;
     if (
       disabledQuestionIds.includes(question.question.id) ||
       selectedSelectionCriteria.some(c => c.questionId === question.question.id)
@@ -148,11 +155,13 @@ const SelectionCriteria: React.FC<SelectionCriteriaProps> = ({
 
   // Remove criterion
   const handleRemoveSelectionCriterion = (questionId: string) => {
+    if (isReadOnly) return;
     setSelectedSelectionCriteria(prev => prev.filter(c => c.questionId !== questionId));
   };
 
   // Handle weight change directly in selectedSelectionCriteria
   const handleWeightChange = (questionId: string, value: number) => {
+    if (isReadOnly) return;
     setSelectedSelectionCriteria(prev => {
       const updated = prev.map(criterion => 
         criterion.questionId === questionId 
@@ -178,7 +187,7 @@ const renderSelectedQuestionButtons = () => (
           <Button
             text={question.question.name}
             type="button"
-            disabled={isDisabled}
+            disabled={isDisabled || isReadOnly}
             variant={isDisabled ? "primary" : "outline"}
             // className="selection-criteria__btn"
             onClick={() => handleAddSelectionCriterion(question)}
@@ -245,7 +254,7 @@ const renderSelectedCriteriaInputs = () =>
         min={0}
         max={100}
         suffix="%"
-        disabled={false}
+        disabled={isReadOnly}
         // className="selection-criteria__input"
       />
       <Select
@@ -257,6 +266,7 @@ const renderSelectedCriteriaInputs = () =>
         className="selection-criteria__evaluation-type"
         label="Evaluation Type"
         required
+        disabled={isReadOnly}
       />
       <button
         type="button"
@@ -270,6 +280,7 @@ const renderSelectedCriteriaInputs = () =>
   ));
 
 const handleSaveSelectionCriteria = async () => {
+  if (isReadOnly) return;
   if (totalWeight !== 100) {
     setSubmitError("Total weight must be exactly 100%");
     setSubmitSuccess(null);
@@ -279,11 +290,10 @@ const handleSaveSelectionCriteria = async () => {
   setSubmitError(null);
   setSubmitSuccess(null);
   try {
-    console.log("sending", grantProgram.id, selectedSelectionCriteria);
     const response = await updateSelectionCriteria(grantProgram.id, selectedSelectionCriteria);
-    console.log("response is ", response)
     if (response?.data) {
       setGrantProgram((prev) => ({ ...prev, selectionCriteria: response.data as SelectionCriterion[] }));
+      navigate("../assigned-staff");
     }
     console.log("current Grant program is ", grantProgram);
     setSubmitSuccess("Selection criteria saved.");
@@ -301,7 +311,14 @@ const handleSaveSelectionCriteria = async () => {
           headline="Create Custom Selection Criteria for your programme"
           provider={true}
         />
-        <div className="form-group">
+        
+        {isReadOnly && (
+          <div className="read-only-notice">
+            <p>This grant program is currently in "{grantProgram.status}" status and cannot be modified.</p>
+          </div>
+        )}
+        
+        <div className={`form-group ${isReadOnly ? 'form-group--readonly' : ''}`}>
           <Select
             id="evaluation-scale"
             name="evaluationScale"
@@ -312,10 +329,10 @@ const handleSaveSelectionCriteria = async () => {
             required
           />
         </div>
-        <div className="form-group eligibility-lists">
+        <div className={`form-group eligibility-lists ${isReadOnly ? 'form-group--readonly' : ''}`}>
           {renderSelectedQuestionButtons()}
         </div>
-        <div className="form-group eligibility-forms">
+        <div className={`form-group eligibility-forms ${isReadOnly ? 'form-group--readonly' : ''}`}>
           {renderSelectedCriteriaInputs()}
           <div className="selection-criteria__total">
             Total: {totalWeight}%
@@ -324,7 +341,7 @@ const handleSaveSelectionCriteria = async () => {
         <Button
           text={isSubmitting ? "Saving..." : "Save Selection Criteria"}
           type="button"
-          disabled={isSubmitting || totalWeight !== 100 || selectedSelectionCriteria.length === 0}
+          disabled={isSubmitting || totalWeight !== 100 || selectedSelectionCriteria.length === 0 || isReadOnly}
           onClick={handleSaveSelectionCriteria}
         />
         {submitError && <div className="error-message">{submitError}</div>}

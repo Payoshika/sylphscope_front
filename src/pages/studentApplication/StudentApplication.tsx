@@ -1,4 +1,4 @@
-import { useEffect, useState, type SetStateAction } from "react";
+import { useEffect, useState} from "react";
 import StudentApplicationNav from "./StudentApplicationNav";
 import GrantOverview from "./GrantOverview";
 import OrganisationInfo from "./OrganisationInfo";
@@ -6,7 +6,7 @@ import Eligibility from "./Eligibility";
 import Apply from "./Apply";
 import { useOutletContext, Routes, Route, useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
 import type { Student } from "../../types/student";
-import { getGrantProgramAndApplicationByStudentIdandGrantProgramId, getEligibilityCriteriaAndQuestionFromGrantProgramId, getAnswersByApplicationId, updateAnswers } from "../../services/ApplicationService";
+import { getGrantProgramAndApplicationByStudentIdandGrantProgramId, getEligibilityCriteriaAndQuestionFromGrantProgramId, getAnswersByApplicationId, updateAnswers, createEmptyApplication } from "../../services/ApplicationService";
 import type { ApplicationDto, GrantProgramApplicationDto, EligibilityCriteriaWithQuestionDto } from "../../types/application";
 import type { GrantProgram } from "../../types/grantProgram";
 import { getQuestionByGrantProgramId } from "../../services/GrantProgramService";
@@ -81,13 +81,45 @@ const StudentApplication = () => {
     setSubmitError(null);
     setSubmitSuccess(null);
 
+    let currentApplication = application;
+
+    // If application is null, create an empty application first
+    if (!currentApplication) {
+      try {
+        const emptyApplicationDto: ApplicationDto = {
+          id: "",
+          studentId: student?.id ?? "",
+          grantProgramId: grantProgramId ?? "",
+          status: "draft",
+          submittedAt: "",
+          updatedAt: "",
+          eligibilityResult: {
+            id: "",
+            studentId: student?.id ?? "",
+            applicationId: "",
+            grantProgramId: grantProgramId ?? "",
+            eligible: false,
+            evaluatedAt: "",
+            updatedAt: "",
+            failedCriteria: [],
+            passedCriteria: [],
+          },
+          studentAnswers: {},
+        };
+        currentApplication = await createEmptyApplication(emptyApplicationDto);
+        setApplication(currentApplication);
+      } catch (err) {
+        setSubmitError("Failed to create application.");
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
     const answerDtos: StudentAnswerDto[] = [];
     try {
       Object.entries(answers).forEach(([key, value]) => {
         console.log("key", key, "value", value);
         if (typeof value === "object" && !Array.isArray(value) && value.year == null) {
-          console.log("this is a question group");
-          // question group
           const groupAnswers: Answer[] = Object.entries(value).map(([questionId, answerValue]) => ({
             questionId,
             answer: [answerValue],
@@ -96,7 +128,7 @@ const StudentApplication = () => {
             id: key,
             studentId: student?.id ?? "",
             questionId: "",
-            applicationId: [application?.id ?? ""],
+            applicationId: [currentApplication?.id ?? ""],
             questionGroupId: key,
             answer: groupAnswers,
             questionText: "",
@@ -108,7 +140,7 @@ const StudentApplication = () => {
             id: key,
             studentId: student?.id ?? "",
             questionId: key,
-            applicationId: [application?.id ?? ""],
+            applicationId: [currentApplication?.id ?? ""],
             questionGroupId: "",
             answer: [{
               questionId: key,

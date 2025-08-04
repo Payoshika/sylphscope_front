@@ -10,7 +10,7 @@ import type { Student } from "../../types/student";
 
 const steps = [
     { key: "profile", label: "Basic Profile" },
-    { key: "further-info", label: "Further Information" },
+    // { key: "further-info", label: "Further Information" },
     { key: "list", label: "Available Grants" },
     { key: "applied", label: "Applied Grants" },
     { key: "messages", label: "Messages" },
@@ -18,7 +18,7 @@ const steps = [
 ];
 
 const StudentDashboard = () => {
-  const { student, setStudent, updateStudent } = useOutletContext<{
+  const { student, updateStudent } = useOutletContext<{
   student: Student;
   setStudent: (s: Student) => void;
   updateStudent: (s: Student) => Promise<Student>;

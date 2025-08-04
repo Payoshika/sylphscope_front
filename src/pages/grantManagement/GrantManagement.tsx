@@ -18,7 +18,7 @@ const steps = [
   { key: "list", label: "List Grants" },
   { key: "review", label: "Review Application" },
   { key: "messages", label: "Messages" },
-  { key: "staff-profile", label: "Staff Profile" },
+  { key: "staff-profile", label: "My Profile" },
 ];
 
 const GrantManagement = () => {

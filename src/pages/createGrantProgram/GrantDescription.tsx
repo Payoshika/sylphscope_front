@@ -45,7 +45,7 @@ const GrantDescription: React.FC<GrantDescriptionProps> = ({
         const response = await onUpdateGrant(grantProgram.id, grantProgram);
         onGrantProgramChange({ ...grantProgram, ...response.data });
         setSubmitSuccess("Grant description updated successfully.");
-        navigate("../eligibility");
+        navigate("../amount");
       } else {
         setSubmitError("Grant must be created before adding a description.");
       }

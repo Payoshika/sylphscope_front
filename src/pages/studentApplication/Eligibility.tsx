@@ -29,8 +29,12 @@ const Eligibility: React.FC<EligibilityProps> = ({
   submitError,
   submitSuccess,
 }) => {
-  const isReadOnly = application?.status !== "draft";
 
+  // Set isReadOnly: if application is null, false; if not null, only true if status is NOT "draft"
+  const isReadOnly = application
+    ? application.status !== "draft"
+    : false;
+  
   if (!eligibilityCriteriaWithQuestion || eligibilityCriteriaWithQuestion.length === 0) {
     return <div>No eligibility criteria found for this grant program.</div>;
   }

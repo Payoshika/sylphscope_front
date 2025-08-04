@@ -224,11 +224,22 @@ export const searchGrantProgramsByTitle = async (title: string): Promise<{ conte
 };
 
 export const searchAppliedGrantProgramByKeyword = async (studentId: string, keyword: string): Promise<GrantProgram[]> => {
-    const response = await apiClient.get<GrantProgram[]>(
-        `/api/grant-programs/student/${studentId}/applied/search?keyword=${encodeURIComponent(keyword)}`
-    );
-    if (!response.data) {
-        throw new Error("Failed to search applied grant programs");
-    }
-    return response.data;
+  const response = await apiClient.get<GrantProgram[]>(`/api/grant-programs/student/${studentId}/search?keyword=${keyword}`);
+  return response.data || [];
+};
+
+export const makeProgramPublic = async (grantProgramId: string): Promise<GrantProgram> => {
+  const response = await apiClient.put<GrantProgram>(`/api/grant-programs/${grantProgramId}/make-public`);
+  if (!response.data) {
+    throw new Error("Failed to make program public");
+  }
+  return response.data;
+};
+
+export const closeProgram = async (grantProgramId: string): Promise<GrantProgram> => {
+  const response = await apiClient.put<GrantProgram>(`/api/grant-programs/${grantProgramId}/close-program`);
+  if (!response.data) {
+    throw new Error("Failed to close program");
+  }
+  return response.data;
 };

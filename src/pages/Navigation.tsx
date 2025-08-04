@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import AuthService from "../services/AuthService";
 import FigorousLogo from "../components/icons/FigorousLogo";
@@ -8,7 +8,6 @@ import { Mail01Icon } from '@hugeicons/core-free-icons';
 import {DashboardSquare01Icon} from '@hugeicons/core-free-icons';
 import {Profile02Icon, UserSquareIcon, Logout02Icon} from '@hugeicons/core-free-icons';
 const Navigation: React.FC = () => {
-  const location = useLocation();
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
 
@@ -55,9 +54,9 @@ const Navigation: React.FC = () => {
                         <span className="nav-link-icon"><HugeiconsIcon icon={Profile02Icon} /></span>
                         <span className="nav-link-label">Organisation</span>
                       </Link>
-                    <Link to="/staff-profile" className="btn btn--small nav-link">
+                    <Link to="/grant-management/staff-profile" className="btn btn--small nav-link">
                         <span className="nav-link-icon"><HugeiconsIcon icon={UserSquareIcon} /></span>
-                        <span className="nav-link-label">Staff Profile</span>
+                        <span className="nav-link-label">My Profile</span>
                       </Link>
                   </>
                 )}

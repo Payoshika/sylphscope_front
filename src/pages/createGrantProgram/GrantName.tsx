@@ -54,7 +54,7 @@ const GrantName: React.FC<GrantNameProps> = ({
         setSubmitSuccess("Grant name is created successfully.");
         onGrantProgramChange({ ...grantProgram, ...response.data });
       }
-      navigate("../amount");
+      navigate("../description");
     } catch (err: any) {
         console.error(err);
         setSubmitError("Failed to save grant name. Please try again.");

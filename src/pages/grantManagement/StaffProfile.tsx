@@ -56,8 +56,8 @@ const StaffProfile: React.FC = () => {
   return (
     <div className="content">
       <TitleAndHeadLine
-        title="Staff Profile"
-        headline="Manage your staff information"
+        title="My Profile"
+        headline="Manage your profile information"
         provider={true}
       />
       
