@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import type { ProviderStaff, StaffRole } from "../../types/user";
+import { updateStaffProfile } from "../../services/ProviderService";
 import TextInput from "../../components/inputComponents/TextInput";
 import Button from "../../components/basicComponents/Button";
 import Select from "../../components/inputComponents/Select";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 
 const staffRoleOptions = [
-  { value: "manager", label: "Manager" },
-  { value: "administrator", label: "Administrator" },
-  { value: "assessor", label: "Assessor" },
-  { value: "volunteer", label: "Volunteer" },
+  { value: "Manager", label: "Manager" },
+  { value: "Administrator", label: "Administrator" },
+  { value: "Assessor", label: "Assessor" },
+  { value: "Volunteer", label: "Volunteer" },
 ];
 
 const StaffProfile: React.FC = () => {
@@ -18,7 +19,12 @@ const StaffProfile: React.FC = () => {
     providerStaff: ProviderStaff;
   }>();
 
+  console.log("providerStaff", providerStaff);
+
   const [staffForm, setStaffForm] = useState<ProviderStaff>(providerStaff);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
 
   // Handle staff input changes
   const handleStaffChange = (field: keyof ProviderStaff, value: any) => {
@@ -31,11 +37,20 @@ const StaffProfile: React.FC = () => {
   // Handle submit (update profile)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setSubmitSuccess(null);
     
-    // Here you would call your API to update staff profile
-    // const staffResponse = await updateProviderStaff(staffForm);
-    
-    alert("Staff profile updated!");
+    try {
+      const updatedStaff = await updateStaffProfile(staffForm);
+      setStaffForm(updatedStaff);
+      setSubmitSuccess("Staff profile updated successfully!");
+    } catch (error) {
+      console.error("Failed to update staff profile:", error);
+      setSubmitError("Failed to update staff profile. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -45,7 +60,20 @@ const StaffProfile: React.FC = () => {
         headline="Manage your staff information"
         provider={true}
       />
-      <form className="form-group" onSubmit={handleSubmit}>
+      
+      {submitError && (
+        <div className="error-message">
+          <p>{submitError}</p>
+        </div>
+      )}
+      
+      {submitSuccess && (
+        <div className="success-message">
+          <p>{submitSuccess}</p>
+        </div>
+      )}
+      
+      <form className="form-group staff-profile-form" onSubmit={handleSubmit}>
         <TextInput
           id="firstName"
           name="firstName"
@@ -78,7 +106,11 @@ const StaffProfile: React.FC = () => {
           options={staffRoleOptions}
           required
         />
-        <Button text="Save Profile" type="submit" />
+        <Button 
+          text={isSubmitting ? "Saving..." : "Save Profile"} 
+          type="submit" 
+          disabled={isSubmitting}
+        />
       </form>
     </div>
   );

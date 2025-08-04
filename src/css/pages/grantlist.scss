@@ -7,15 +7,16 @@
   @include Padding2rem;
   @include BoxShallowShadow;
   @include ColJustifyCenterFlexbox;
-  gap: 1rem;
+  @include Gap1rem;
 }
 
 .grantlist-search-row {
   width: 100%;
-  margin-bottom: 1rem;
+  @include MarginBottom1rem;
+  
   .search-container {
-    display: flex;
-    gap: 1rem;
+    @include RowJustifyStartFlexbox;
+    @include Gap1rem;
     align-items: flex-end;
 
     @include smartphone {
@@ -25,14 +26,13 @@
   }
 }
 
-.grantlist-header-row, .grantlist-grid-row{
+.grantlist-header-row,
+.grantlist-grid-row {
   width: 100%;
   display: grid;
   grid-template-columns: 22% 22% 14% 22% 14%;
-  gap: 1.2rem;
-
+  gap: 1.5rem;
 }
-
 
 .grantlist-header-cell {
   padding: 0.5rem 0.7rem;
@@ -44,31 +44,43 @@
   flex-wrap: nowrap;
 }
 
-  .grantlist-sort-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    &:hover {
-      opacity: 0.8;
-    }
+.grantlist-sort-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $text-color;
+  font-size: 1em;
+  transition: opacity 0.2s ease;
+  
+  &:hover {
+    opacity: 0.8;
   }
-
+  
+  .grantlist-icon {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
 
 .grantlist-grid-row {
-  padding: 1rem 0.5rem;
-  border-top: 1px solid var(--border-color);
+  @include PaddingY1rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  @include BorderBottom2pxSolid;
+  border-color: $border-color;
   transition: background-color 0.2s ease;
 
   &.grantlist-row-clickable {
     cursor: pointer;
 
     &:hover {
-      background-color: var(--hover-bg-color);
+      background-color: rgba($text-color, 0.05);
     }
   }
 }
@@ -81,32 +93,66 @@
   span {
     overflow: hidden;
     text-overflow: ellipsis;
-    // white-space: nowrap;
+  }
+}
+
+.actions-container {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  
+  .btn {
+    font-size: 1.2rem;
+    padding: 0.4rem 0.8rem;
+    min-width: auto;
+  }
+}
+
+.status-display {
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  
+  &.status-selected {
+    color: $success-color;
+    background-color: rgba($success-color, 0.1);
+  }
+  
+  &.status-rejected {
+    color: $error-color;
+    background-color: rgba($error-color, 0.1);
+  }
+  
+  &.status-draft {
+    color: $muted-color;
+    background-color: rgba($text-color, 0.05);
+  }
+  
+  &.status-applied {
+    color: $info-color;
+    background-color: rgba($info-color, 0.1);
+  }
+  
+  &.status-review {
+    color: $warning-color;
+    background-color: rgba($warning-color, 0.1);
+  }
+  
+  &.status-canceled {
+    color: $muted-color;
+    background-color: rgba($text-color, 0.05);
+  }
+  
+  &.status-default {
+    color: $text-color;
+    background-color: rgba($text-color, 0.05);
   }
 }
 
 .grantlist-contact-cell {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.grantlist-sort-btn {
-  background: none;
-  border: none;
-  padding: 0 0.2rem;
-  margin-left: 0.3rem;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  color: $text-color;
-  font-size: 1em;
-  .grantlist-icon {
-    width: 18px;
-    height: 18px;
-    display: inline-block;
-    vertical-align: middle;
-  }
+  @include RowJustifyCenterFlexbox;
 }
 
 .grantlist-contact-btn {
@@ -118,14 +164,16 @@
   display: flex;
   align-items: center;
   transition: background 0.15s;
+  
   .grantlist-icon {
     width: 18px;
     height: 18px;
     display: inline-block;
     vertical-align: middle;
   }
+  
   &:hover {
-    background: #e0e0e0;
+    background: rgba($text-color, 0.1);
   }
 }
 
@@ -139,15 +187,17 @@
   @include BoxShallowShadow;
 }
 
-
+// Responsive Design
 @media (max-width: 700px) {
-  .grantlist-header-row, .grantlist-grid-row {
+  .grantlist-header-row,
+  .grantlist-grid-row {
     grid-template-columns: 1fr;
     gap: 0.7rem;
   }
+  
   .grantlist-grid-cell {
     font-size: 0.98rem;
-    padding: 0.7rem 0.7rem;
+    padding: 0.7rem;
   }
 }
 
@@ -156,6 +206,7 @@
   .grantlist-header-row {
     grid-template-columns: repeat(3, 1fr);
   }
+  
   .grantlist-grid-row {
     display: block;
     background: $background-color;
@@ -163,8 +214,9 @@
     @include BoxShallowShadow;
     margin-bottom: 1.2rem;
     padding: 1.2rem 1rem;
-    border: 1px solid #e0e0e0;
+    border: 1px solid $border-color;
   }
+  
   .grantlist-grid-cell {
     display: flex;
     flex-direction: row;
@@ -179,11 +231,13 @@
     width: 100%;
     margin-bottom: 0.2rem;
   }
+  
   .grantlist-value-cell span {
     font-weight: 600;
     color: $text-color;
     margin-left: 0.7rem;
   }
+  
   .grantlist-contact-cell {
     justify-content: flex-start;
     margin-top: 0.5rem;

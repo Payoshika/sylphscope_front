@@ -152,42 +152,16 @@ const SelectionCriteria: React.FC<SelectionCriteriaProps> = ({
   };
 
   // Handle weight change directly in selectedSelectionCriteria
-const handleWeightChange = (questionId: string, value: number) => {
-  setSelectedSelectionCriteria(prev => {
-    const idx = prev.findIndex(c => c.questionId === questionId);
-    if (idx === -1) return prev;
-
-    const oldWeight = prev[idx].weight ?? 0;
-    const delta = value - oldWeight;
-    let updated = [...prev];
-
-    if (delta !== 0) {
-      if (idx === 0 && updated.length > 1 && delta > 0) {
-        // Increasing first: decrease next
-        const nextWeight = updated[1].weight ?? 0;
-        const newNextWeight = Math.max(0, nextWeight - delta);
-        updated[1] = { ...updated[1], weight: newNextWeight };
-      } else if (idx === updated.length - 1 && updated.length > 1 && delta > 0) {
-        // Increasing last: decrease previous
-        const prevWeight = updated[idx - 1].weight ?? 0;
-        const newPrevWeight = Math.max(0, prevWeight - delta);
-        updated[idx - 1] = { ...updated[idx - 1], weight: newPrevWeight };
-      } else if (delta > 0 && idx < updated.length - 1) {
-        // Increasing middle: decrease next
-        const nextWeight = updated[idx + 1].weight ?? 0;
-        const newNextWeight = Math.max(0, nextWeight - delta);
-        updated[idx + 1] = { ...updated[idx + 1], weight: newNextWeight };
-      } else if (delta < 0 && idx > 0) {
-        // Decreasing: increase previous
-        const prevWeight = updated[idx - 1].weight ?? 0;
-        const newPrevWeight = Math.max(0, prevWeight - delta); // -delta is positive
-        updated[idx - 1] = { ...updated[idx - 1], weight: newPrevWeight };
-      }
-      updated[idx] = { ...updated[idx], weight: Math.max(0, Math.min(100, value)) };
-    }
-    return updated;
-  });
-};
+  const handleWeightChange = (questionId: string, value: number) => {
+    setSelectedSelectionCriteria(prev => {
+      const updated = prev.map(criterion => 
+        criterion.questionId === questionId 
+          ? { ...criterion, weight: Math.max(0, Math.min(100, value)) }
+          : criterion
+      );
+      return updated;
+    });
+  };
 
   // Calculate total weight
   const totalWeight = selectedSelectionCriteria.reduce((sum, c) => sum + (c.weight || 0), 0);

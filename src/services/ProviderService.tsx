@@ -3,6 +3,7 @@ import type { Provider } from "../types/provider";
 import type { Message } from "../types/message";
 import type { Student } from "../types/student";
 import type { GrantProgram } from "../types/grantProgram";
+import type { ProviderStaff } from "../types/user";
 
 export interface ManagedStudentsEntry {
   grantProgram: GrantProgram;
@@ -31,6 +32,30 @@ export const getProviderById = async (providerId: string): Promise<{ data: Provi
         throw new Error("Provider not found");
     }
     return { data: response.data };
+};
+
+export const getStaffByProviderId = async (providerId: string): Promise<ProviderStaff[]> => {
+    const response = await apiClient.get<ProviderStaff[]>(`/api/provider-staff/provider/${providerId}`);
+    if (!response.data) {
+        throw new Error("Failed to fetch staff");
+    }
+    return response.data;
+};
+
+export const removeStaff = async (providerStaffId: string): Promise<ProviderStaff> => {
+    const response = await apiClient.delete<ProviderStaff>(`/api/provider-staff/${providerStaffId}/remove-from-provider`);
+    if (!response.data) {
+        throw new Error("Failed to remove staff");
+    }
+    return response.data;
+};
+
+export const updateStaffProfile = async (providerStaff: ProviderStaff): Promise<ProviderStaff> => {
+    const response = await apiClient.put<ProviderStaff>("/api/provider-staff/update-profile", providerStaff);
+    if (!response.data) {
+        throw new Error("Failed to update staff profile");
+    }
+    return response.data;
 };
 
 export const getMessagesByProviderStaffId = async (providerStaffId: string): Promise<Message[]> => {

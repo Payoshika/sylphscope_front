@@ -15,10 +15,10 @@ interface AssignedStaffProps {
 }
 
 const staffRoleOptions = [
-  { value: "MANAGER", label: "Manager" },
-  { value: "ADMINISTRATOR", label: "Administrator" },
-  { value: "ASSESSOR", label: "Assessor" },
-  { value: "VOLUNTEER", label: "Volunteer" },
+  { value: "Manager", label: "Manager" },
+  { value: "Administrator", label: "Administrator" },
+  { value: "Assessor", label: "Assessor" },
+  { value: "Volunteer", label: "Volunteer" },
 ];
 
 const AssignedStaff: React.FC<AssignedStaffProps> = ({ grantProgramId, grantProgram, onGrantProgramChange }) => {

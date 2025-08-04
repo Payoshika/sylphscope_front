@@ -3,6 +3,7 @@ import StudentApplicationNav from "./StudentApplicationNav";
 import GrantOverview from "./GrantOverview";
 import OrganisationInfo from "./OrganisationInfo";
 import Eligibility from "./Eligibility";
+import Apply from "./Apply";
 import { useOutletContext, Routes, Route, useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
 import type { Student } from "../../types/student";
 import { getGrantProgramAndApplicationByStudentIdandGrantProgramId, getEligibilityCriteriaAndQuestionFromGrantProgramId, getAnswersByApplicationId, updateAnswers } from "../../services/ApplicationService";
@@ -18,6 +19,7 @@ const steps = [
   { key: "overview", label: "Grant Overview" },
   { key: "eligibility", label: "Eligibility Criteria" },
   { key: "questions", label: "Questions" },
+  { key: "apply", label: "Submit Application" },
 ];
 
 const getInputTypeForQuestion = (questionId: string, questions: QuestionEligibilityInfoDto[], questionGroups: QuestionGroupEligibilityInfoDto[]) => {
@@ -264,6 +266,7 @@ const StudentApplication = () => {
               <Questions
                 questions={questions}
                 questionGroups={questionGroups}
+                application={application}
                 answers={answers}
                 setAnswers={setAnswers}
                 handleAnswerChange={handleAnswerChange}
@@ -272,6 +275,19 @@ const StudentApplication = () => {
                 submitError={submitError}
                 submitSuccess={submitSuccess}
               />
+            }
+          />
+          <Route
+            path="apply"
+            element={
+              application ? (
+                <Apply
+                  application={application}
+                  grantProgramId={grantProgramId ?? ""}
+                />
+              ) : (
+                <div>Loading application...</div>
+              )
             }
           />
     </Routes>

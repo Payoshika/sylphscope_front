@@ -3,11 +3,14 @@ import type { GrantProgramApplicationDto } from "../../types/application";
 import type { Provider } from "../../types/provider";
 import {Sorting05Icon, Sorting01Icon, Sorting02Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
+import Button from "../basicComponents/Button";
 
 interface ApplicationListTableProps {
   applications: GrantProgramApplicationDto[];
   provider: Provider;
   onViewDetail?: (applicationId: string) => void;
+  onSelect?: (applicationId: string) => void;
+  onReject?: (applicationId: string) => void;
   onSort?: (headerKey: string, direction: 'asc' | 'desc') => void;
   headers: { label: string; key: string }[];
   markingScores?: Record<string, number>;
@@ -19,6 +22,8 @@ const ApplicationListTable: React.FC<ApplicationListTableProps> = ({
   applications, 
   provider, 
   onViewDetail, 
+  onSelect,
+  onReject,
   onSort,
   headers,
   markingScores = {},
@@ -34,6 +39,39 @@ const ApplicationListTable: React.FC<ApplicationListTableProps> = ({
     }
     setSortState({ key, direction });
     onSort?.(key, direction);
+  };
+
+  const handleSelect = (e: React.MouseEvent, applicationId: string) => {
+    e.stopPropagation();
+    onSelect?.(applicationId);
+  };
+
+  const handleReject = (e: React.MouseEvent, applicationId: string) => {
+    e.stopPropagation();
+    onReject?.(applicationId);
+  };
+
+  const getStatusDisplay = (status: string) => {
+    switch (status) {
+      case "selected":
+        return { text: "Selected", className: "status-selected" };
+      case "not selected":
+        return { text: "Not Selected", className: "status-rejected" };
+      case "draft":
+        return { text: "Draft", className: "status-draft" };
+      case "applied":
+        return { text: "Applied", className: "status-applied" };
+      case "under selection process":
+        return { text: "Under Review", className: "status-review" };
+      case "canceled":
+        return { text: "Canceled", className: "status-canceled" };
+      default:
+        return { text: status, className: "status-default" };
+    }
+  };
+
+  const shouldShowButtons = (status: string) => {
+    return status !== "selected" && status !== "not selected";
   };
 
   for(const app of applications) {
@@ -78,7 +116,26 @@ const ApplicationListTable: React.FC<ApplicationListTableProps> = ({
             <span>{markingScores[app.application.id] ? markingScores[app.application.id].toFixed(2) : "Not Marked"}</span>
           </div>
           <div className="grantlist-grid-cell grantlist-value-cell">
-            <span>View Details</span>
+            {shouldShowButtons(app.application.status) ? (
+              <div className="actions-container">
+                <Button
+                  text="Select"
+                  type="button"
+                  variant="primary"
+                  onClick={(e) => handleSelect(e, app.application.id)}
+                />
+                <Button
+                  text="Reject"
+                  type="button"
+                  variant="ghost"
+                  onClick={(e) => handleReject(e, app.application.id)}
+                />
+              </div>
+            ) : (
+              <span className={`status-display ${getStatusDisplay(app.application.status).className}`}>
+                {getStatusDisplay(app.application.status).text}
+              </span>
+            )}
           </div>
         </div>
       ))}

@@ -21,6 +21,7 @@ interface EligibilityProps {
 
 const Eligibility: React.FC<EligibilityProps> = ({
   eligibilityCriteriaWithQuestion,
+  application,
   answers,
   handleAnswerChange,
   handleSubmit,
@@ -28,6 +29,7 @@ const Eligibility: React.FC<EligibilityProps> = ({
   submitError,
   submitSuccess,
 }) => {
+  const isReadOnly = application?.status !== "draft";
 
   if (!eligibilityCriteriaWithQuestion || eligibilityCriteriaWithQuestion.length === 0) {
     return <div>No eligibility criteria found for this grant program.</div>;
@@ -40,6 +42,13 @@ const Eligibility: React.FC<EligibilityProps> = ({
         headline="Answer questions to see if you are eligible for the grant"
         student={true}
       />
+      
+      {isReadOnly && (
+        <div className="read-only-notice">
+          <p>This application is in read-only mode. The application status is: <strong>{application?.status}</strong></p>
+        </div>
+      )}
+      
       <form className="eligibility-forms" onSubmit={handleSubmit}>
         {eligibilityCriteriaWithQuestion.map((item, idx) => {
           // Determine eligibility for single question
@@ -72,7 +81,7 @@ const Eligibility: React.FC<EligibilityProps> = ({
               key={idx}
               className={`eligibility-form ${
                 isEligible ? "eligibility-form--eligible" : "eligibility-form--ineligible"
-              }`}
+              } ${isReadOnly ? "eligibility-form--readonly" : ""}`}
             >
               {item.question && (
                 <div>
@@ -80,7 +89,7 @@ const Eligibility: React.FC<EligibilityProps> = ({
                     item.question.question,
                     item.question.options,
                     answers?.[item.question.question.id ?? ""],
-                    (id, value) => handleAnswerChange(id, value)
+                    isReadOnly ? () => {} : (id, value) => handleAnswerChange(id, value)
                   )}
                   {/* Render criteria info for single question */}
                   {item.eligibilityCriteria?.simpleCondition && (
@@ -118,7 +127,7 @@ const Eligibility: React.FC<EligibilityProps> = ({
                           q.question,
                           q.options,
                           answers?.[item.questionGroup?.id ?? ""]?.[q.question.id],
-                          (id, value) => handleAnswerChange(id, value, item.questionGroup?.id)
+                          isReadOnly ? () => {} : (id, value) => handleAnswerChange(id, value, item.questionGroup?.id)
                         )}
                         {/* Render criteria info for each question in the group */}
                         {questionCondition && (
@@ -149,11 +158,13 @@ const Eligibility: React.FC<EligibilityProps> = ({
             </div>
           );
         })}
-        <Button
-          text={isSubmitting ? "Submitting..." : "Submit Eligibility"}
-          type="submit"
-          disabled={isSubmitting}
-        />
+        {!isReadOnly && (
+          <Button
+            text={isSubmitting ? "Submitting..." : "Submit Eligibility"}
+            type="submit"
+            disabled={isSubmitting}
+          />
+        )}
         {submitError && <div className="error-message">{submitError}</div>}
         {submitSuccess && <div className="success-message">{submitSuccess}</div>}
       </form>
