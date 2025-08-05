@@ -21,7 +21,6 @@ const GrantDescription: React.FC<GrantDescriptionProps> = ({
   grantProgram,
   onGrantProgramChange,
   onUpdateGrant,
-  error = false,
   required = true,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);

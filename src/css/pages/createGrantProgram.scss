@@ -70,8 +70,6 @@
 .grant-create-headline {
   width: 100%;
   @include ColJustifyCenterFlexbox;
-  &__title {
-  }
   &__text {
     align-self: self-start;
     margin-bottom: 0;

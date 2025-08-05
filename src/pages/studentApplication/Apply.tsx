@@ -67,9 +67,8 @@ const Apply: React.FC<ApplyProps> = ({ application, grantProgramId }) => {
     setSubmitSuccess(null);
 
     try {
-      const updatedApplication = await applyGrant(application.id);
+      await applyGrant(application.id);
       setSubmitSuccess("Application submitted successfully!");
-      
       // Redirect to student dashboard after a short delay
       setTimeout(() => {
         navigate("/student-dashboard");
