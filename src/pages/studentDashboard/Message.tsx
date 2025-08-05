@@ -7,7 +7,7 @@ import { ArrowLeft03Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import type { Student } from "../../types/student";
 import type { GrantProgram } from "../../types/grantProgram";
-import type { Message as MessageType, MessageContent } from "../../types/message";
+import type { Message as MessageType } from "../../types/message";
 import { useOutletContext } from "react-router-dom";
 import { getAppliedGrantProgram } from "../../services/GrantProgramService";
 import { getMessagesForStudent, createNewMessage, addMessageContentToMessage } from "../../services/StudentService";

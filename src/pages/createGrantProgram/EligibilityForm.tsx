@@ -20,7 +20,6 @@ interface EligibilityFormProps {
 
 const EligibilityForm: React.FC<EligibilityFormProps> = ({
   data,
-  grantProgramId,
   operator,
   values,
   onChange,
@@ -126,6 +125,7 @@ const handleOperatorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
               label={question.questionText}
               value={values[0] ?? ""}
               onChange={handleValueChange}
+              disabled={false}
             />
           )}
           {question.inputType === "DATE" && (

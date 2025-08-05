@@ -11,6 +11,7 @@ import DOBPicker from "../../components/inputComponents/datePickers/DOBPicker";
 import { toDateValue } from "../../components/inputComponents/datePickers/utils";
 import type { DateValue } from "../../components/inputComponents/datePickers/types";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
+import type { Country } from "../../types/country";
 
 const genderOptions = [
     { value: "Male", label: "Male" },
@@ -111,7 +112,7 @@ const [form, setForm] = useState<Student>(student);
       addressCountry: form.addressCountry?.code || "",
       citizenshipCountry: Array.isArray(form.citizenshipCountry)
         ? form.citizenshipCountry.map((c) => c.code)
-        : [form.citizenshipCountry?.code || ""],
+        : [""],
     };
     const response = await updateStudent(payload);
     setStudent(response);

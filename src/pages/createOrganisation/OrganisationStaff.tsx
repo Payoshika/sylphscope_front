@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
 import type { ProviderStaff } from "../../types/user";
 import type { Provider } from "../../types/provider";
 import { getStaffByProviderId, removeStaff } from "../../services/ProviderService";

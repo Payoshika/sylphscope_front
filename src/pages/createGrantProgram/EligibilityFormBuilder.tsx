@@ -19,53 +19,6 @@ const inputTypeOptions: { value: InputType; label: string }[] = [
   { value: "RADIO", label: "Radio" },
 ];
 
-const dataTypeOptions: { value: DataType; label: string }[] = [
-  { value: "STRING", label: "String" },
-  { value: "INTEGER", label: "Integer" },
-  { value: "DOUBLE", label: "Double" },
-  { value: "DATE", label: "Date" },
-  { value: "DATETIME", label: "Datetime" },
-];
-
-const operatorOptions: { value: ComparisonOperator; label: string }[] = [
-  { value: "equals", label: "Equals" },
-  { value: "not_equals", label: "Not Equals" },
-  { value: "greater_than", label: "Greater Than" },
-  { value: "less_than", label: "Less Than" },
-  { value: "greater_than_or_equal", label: "Greater Than Or Equal" },
-  { value: "less_than_or_equal", label: "Less Than Or Equal" },
-  { value: "in_list", label: "In List" },
-  { value: "not_in_list", label: "Not In List" },
-  { value: "exists", label: "Exists" },
-  { value: "not_exists", label: "Not Exists" },
-  { value: "contains", label: "Contains" },
-  { value: "not_contains", label: "Not Contains" },
-];
-
-function getDataTypeOptions(inputType: InputType) {
-  switch (inputType) {
-    case "TEXT":
-    case "TEXTAREA":
-      return [{ value: "STRING", label: "String" }];
-    case "NUMBER":
-      return [
-        { value: "INTEGER", label: "Integer" },
-        { value: "DOUBLE", label: "Double" },
-      ];
-    case "DATE":
-      return [{ value: "DATE", label: "Date" }];
-    case "MULTISELECT":
-    case "RADIO":
-      return [
-        { value: "STRING", label: "String" },
-        { value: "INTEGER", label: "Integer" },
-        { value: "DOUBLE", label: "Double" },
-      ];
-    default:
-      return [];
-  }
-}
-
 function getOperatorOptions(inputType: InputType) {
   switch (inputType) {
     case "TEXT":
@@ -128,8 +81,6 @@ const EligibilityFormBuilder: React.FC<EligibilityFormBuilderProps> = ({ onCreat
   const [options, setOptions] = useState<Option[]>([]);
   const [optionInput, setOptionInput] = useState("");
   const [multiSelectError, setMultiSelectError] = useState<string>("");
-const [valueError, setValueError] = useState<string>("");
-
   // Option handling for RADIO/MULTISELECT
   const handleAddOption = () => {
     if (optionInput.trim()) {
@@ -262,6 +213,7 @@ const handleInputTypeChange = (newType: InputType) => {
             label="Value"
             value={values[0] ?? ""}
             onChange={(e) => handleValueChange(e.target.value)}
+            disabled={false}
           />
       )}
       {inputType === "DATE" && (
@@ -282,7 +234,6 @@ const handleInputTypeChange = (newType: InputType) => {
           onChange={(e) => handleValueChange(e.target.value)}
         />
       )}
-                {valueError && <div className="error-message">{valueError}</div>}
       {/* Option builder and SearchableMultiSelect for RADIO/MULTISELECT */}
       {(inputType === "RADIO" || inputType === "MULTISELECT") && (
         <div>

@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useOutletContext } from "react-router-dom";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import Button from "../../components/basicComponents/Button";
 import { fetchEligibilityQuestions } from "../../services/GrantProgramService";
 import { renderInput } from "../../utility/QuestionInput";
-import type { Student } from "../../types/student";
 import type { QuestionEligibilityInfoDto } from "../../data/questionEligibilityInfoDto";
 
 interface AnswerState {
@@ -13,7 +11,6 @@ interface AnswerState {
 }
 
 const FurtherInfo: React.FC = () => {
-  const { student } = useOutletContext<{ student: Student }>();
   const [questions, setQuestions] = useState<QuestionEligibilityInfoDto[]>([]);
   const [chosenQuestions, setChosenQuestions] = useState<QuestionEligibilityInfoDto[]>([]);
   const [answers, setAnswers] = useState<Record<string, AnswerState>>({});
