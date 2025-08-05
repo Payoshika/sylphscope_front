@@ -6,12 +6,11 @@ import { countries } from "../../data/countries";
 import Button from "../../components/basicComponents/Button";
 import Select from "../../components/inputComponents/Select";
 import SearchableMultiSelect from "../../components/inputComponents/SearchableMultiSelect";
-import type { Gender } from "../../types/gender";
 import DOBPicker from "../../components/inputComponents/datePickers/DOBPicker";
 import { toDateValue } from "../../components/inputComponents/datePickers/utils";
 import type { DateValue } from "../../components/inputComponents/datePickers/types";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
-import type { Country } from "../../types/country";
+import type { SearchableOption } from "../../components/inputComponents/SearchableDropdown";
 
 const genderOptions = [
     { value: "Male", label: "Male" },
@@ -39,7 +38,7 @@ const countryOptions = countries.map((country) => ({
   phoneCode: country.phoneCode,
 }));
 
-const searchCountriesFunction = (query: string, options: typeof countryOptions) => {
+const searchCountriesFunction = (query: string, options: SearchableOption[]) => {
   if (!query.trim()) return options;
   const searchTerm = query.toLowerCase().trim();
   return options.filter(
@@ -90,30 +89,31 @@ const [form, setForm] = useState<Student>(student);
     }));
   };
 
-  function toCountryValue(country: any): Country {
-  if (
-    country &&
-    typeof country === "object" &&
-    "code" in country &&
-    "name" in country &&
-    "flag" in country &&
-    "phoneCode" in country
-  ) {
-    return country as Country;
-  }
-  return { code: "", name: "", flag: "", phoneCode: "" };
-}
+  // function toCountryValue(country: any): Country {
+  // if (
+  //   country &&
+  //   typeof country === "object" &&
+  //   "code" in country &&
+  //   "name" in country &&
+  //   "flag" in country &&
+  //   "phoneCode" in country
+  //   ) {
+  //     return country as Country;
+  //   }
+  //   return { code: "", name: "", flag: "", phoneCode: "" };
+  // }
 
   // Handle submit (update profile)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const payload = {
       ...form,
-      addressCountry: form.addressCountry?.code || "",
+      addressCountry: form.addressCountry || { code: "", name: "", flag: "", phoneCode: "" },
       citizenshipCountry: Array.isArray(form.citizenshipCountry)
-        ? form.citizenshipCountry.map((c) => c.code)
-        : [""],
+        ? form.citizenshipCountry
+        : [form.citizenshipCountry || { code: "", name: "", flag: "", phoneCode: "" }],
     };
+
     const response = await updateStudent(payload);
     setStudent(response);
     alert("Profile updated!");
@@ -217,7 +217,7 @@ const [form, setForm] = useState<Student>(student);
           value={
             Array.isArray(form.citizenshipCountry)
               ? form.citizenshipCountry.map((c) => c.code)
-              : [form.citizenshipCountry?.code || ""]
+              : [""]
           }
           onChange={(selectedCodes) => {
             const selectedCountries = selectedCodes
