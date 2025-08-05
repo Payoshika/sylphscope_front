@@ -6,8 +6,6 @@ import SearchableDropdown, {
 import {
   genders,
   genderCategories,
-  searchGenders,
-  type GenderType,
 } from "../../../data/genders";
 
 interface GenderProps {
@@ -75,7 +73,6 @@ const Gender: React.FC<GenderProps> = (props) => {
   const renderGenderOption = (
     option: SearchableOption,
     isSelected: boolean,
-    isHighlighted: boolean
   ) => (
     <span className="gender__option-content">
       <span className="gender__label">{option.label}</span>

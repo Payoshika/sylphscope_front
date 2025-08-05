@@ -78,7 +78,6 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
   searchable = true,
   showCategories = true,
   className = "multi-select",
-  dropdownClassName = "",
   onValidationChange,
 
   // Custom input props
@@ -231,21 +230,6 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
     }
   };
 
-  const getInputClass = () => {
-    let baseClass = `${className}__search-input`;
-    if (error || internalError)
-      baseClass += ` ${className}__search-input--error`;
-    if (disabled) baseClass += ` ${className}__search-input--disabled`;
-    return baseClass;
-  };
-
-  const getDropdownClass = () => {
-    let baseClass = `${className}__dropdown`;
-    if (dropdownClassName) baseClass += ` ${dropdownClassName}`;
-    if (isOpen) baseClass += ` ${className}__dropdown--open`;
-    return baseClass;
-  };
-
   const hasError = error || !!internalError;
   const errorMessage = typeof error === "string" ? error : internalError;
 
@@ -265,7 +249,6 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
   const defaultRenderOption = (
     option: SearchableOption,
     isSelected: boolean,
-    isHighlighted: boolean
   ) => (
     <span className={`${className}__option-content`}>
       {option.flag && (
@@ -340,7 +323,7 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
                         <div className="multi-select__category-header">
                           {categoryData.label}
                         </div>
-                        {categoryData.options.map((option, index) => {
+                        {categoryData.options.map((option) => {
                           const globalIndex = filteredOptions.findIndex(
                             (o) => o.value === option.value
                           );

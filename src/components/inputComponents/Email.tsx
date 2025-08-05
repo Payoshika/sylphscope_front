@@ -61,14 +61,6 @@ const Email: React.FC<EmailProps> = ({
     if (email.length > 254) {
       return { isValid: false, errorMessage: "Email address is too long" };
     }
-
-    // Check for common typos
-    const commonDomains = [
-      "gmail.com",
-      "yahoo.com",
-      "hotmail.com",
-      "outlook.com",
-    ];
     const domain = email.split("@")[1]?.toLowerCase();
 
     // You could add domain suggestions here if needed

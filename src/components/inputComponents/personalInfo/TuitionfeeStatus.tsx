@@ -93,7 +93,6 @@ const TuitionfeeStatus: React.FC<TuitionfeeStatusProps> = ({
             name={name}
             value={option.value}
             label={option.label}
-            description={showDescriptions ? option.description : undefined}
             checked={value === option.value}
             onChange={handleChange}
             disabled={disabled}

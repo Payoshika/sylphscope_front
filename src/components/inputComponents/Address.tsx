@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { getCountryByCode } from "../../data/countries";
 
 export interface AddressValue {
   addressLine1: string;
@@ -43,9 +42,6 @@ const Address: React.FC<AddressProps> = ({
     {}
   );
   const [touched, setTouched] = useState<Record<string, boolean>>({});
-
-  // Get selected country for region label
-  const selectedCountry = getCountryByCode(countryCode);
 
   // Region label based on country
   const getRegionLabel = (countryCode: string): string => {

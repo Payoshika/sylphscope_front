@@ -80,24 +80,6 @@ const ALevelGrade: React.FC<ALevelGradeProps> = ({
   const hasError = error || !!internalError;
   const errorMessage = typeof error === "string" ? error : internalError;
 
-  const getSelectedSubjectInfo = () => {
-    if (!value.subject) return null;
-    const selectedSubject = alevelSubjects.find(
-      (subject) => subject.value === value.subject
-    );
-    return selectedSubject;
-  };
-
-  const getSelectedGradeInfo = () => {
-    if (!value.grade) return null;
-    const selectedGrade = alevelGrades.find(
-      (grade) => grade.value === value.grade
-    );
-    return selectedGrade;
-  };
-
-  const selectedSubjectInfo = getSelectedSubjectInfo();
-  const selectedGradeInfo = getSelectedGradeInfo();
   const ucasPoints = value.grade ? getUCASPoints(value.grade) : 0;
 
   // Group subjects by category for better organization

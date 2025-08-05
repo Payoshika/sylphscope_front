@@ -4,7 +4,6 @@ import {
   generateDays,
   validateDate,
   months,
-  getDefaultYear,
 } from "./utils";
 import type { DatePickerProps, DatePickerType } from "./types";
 import Select from "../Select";
@@ -121,27 +120,10 @@ const DatePicker: React.FC<ExtendedDatePickerProps> = ({
     });
   };
 
-  const getSelectClass = () => {
-    let baseClass = "select";
-    if (error || internalError) baseClass += " input--error";
-    return baseClass;
-  };
+
 
   const hasError = error || !!internalError;
   const errorMessage = typeof error === "string" ? error : internalError;
-
-  // Helper function to get component type description
-  const getTypeDescription = () => {
-    switch (type) {
-      case "dob":
-        return "Date of Birth";
-      case "future":
-        return "Future dates only";
-      case "any":
-      default:
-        return "Any date";
-    }
-  };
 
   return (
     <div className="form-group">
