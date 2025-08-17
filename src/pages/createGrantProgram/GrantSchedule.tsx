@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import type { GrantProgram } from "../../types/grantProgram";
 import { GrantStatus } from "../../types/grantProgram";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
@@ -16,78 +16,92 @@ interface GrantScheduleProps {
   getGrantProgram: () => Promise<void>;
 }
 
+const scheduleFields: Array<{ key: keyof GrantProgram["schedule"]; label: string }> = [
+  { key: "applicationStartDate", label: "Application Start Date" },
+  { key: "applicationEndDate", label: "Application End Date" },
+  { key: "decisionDate", label: "Decision Date" },
+  { key: "fundDisbursementDate", label: "Fund Disbursement Date" },
+];
+
 const GrantSchedule: React.FC<GrantScheduleProps> = ({
   grantProgram,
   setGrantProgram,
-  getGrantProgram,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Check if the program is in draft status
+  // Local DateValue map to pass directly to DatePicker and avoid conversions each render
+  const [localDateValues, setLocalDateValues] = useState<Record<string, DateValue>>(() => {
+    const init: Record<string, DateValue> = {};
+    scheduleFields.forEach(({ key }) => {
+      init[key] = toDateValue(grantProgram?.schedule?.[key] ?? null);
+    });
+    return init;
+  });
+
+  // Reset localDateValues only when grantProgram.id changes (avoid updating each render)
+  useEffect(() => {
+    setLocalDateValues(() => {
+      const init: Record<string, DateValue> = {};
+      scheduleFields.forEach(({ key }) => {
+        init[key] = toDateValue(grantProgram?.schedule?.[key] ?? null);
+      });
+      return init;
+    });
+  }, [grantProgram?.id]); // <-- important: depend on id only
+
   const isReadOnly = grantProgram.status !== GrantStatus.DRAFT;
 
-useEffect(() => {
-const fetchAndUpdate = async () => {
-    await getGrantProgram();
-};
-fetchAndUpdate();
-}, []);
-
-// Helper to convert DateValue to string (YYYY-MM-DD)
-const fromDateValue = (val: DateValue): string | null => {
-  if (!val.year || !val.month || !val.day) return null;
-  return `${val.year}-${val.month.padStart(2, "0")}-${val.day.padStart(2, "0")}`;
-};
-
-  const handleDateChange = (field: keyof GrantProgram["schedule"], value: string | null) => {
-    if (isReadOnly) return;
-    setGrantProgram(prev => ({
-      ...prev,
-      schedule: {
-        ...prev.schedule,
-        [field]: value,
-      },
-    }));
+  const fromDateValue = (val: DateValue): string | null => {
+    if (!val || !val.year || !val.month || !val.day) return null;
+    return `${val.year}-${val.month.padStart(2, "0")}-${val.day.padStart(2, "0")}`;
   };
 
-const handleSaveSchedule = async () => {
-  if (isReadOnly) return;
-  
-  setIsSubmitting(true);
-  setSubmitError(null);
-  setSubmitSuccess(null);
-  try {
-    console.log("saving the date", grantProgram.schedule);
-    const response = await updateGrantProgramSchedule(grantProgram.id, grantProgram.schedule);
-    console.log("response", response);
-    if (
-      response &&
-      typeof response.data === "object" &&
-      response.data !== null &&
-      "schedule" in response.data
-    ) {
-      const data = response.data as { schedule: GrantProgram["schedule"] };
-      setGrantProgram(prev => ({
-        ...prev,
-        schedule: {
-          applicationStartDate: data.schedule.applicationStartDate,
-          applicationEndDate: data.schedule.applicationEndDate,
-          decisionDate: data.schedule.decisionDate,
-          fundDisbursementDate: data.schedule.fundDisbursementDate,
-        }
-      }));
+  const handleDateChange = useCallback((field: keyof GrantProgram["schedule"], value: DateValue) => {
+    if (isReadOnly) return;
+    setLocalDateValues(prev => {
+      // avoid creating a new object if value didn't change (prevent extra renders)
+      const prevVal = prev[field];
+      if (
+        prevVal?.day === value?.day &&
+        prevVal?.month === value?.month &&
+        prevVal?.year === value?.year
+      ) {
+        return prev;
+      }
+      return { ...prev, [field]: value };
+    });
+  }, [isReadOnly]);
+
+  const handleSaveSchedule = useCallback(async () => {
+    if (isReadOnly) return;
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setSubmitSuccess(null);
+    try {
+      const payload: GrantProgram["schedule"] = {
+        applicationStartDate: fromDateValue(localDateValues.applicationStartDate),
+        applicationEndDate: fromDateValue(localDateValues.applicationEndDate),
+        decisionDate: fromDateValue(localDateValues.decisionDate),
+        fundDisbursementDate: fromDateValue(localDateValues.fundDisbursementDate),
+      };
+      const response = await updateGrantProgramSchedule(grantProgram.id, payload) as { data?: { schedule?: GrantProgram["schedule"] } };
+      if (response && response.data && response.data.schedule) {
+        setGrantProgram(prev => ({
+          ...prev,
+          schedule: response.data && response.data.schedule ? response.data.schedule : prev.schedule
+        }));
+      }
+      setSubmitSuccess("Schedule saved.");
+      navigate("../eligibility");
+    } catch (err) {
+      setSubmitError("Failed to save schedule.");
+    } finally {
+      setIsSubmitting(false);
     }
-    setSubmitSuccess("Schedule saved.");
-    navigate("../eligibility");
-  } catch (err) {
-    setSubmitError("Failed to save schedule.");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  }, [grantProgram.id, localDateValues, isReadOnly, navigate, setGrantProgram]);
 
   return (
     <div className="content">
@@ -96,46 +110,23 @@ const handleSaveSchedule = async () => {
         headline="Define the timeline for your grant program"
         provider={true}
       />
-      
       {isReadOnly && (
         <div className="read-only-notice">
           <p>This grant program is currently in "{grantProgram.status}" status and cannot be modified.</p>
         </div>
       )}
-      
       <div className={`form-group ${isReadOnly ? 'form-group--readonly' : ''}`}>
-        <DatePicker
-          id="applicationStartDate"
-          name="applicationStartDate"
-          label="Application Start Date"
-          value={toDateValue(grantProgram.schedule.applicationStartDate)}
-          onChange={val => handleDateChange("applicationStartDate", fromDateValue(val))}
-          disabled={isReadOnly}
-        />
-        <DatePicker
-          id="applicationEndDate"
-          name="applicationEndDate"
-          label="Application End Date"
-            value={toDateValue(grantProgram.schedule.applicationEndDate)}
-          onChange={val => handleDateChange("applicationEndDate", fromDateValue(val))}
-          disabled={isReadOnly}
-        />
-        <DatePicker
-          id="decisionDate"
-          name="decisionDate"
-          label="Decision Date"
-          value={toDateValue(grantProgram.schedule.decisionDate)}
-          onChange={val => handleDateChange("decisionDate", fromDateValue(val))}
-          disabled={isReadOnly}
-        />
-        <DatePicker
-          id="fundDisbursementDate"
-          name="fundDisbursementDate"
-          label="Fund Disbursement Date"
-          value={toDateValue(grantProgram.schedule.fundDisbursementDate)}
-          onChange={val => handleDateChange("fundDisbursementDate", fromDateValue(val))}
-          disabled={isReadOnly}
-        />
+        {scheduleFields.map(({ key, label }) => (
+          <DatePicker
+            key={key}
+            id={String(key)}
+            name={String(key)}
+            label={label}
+            value={localDateValues[key]}
+            onChange={(val) => handleDateChange(key, val)}
+            disabled={isReadOnly}
+          />
+        ))}
       </div>
       <Button
         text={isSubmitting ? "Saving..." : "Save Schedule"}
@@ -148,4 +139,5 @@ const handleSaveSchedule = async () => {
     </div>
   );
 };
+
 export default GrantSchedule;

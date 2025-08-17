@@ -105,6 +105,20 @@ export const getAnswersByApplicationId = async (
   return response.data;
 };
 
+export const getLatestAnswersByStudentId = async (
+  studentId: string
+): Promise<StudentAnswerDto[]> => {
+  const response = await apiClient.get<StudentAnswerDto[]>(
+    `/api/student-answers/by-student?studentId=${studentId}`
+  );
+  if (!response.data) {
+    throw new Error("Failed to fetch latest answers by student ID");
+  }
+  return response.data;
+};
+
+
+
 export const updateAnswers = async (
   studentId: string,
   grantProgramId: string,

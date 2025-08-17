@@ -6,7 +6,7 @@ import Eligibility from "./Eligibility";
 import Apply from "./Apply";
 import { useOutletContext, Routes, Route, useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
 import type { Student } from "../../types/student";
-import { getGrantProgramAndApplicationByStudentIdandGrantProgramId, getEligibilityCriteriaAndQuestionFromGrantProgramId, getAnswersByApplicationId, updateAnswers, createEmptyApplication } from "../../services/ApplicationService";
+import { getGrantProgramAndApplicationByStudentIdandGrantProgramId, getEligibilityCriteriaAndQuestionFromGrantProgramId, getAnswersByApplicationId, updateAnswers, createEmptyApplication, getLatestAnswersByStudentId } from "../../services/ApplicationService";
 import type { ApplicationDto, GrantProgramApplicationDto, EligibilityCriteriaWithQuestionDto } from "../../types/application";
 import type { GrantProgram } from "../../types/grantProgram";
 import { getQuestionByGrantProgramId } from "../../services/GrantProgramService";
@@ -174,55 +174,105 @@ const StudentApplication = () => {
         // Fetch eligibility criteria and questions
         const criteriaWithQuestionList = await getEligibilityCriteriaAndQuestionFromGrantProgramId(grantProgramId);
         setEligibilityCriteriaWithQuestion(criteriaWithQuestionList);
+
         // Fetch answers
+        let initialAnswers: Record<string, any> = {};
         if (data.application?.id) {
           const backendAnswers = await getAnswersByApplicationId(student.id, data.application.id);
+          console.log("backendAnswers with application id if exist", backendAnswers);
           // Convert StudentAnswerDto[] to answers object
-          const initialAnswers: Record<string, any> = {};
-          backendAnswers.forEach((dto) => {
-            if (dto.questionGroupId) {
-              if (!initialAnswers[dto.questionGroupId]) initialAnswers[dto.questionGroupId] = {};
-              dto.answer.forEach(ans => {
-                const inputType = getInputTypeForQuestion(ans.questionId, questions, questionGroups);
-                if (inputType === "MULTISELECT") {
-                  let arr = Array.isArray(ans.answer) ? ans.answer : ans.answer ? [ans.answer] : [];
-                  if (arr.length > 0 && typeof arr[0] === 'object' && arr[0] !== null && 'value' in arr[0]) {
-                    arr = arr.map((v: any) => v.value);
+            backendAnswers.forEach((dto) => {
+              if (dto.questionGroupId) {
+                if (!initialAnswers[dto.questionGroupId]) initialAnswers[dto.questionGroupId] = {};
+                dto.answer.forEach(ans => {
+                  const inputType = getInputTypeForQuestion(ans.questionId, questions, questionGroups);
+                  if (inputType === "MULTISELECT") {
+                    let arr = Array.isArray(ans.answer) ? ans.answer : ans.answer ? [ans.answer] : [];
+                    if (arr.length > 0 && typeof arr[0] === 'object' && arr[0] !== null && 'value' in arr[0]) {
+                      arr = arr.map((v: any) => v.value);
+                    }
+                    if (!Array.isArray(arr) && typeof arr === 'object' && arr !== null) {
+                      arr = Object.values(arr);
+                    }
+                    initialAnswers[dto.questionGroupId][ans.questionId] = arr;
+                  } else {
+                    initialAnswers[dto.questionGroupId][ans.questionId] = Array.isArray(ans.answer) && ans.answer.length === 1 ? ans.answer[0] : ans.answer;
                   }
-                  if (!Array.isArray(arr) && typeof arr === 'object' && arr !== null) {
-                    arr = Object.values(arr);
+                });
+              } else {
+                // Single question
+                if (dto.answer && dto.answer.length > 0) {
+                  const inputType = getInputTypeForQuestion(dto.questionId, questions, questionGroups);
+                  if (inputType === "MULTISELECT") {
+                    let arr = Array.isArray(dto.answer[0].answer) ? dto.answer[0].answer : dto.answer[0].answer ? [dto.answer[0].answer] : [];
+                    if (arr.length > 0 && typeof arr[0] === 'object' && arr[0] !== null && 'value' in arr[0]) {
+                      arr = arr.map((v: any) => v.value);
+                    }
+                    if (!Array.isArray(arr) && typeof arr === 'object' && arr !== null) {
+                      arr = Object.values(arr);
+                    }
+                    initialAnswers[dto.questionId] = arr;
+                  } else {
+                    initialAnswers[dto.questionId] = Array.isArray(dto.answer[0].answer) && dto.answer[0].answer.length === 1
+                      ? dto.answer[0].answer[0]
+                      : dto.answer[0].answer;
                   }
-                  initialAnswers[dto.questionGroupId][ans.questionId] = arr;
-                } else {
-                  initialAnswers[dto.questionGroupId][ans.questionId] = Array.isArray(ans.answer) && ans.answer.length === 1 ? ans.answer[0] : ans.answer;
-                }
-              });
-            } else {
-              // Single question
-              if (dto.answer && dto.answer.length > 0) {
-                const inputType = getInputTypeForQuestion(dto.questionId, questions, questionGroups);
-                if (inputType === "MULTISELECT") {
-                  let arr = Array.isArray(dto.answer[0].answer) ? dto.answer[0].answer : dto.answer[0].answer ? [dto.answer[0].answer] : [];
-                  if (arr.length > 0 && typeof arr[0] === 'object' && arr[0] !== null && 'value' in arr[0]) {
-                    arr = arr.map((v: any) => v.value);
-                  }
-                  if (!Array.isArray(arr) && typeof arr === 'object' && arr !== null) {
-                    arr = Object.values(arr);
-                  }
-                  initialAnswers[dto.questionId] = arr;
-                } else {
-                  initialAnswers[dto.questionId] = Array.isArray(dto.answer[0].answer) && dto.answer[0].answer.length === 1
-                    ? dto.answer[0].answer[0]
-                    : dto.answer[0].answer;
                 }
               }
-            }
-          });
+            });
           setAnswers(prev => ({
             ...prev,
             ...initialAnswers
           }));
           console.log("initialAnswers", initialAnswers);
+        }
+        else{
+            // If no answers for this application, fetch latest answers by studentId
+            const latestAnswers = await getLatestAnswersByStudentId(student.id);
+            latestAnswers.forEach((dto: StudentAnswerDto) => {
+              if (dto.questionGroupId) {
+                if (!initialAnswers[dto.questionGroupId]) initialAnswers[dto.questionGroupId] = {};
+                dto.answer.forEach((ans: Answer) => {
+                  const inputType = getInputTypeForQuestion(ans.questionId, questions, questionGroups);
+                  if (inputType === "MULTISELECT") {
+                    let arr = Array.isArray(ans.answer) ? ans.answer : ans.answer ? [ans.answer] : [];
+                    if (arr.length > 0 && typeof arr[0] === 'object' && arr[0] !== null && 'value' in arr[0]) {
+                      arr = arr.map((v: any) => v.value);
+                    }
+                    if (!Array.isArray(arr) && typeof arr === 'object' && arr !== null) {
+                      arr = Object.values(arr);
+                    }
+                    initialAnswers[dto.questionGroupId][ans.questionId] = arr;
+                  } else {
+                    initialAnswers[dto.questionGroupId][ans.questionId] = Array.isArray(ans.answer) && ans.answer.length === 1 ? ans.answer[0] : ans.answer;
+                  }
+                });
+              } else {
+                // Single question
+                if (dto.answer && dto.answer.length > 0) {
+                  const inputType = getInputTypeForQuestion(dto.questionId, questions, questionGroups);
+                  if (inputType === "MULTISELECT") {
+                    let arr = Array.isArray(dto.answer[0].answer) ? dto.answer[0].answer : dto.answer[0].answer ? [dto.answer[0].answer] : [];
+                    if (arr.length > 0 && typeof arr[0] === 'object' && arr[0] !== null && 'value' in arr[0]) {
+                      arr = arr.map((v: any) => v.value);
+                    }
+                    if (!Array.isArray(arr) && typeof arr === 'object' && arr !== null) {
+                      arr = Object.values(arr);
+                    }
+                    initialAnswers[dto.questionId] = arr;
+                  } else {
+                    initialAnswers[dto.questionId] = Array.isArray(dto.answer[0].answer) && dto.answer[0].answer.length === 1
+                      ? dto.answer[0].answer[0]
+                      : dto.answer[0].answer;
+                  }
+                }
+              }
+            });
+          console.log("initialAnswers without application", initialAnswers);
+          setAnswers(prev => ({
+            ...prev,
+            ...initialAnswers
+          }));
         }
         console.log("student application rendered");
       } catch (err) {
