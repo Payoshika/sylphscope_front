@@ -113,7 +113,7 @@ class ApiClient {
       };
     } catch (error) {
       if (env.DEBUG_MODE) {
-        console.error(`❌ API Error: ${method} ${endpoint}`, error);
+        console.error(`❌ API Error : ${method} ${endpoint}`, error);
       }
 
       return {

@@ -89,7 +89,7 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
             value={[]}
             onChange={() => { } }
             options={options.map(opt => ({ label: opt.label, value: opt.value }))}
-            disabled={!inputAllowed} searchFunction={function (query: string, options: SearchableOption[]): SearchableOption[] {
+            disabled={!inputAllowed} searchFunction={function (): SearchableOption[] {
               throw new Error("Function not implemented.");
             } }          />
         );

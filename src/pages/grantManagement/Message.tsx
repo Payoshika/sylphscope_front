@@ -6,7 +6,7 @@ import SearchableDropdown from "../../components/inputComponents/SearchableDropd
 import { ArrowLeft03Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import type { ProviderStaff } from "../../types/user";
-import type { Message as MessageType, MessageContent } from "../../types/message";
+import type { Message as MessageType } from "../../types/message";
 import type { ManagedStudentsEntry } from "../../services/ProviderService";
 import { useOutletContext } from "react-router-dom";
 import { getMessagesByProviderStaffId, getListOfStudentforProvider } from "../../services/ProviderService";

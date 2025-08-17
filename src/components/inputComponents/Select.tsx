@@ -187,7 +187,7 @@ const Select: React.FC<SelectProps> = ({
                       <div className="custom-select__group-label">
                         {group.label}
                       </div>
-                      {group.options.map((option, index) => {
+                      {group.options.map((option) => {
                         const globalIndex = allOptions.findIndex(
                           (o) => o.value === option.value
                         );

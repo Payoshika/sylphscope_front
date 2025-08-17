@@ -6,8 +6,6 @@ import SearchableDropdown, {
 import {
   religions,
   religionCategories,
-  searchReligions,
-  type ReligionType,
 } from "../../../data/religions";
 
 interface ReligionProps {

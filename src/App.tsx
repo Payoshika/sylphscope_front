@@ -24,7 +24,6 @@ import StudentDashboard from "./pages/studentDashboard/StudentDashboard";
 import StudentApplication from "./pages/studentApplication/StudentApplication";
 import ProviderLayout from "./pages/ProviderLayout";
 import StudentLayout from "./pages/StudentLayout";
-import Message from "./pages/grantManagement/Message";
 
 function App() {
   return (

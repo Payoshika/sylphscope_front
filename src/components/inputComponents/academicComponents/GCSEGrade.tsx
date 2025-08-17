@@ -79,25 +79,6 @@ const GCSEGrade: React.FC<GCSEGradeProps> = ({
   const hasError = error || !!internalError;
   const errorMessage = typeof error === "string" ? error : internalError;
 
-  const getSelectedSubjectInfo = () => {
-    if (!value.subject) return null;
-    const selectedSubject = gcseSubjects.find(
-      (subject) => subject.value === value.subject
-    );
-    return selectedSubject;
-  };
-
-  const getSelectedGradeInfo = () => {
-    if (!value.grade) return null;
-    const selectedGrade = gcseGrades.find(
-      (grade) => grade.value === value.grade
-    );
-    return selectedGrade;
-  };
-
-  const selectedSubjectInfo = getSelectedSubjectInfo();
-  const selectedGradeInfo = getSelectedGradeInfo();
-
   // Group subjects by category for better organization
   const subjectsByCategory = gcseSubjects.reduce((acc, subject) => {
     if (subject.value === "") return acc; // Skip the placeholder

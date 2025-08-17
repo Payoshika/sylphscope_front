@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   degreeCategories,
   degreeLevels,
-  getDegreeCategoryLabel,
-  getDegreeLevelLabel,
 } from "../../../data/degreecategories";
 import TextInput from "../TextInput";
 import Select, { type SelectOptGroup } from "../Select";
@@ -104,16 +102,7 @@ const UniversityMajor: React.FC<UniversityMajorProps> = ({
     return selectedLevel;
   };
 
-  const getSelectedCategoryInfo = () => {
-    if (!value.category) return null;
-    const selectedCategory = degreeCategories.find(
-      (category) => category.value === value.category
-    );
-    return selectedCategory;
-  };
-
   const selectedLevelInfo = getSelectedLevelInfo();
-  const selectedCategoryInfo = getSelectedCategoryInfo();
 
   // Group degree levels by type for better organization
   const levelsByType = {

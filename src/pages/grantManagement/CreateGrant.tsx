@@ -6,7 +6,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { createNewGrantProgram } from "../../services/GrantProgramService";
 import type { GrantProgram, StaffRole } from "../../types/grantProgram";
 import type { Provider } from "../../types/provider";
-import type { ProviderStaff} from "../../types/user";
+import type { ProviderStaff } from "../../types/user";
 
 interface GrantOption {
   id: string;
@@ -14,6 +14,7 @@ interface GrantOption {
   description: string;
   year: string;
 }
+
 
 const mockPastGrants: GrantOption[] = [
   { id: "1", title: "Engineering Scholarship 2023", description: "Annual engineering scholarship for undergraduate students", year: "2023" },

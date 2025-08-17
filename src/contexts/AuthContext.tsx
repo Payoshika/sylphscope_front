@@ -1,9 +1,7 @@
 // Update src/contexts/AuthContext.tsx
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import AuthService from "../services/AuthService";
 import type { User } from "../types/user";
-import type { LoginRequest } from "../types/auth";
 
 interface AuthContextType {
   user: User | null;

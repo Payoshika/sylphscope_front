@@ -52,7 +52,6 @@ const TuitionfeeStatus: React.FC<TuitionfeeStatusProps> = ({
   disabled = false,
   error = false,
   required = false,
-  showDescriptions = true,
   onValidationChange,
 }) => {
   const [internalError, setInternalError] = useState("");
@@ -93,11 +92,10 @@ const TuitionfeeStatus: React.FC<TuitionfeeStatusProps> = ({
             name={name}
             value={option.value}
             label={option.label}
-            description={showDescriptions ? option.description : undefined}
-            checked={value === option.value}
             onChange={handleChange}
             disabled={disabled}
             variant="default"
+            options={tuitionfeeStatusOptions}
           />
         ))}
       </div>

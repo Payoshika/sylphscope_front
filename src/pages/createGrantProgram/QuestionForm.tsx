@@ -14,15 +14,6 @@ const inputTypeOptions: { value: InputType; label: string }[] = [
   { value: "RADIO", label: "Radio" },
 ];
 
-const dataTypeOptions: { value: DataType; label: string }[] = [
-
-  { value: "STRING", label: "String" },
-  { value: "INTEGER", label: "Integer" },
-  { value: "DOUBLE", label: "Double" },
-  { value: "DATE", label: "Date" },
-  { value: "DATETIME", label: "Datetime" },
-];
-
 interface QuestionFormProps {
   onCreate: (question: {
     name: string;

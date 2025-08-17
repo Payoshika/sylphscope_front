@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Button from "../components/basicComponents/Button";
 import Textarea from "../components/inputComponents/Textarea";
 import Select from "../components/inputComponents/Select";
@@ -9,7 +9,6 @@ import YesNoChoice, {
 } from "../components/inputComponents/YesNoChoice";
 import Url from "../components/inputComponents/Url";
 
-import SearchableDropdown from "../components/inputComponents/SearchableDropdown";
 import SearchableMultiSelect from "../components/inputComponents/SearchableMultiSelect";
 import Email from "../components/inputComponents/Email";
 import Password from "../components/inputComponents/Password";
@@ -36,7 +35,6 @@ import {
   type MonthValue,
 } from "../components/inputComponents/datePickers";
 import Country from "../components/inputComponents/personalInfo/Country";
-import type { CountryType } from "../data/countries";
 import PhoneNumber from "../components/inputComponents/Phonenumber";
 import Address, {
   type AddressValue,
@@ -63,21 +61,15 @@ const Components = () => {
   const [twoFactorAuth, setTwoFactorAuth] = useState<ToggleValue>("");
   const [agreementChoice, setAgreementChoice] = useState<YesNoChoiceValue>("");
   const [websiteUrl, setWebsiteUrl] = useState("");
-  const [isWebsiteUrlValid, setIsWebsiteUrlValid] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<string>("GB");
-  const [isCountryValid, setIsCountryValid] = useState(false);
   const [textInputValue, setTextInputValue] = useState("");
   const [emailValue, setEmailValue] = useState("");
-  const [isEmailValid, setIsEmailValid] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
   const [textareaValue, setTextareaValue] = useState("");
   const [religion, setReligion] = useState("");
-  const [isReligionValid, setIsReligionValid] = useState(false);
   const [ethnicity, setEthnicity] = useState("");
-  const [isEthnicityValid, setIsEthnicityValid] = useState(false);
   const [gender, setGender] = useState("");
   const [customGender, setCustomGender] = useState("");
-  const [isGenderValid, setIsGenderValid] = useState(false);
 
   const [phoneNumber, setPhoneNumber] = useState({
     countryCode: "GB",
@@ -89,75 +81,57 @@ const Components = () => {
     city: "",
     region: "",
   });
-  const [isAddressValid, setIsAddressValid] = useState(false);
   const [selectValue, setSelectValue] = useState("");
   const [checkboxValue, setCheckboxValue] = useState(false);
   const [radioValue, setRadioValue] = useState("option1");
   const [progressValue, setProgressValue] = useState(65);
   const [showModal, setShowModal] = useState(false);
-  const [birthDate, setBirthDate] = useState({
-    day: "",
-    month: "",
-    year: "",
-  });
-  const [isDateValid, setIsDateValid] = useState(false);
   // New date picker states
   const [dobDate, setDobDate] = useState<DateValue>({
     day: "",
     month: "",
     year: "",
   });
-  const [isDobValid, setIsDobValid] = useState(false);
 
   const [futureDate, setFutureDate] = useState<DateValue>({
     day: "",
     month: "",
     year: "",
   });
-  const [isFutureDateValid, setIsFutureDateValid] = useState(false);
 
   const [selectedMonth, setSelectedMonth] = useState<MonthValue>({
     month: "",
     year: "",
   });
-  const [isMonthValid, setIsMonthValid] = useState(false);
   const [university, setUniversity] = useState("");
-  const [isUniversityValid, setIsUniversityValid] = useState(false);
   const [universityMajor, setUniversityMajor] = useState<UniversityMajorValue>({
     degreeName: "",
     level: "",
     category: "",
   });
-  const [isUniversityMajorValid, setIsUniversityMajorValid] = useState(false);
   const [tuitionFeeStatus, setTuitionFeeStatus] =
     useState<TuitionfeeStatusValue>("");
-  const [isTuitionFeeStatusValid, setIsTuitionFeeStatusValid] = useState(false);
 
   // Individual grade component states
   const [gcseGrade, setGcseGrade] = useState<GCSEGradeValue>({
     subject: "",
     grade: "",
   });
-  const [isGcseGradeValid, setIsGcseGradeValid] = useState(false);
   const [alevelGrade, setAlevelGrade] = useState<ALevelGradeValue>({
     subject: "",
     grade: "",
   });
-  const [isAlevelGradeValid, setIsAlevelGradeValid] = useState(false);
 
   const [gpaGrade, setGpaGrade] = useState<GPAGradeValue>({
     gpaValue: "",
     gpaScale: "",
   });
-  const [isGpaGradeValid, setIsGpaGradeValid] = useState(false);
 
   const [ukUniversityGrade, setUkUniversityGrade] =
     useState<UKUniversityGradeValue>({
       category: "honours",
       grade: "",
     });
-  const [isUkUniversityGradeValid, setIsUkUniversityGradeValid] =
-    useState(false);
 
   // Configuration data
   const selectOptions = [
@@ -226,10 +200,6 @@ const searchMultiSelectOptions = (query: string, options: typeof multiSelectOpti
             value={websiteUrl}
             onChange={(e) => setWebsiteUrl(e.target.value)}
             required
-            onValidationChange={(isValid, errorMessage) => {
-              setIsWebsiteUrlValid(isValid);
-              console.log("Website URL validation:", isValid, errorMessage);
-            }}
           />
 
           <h2>Radio Components</h2>
@@ -260,10 +230,6 @@ const searchMultiSelectOptions = (query: string, options: typeof multiSelectOpti
             value={religion}
             onChange={setReligion}
             required
-            onValidationChange={(isValid, errorMessage) => {
-              setIsReligionValid(isValid);
-              console.log("Religion validation:", isValid, errorMessage);
-            }}
           />
           <Ethnicity
             id="ethnicity"
@@ -275,10 +241,6 @@ const searchMultiSelectOptions = (query: string, options: typeof multiSelectOpti
             value={ethnicity}
             onChange={setEthnicity}
             required
-            onValidationChange={(isValid, errorMessage) => {
-              setIsEthnicityValid(isValid);
-              console.log("Ethnicity validation:", isValid, errorMessage);
-            }}
           />
           <Gender
             id="gender"
@@ -293,10 +255,6 @@ const searchMultiSelectOptions = (query: string, options: typeof multiSelectOpti
             showCategories
             allowCustomInput
             placeholder="Search and select your gender identity"
-            onValidationChange={(isValid, errorMessage) => {
-              setIsGenderValid(isValid);
-              console.log("Gender validation:", isValid, errorMessage);
-            }}
           />
           <TuitionfeeStatus
             id="tuition-fee-status"
@@ -305,14 +263,6 @@ const searchMultiSelectOptions = (query: string, options: typeof multiSelectOpti
             value={tuitionFeeStatus}
             onChange={setTuitionFeeStatus}
             required
-            onValidationChange={(isValid, errorMessage) => {
-              setIsTuitionFeeStatusValid(isValid);
-              console.log(
-                "Tuition fee status validation:",
-                isValid,
-                errorMessage
-              );
-            }}
           />
         </section>
 
@@ -351,10 +301,6 @@ const searchMultiSelectOptions = (query: string, options: typeof multiSelectOpti
                 minAge: 13,
                 maxAge: 120,
               }}
-              onValidationChange={(isValid, errorMessage) => {
-                setIsDobValid(isValid);
-                console.log("DOB validation:", isValid, errorMessage);
-              }}
             />
           </Card>
 
@@ -368,10 +314,6 @@ const searchMultiSelectOptions = (query: string, options: typeof multiSelectOpti
               onChange={setFutureDate}
               validation={{
                 required: true,
-              }}
-              onValidationChange={(isValid, errorMessage) => {
-                setIsFutureDateValid(isValid);
-                console.log("Any date validation:", isValid, errorMessage);
               }}
             />
           </Card>
@@ -387,10 +329,6 @@ const searchMultiSelectOptions = (query: string, options: typeof multiSelectOpti
               validation={{
                 required: true,
               }}
-              onValidationChange={(isValid, errorMessage) => {
-                setIsFutureDateValid(isValid);
-                console.log("Future date validation:", isValid, errorMessage);
-              }}
             />
           </Card>
 
@@ -404,10 +342,6 @@ const searchMultiSelectOptions = (query: string, options: typeof multiSelectOpti
               type="any" // or 'past' or 'any'
               validation={{
                 required: true,
-              }}
-              onValidationChange={(isValid, errorMessage) => {
-                setIsMonthValid(isValid);
-                console.log("Month validation:", isValid, errorMessage);
               }}
             />
           </Card>
@@ -426,9 +360,6 @@ const searchMultiSelectOptions = (query: string, options: typeof multiSelectOpti
               required
               searchable
               showFlag
-              onValidationChange={(isValid, errorMessage) => {
-                setIsCountryValid(isValid);
-              }}
             />
             <Address
               id="address"
@@ -438,10 +369,6 @@ const searchMultiSelectOptions = (query: string, options: typeof multiSelectOpti
               onChange={setAddress}
               countryCode={selectedCountry}
               required
-              onValidationChange={(isValid, errorMessage) => {
-                setIsAddressValid(isValid);
-                console.log("Address validation:", isValid, errorMessage);
-              }}
             />
             <TextInput
               id="textInput"
@@ -460,9 +387,6 @@ const searchMultiSelectOptions = (query: string, options: typeof multiSelectOpti
               value={emailValue}
               onChange={(e) => setEmailValue(e.target.value)}
               required
-              onValidationChange={(isValid, errorMessage) => {
-                setIsEmailValid(isValid);
-              }}
             />
 
             <Password
@@ -533,10 +457,6 @@ const searchMultiSelectOptions = (query: string, options: typeof multiSelectOpti
               onChange={setUniversity}
               required
               placeholder="Type at least 4 characters to search..."
-              onValidationChange={(isValid, errorMessage) => {
-                setIsUniversityValid(isValid);
-                console.log("University validation:", isValid, errorMessage);
-              }}
             />
             <UniversityMajor
               id="university-major"
@@ -544,14 +464,6 @@ const searchMultiSelectOptions = (query: string, options: typeof multiSelectOpti
               label="University Degree"
               value={universityMajor}
               onChange={setUniversityMajor}
-              onValidationChange={(isValid, errorMessage) => {
-                setIsUniversityMajorValid(isValid);
-                console.log(
-                  "University major validation:",
-                  isValid,
-                  errorMessage
-                );
-              }}
             />
           </Card>
         </section>
@@ -568,9 +480,6 @@ const searchMultiSelectOptions = (query: string, options: typeof multiSelectOpti
               label="GCSE Grade"
               value={gcseGrade}
               onChange={setGcseGrade}
-              onValidationChange={(isValid, errorMessage) => {
-                setIsGcseGradeValid(isValid);
-              }}
             />
 
             <ALevelGrade
@@ -580,10 +489,6 @@ const searchMultiSelectOptions = (query: string, options: typeof multiSelectOpti
               value={alevelGrade}
               onChange={setAlevelGrade}
               showUCASPoints={true}
-              onValidationChange={(isValid, errorMessage) => {
-                setIsAlevelGradeValid(isValid);
-                console.log("A-Level grade validation:", isValid, errorMessage);
-              }}
             />
 
             <UKUniversityGradeInput
@@ -592,14 +497,6 @@ const searchMultiSelectOptions = (query: string, options: typeof multiSelectOpti
               label="UK University Grade"
               value={ukUniversityGrade}
               onChange={setUkUniversityGrade}
-              onValidationChange={(isValid, errorMessage) => {
-                setIsUkUniversityGradeValid(isValid);
-                console.log(
-                  "UK University grade validation:",
-                  isValid,
-                  errorMessage
-                );
-              }}
             />
 
             <GPAGrade
@@ -608,10 +505,6 @@ const searchMultiSelectOptions = (query: string, options: typeof multiSelectOpti
               label="GPA Grade"
               value={gpaGrade}
               onChange={setGpaGrade}
-              onValidationChange={(isValid, errorMessage) => {
-                setIsGpaGradeValid(isValid);
-                console.log("GPA grade validation:", isValid, errorMessage);
-              }}
             />
           </Card>
         </section>

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
   getUKUniversityGradesByCategory,
-  getUKUniversityGradeLabel,
-  type UKUniversityGrade,
 } from "../../../data/ukuniversityGrades";
 import Select from "../Select";
 
@@ -100,31 +98,6 @@ const UKUniversityGradeInput: React.FC<UniversityGradeProps> = ({
   const hasError = error || !!internalError;
   const errorMessage = typeof error === "string" ? error : internalError;
 
-  const getSelectedGradeInfo = () => {
-    if (!value.grade || !value.category) return null;
-    const gradeOptions = getCurrentGradeOptions();
-    const selectedGrade = gradeOptions.find(
-      (grade) => grade.value === value.grade
-    );
-    return selectedGrade;
-  };
-
-  const selectedGradeInfo = getSelectedGradeInfo();
-
-  const getCategoryDisplayName = (
-    category: UniversityGradeCategory
-  ): string => {
-    switch (category) {
-      case "honours":
-        return "Honours Degree";
-      case "ordinary":
-        return "Ordinary Degree";
-      case "postgraduate":
-        return "Postgraduate";
-      default:
-        return "";
-    }
-  };
 
   // Category options
   const categoryOptions = [

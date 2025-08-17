@@ -4,8 +4,6 @@ import SearchableDropdown, {
 } from "../SearchableDropdown";
 import {
   countries,
-  searchCountries,
-  type CountryType,
 } from "../../../data/countries";
 
 interface CountryProps {
@@ -51,7 +49,6 @@ const Country: React.FC<CountryProps> = ({ showFlag = true, ...props }) => {
   const renderCountryOption = (
     option: SearchableOption,
     isSelected: boolean,
-    isHighlighted: boolean
   ) => (
     <span className="country__option-content">
       {showFlag && option.flag && (

@@ -79,7 +79,7 @@ const OAuth2Redirect: React.FC = () => {
 
         // Create user object
         const user: User = {
-          id: parseInt(userData.id || userData.userId),
+          id: userData.id || userData.userId,
           username: userData.username || userData.name,
           email: userData.email || "",
           roles: userData.roles || [],

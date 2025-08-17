@@ -24,8 +24,6 @@ interface ToggleProps {
 }
 
 const Toggle: React.FC<ToggleProps> = ({
-  id,
-  name,
   label,
   question,
   value,

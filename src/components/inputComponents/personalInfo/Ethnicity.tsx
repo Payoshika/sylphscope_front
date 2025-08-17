@@ -6,8 +6,6 @@ import SearchableDropdown, {
 import {
   ethnicities,
   ethnicityCategories,
-  searchEthnicities,
-  type EthnicityType,
 } from "../../../data/ethnicities";
 
 interface EthnicityProps {

@@ -20,7 +20,6 @@ interface ApplicationListTableProps {
 
 const ApplicationListTable: React.FC<ApplicationListTableProps> = ({ 
   applications, 
-  provider, 
   onViewDetail, 
   onSelect,
   onReject,

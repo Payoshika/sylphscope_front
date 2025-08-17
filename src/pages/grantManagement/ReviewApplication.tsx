@@ -3,7 +3,7 @@ import type { Provider } from "../../types/provider";
 import type { ApplicationDto, GrantProgramApplicationDto, EvaluationOfAnswerDto } from "../../types/application";
 import type { GrantProgram } from "../../types/grantProgram";
 import type { Student } from "../../types/student";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getApplicationsByGrantProgramId, getEvaluationsByGrantProgramId, addReceiver, rejectReceiver } from "../../services/ApplicationService";
 import { getStudentById } from "../../services/StudentService";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
@@ -149,17 +149,6 @@ const ReviewApplication: React.FC<ReviewApplicationProps> = ({ provider, grantPr
     }
   };
 
-  const getApplicationStatus = (application: ApplicationDto) => {
-    return application.status.charAt(0).toUpperCase() + application.status.slice(1);
-  };
-
-  const getEligibilityStatus = (application: ApplicationDto) => {
-    if (!application.eligibilityResult) {
-      return "Not Evaluated";
-    }
-    return application.eligibilityResult.eligible ? "Eligible" : "Not Eligible";
-  };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-GB', {
       year: 'numeric',
@@ -178,16 +167,6 @@ const ReviewApplication: React.FC<ReviewApplicationProps> = ({ provider, grantPr
     // Check for questionId first, then questionGroupId
     const questionEvaluations = applicationEvaluations[questionId] || [];
     return questionEvaluations;
-  };
-
-  // Helper function to get all evaluations for an application
-  const getEvaluationsForApplication = (applicationId: string): EvaluationOfAnswerDto[] => {
-    const applicationEvaluations = evaluations[applicationId];
-    if (!applicationEvaluations) {
-      return [];
-    }
-    
-    return Object.values(applicationEvaluations).flat();
   };
 
   // Helper function to calculate marking score for an application
