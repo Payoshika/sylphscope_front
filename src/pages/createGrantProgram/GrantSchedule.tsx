@@ -19,7 +19,6 @@ interface GrantScheduleProps {
 const GrantSchedule: React.FC<GrantScheduleProps> = ({
   grantProgram,
   setGrantProgram,
-  onUpdateGrant,
   getGrantProgram,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,14 +41,6 @@ const fromDateValue = (val: DateValue): string | null => {
   if (!val.year || !val.month || !val.day) return null;
   return `${val.year}-${val.month.padStart(2, "0")}-${val.day.padStart(2, "0")}`;
 };
-
-const updateScheduleFromBackend = (schedule: any) => ({
-  applicationStartDate: toDateValue(schedule.applicationStartDate),
-  applicationEndDate: toDateValue(schedule.applicationEndDate),
-  decisionDate: toDateValue(schedule.decisionDate),
-  fundDisbursementDate: toDateValue(schedule.fundDisbursementDate),
-});
-
 
   const handleDateChange = (field: keyof GrantProgram["schedule"], value: string | null) => {
     if (isReadOnly) return;
