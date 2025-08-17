@@ -7,7 +7,7 @@ import { createNewGrantProgram } from "../../services/GrantProgramService";
 import type { GrantProgram, StaffRole } from "../../types/grantProgram";
 import type { Provider } from "../../types/provider";
 import type { ProviderStaff } from "../../types/user";
- 
+
 interface GrantOption {
   id: string;
   title: string;
