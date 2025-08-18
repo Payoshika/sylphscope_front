@@ -143,7 +143,7 @@ const Select: React.FC<SelectProps> = ({
   return (
     <div className="form-group" ref={dropdownRef}>
       {label && (
-        <label htmlFor={id} className="form-label">
+        <label htmlFor={id} id={`${id}-label`} className="form-label">
           {label}
           {required && <span className="required-asterisk">*</span>}
         </label>
@@ -151,6 +151,7 @@ const Select: React.FC<SelectProps> = ({
 
       <div className={getSelectClass()}>
         <div
+          id={id}
           className="custom-select__trigger"
           onClick={() => !disabled && setIsOpen(!isOpen)}
           onKeyDown={handleKeyDown}
