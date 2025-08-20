@@ -1,6 +1,6 @@
 import React from "react";
 import { renderHook, act } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { useForm } from "../../src/hooks/useForm";
 
 // minimal onSubmit that returns
@@ -10,7 +10,7 @@ describe("useForm hook", () => {
     const { result } = renderHook(() =>
       useForm({
         initialValues: { a: "" },
-        validate: (vals: any) => (vals.a ? {} : { a: "required" }),
+        validate: (vals: any) => (vals.a ? {} : { a: "required" }) as Record<string, string>,
         onSubmit,
       })
     );
