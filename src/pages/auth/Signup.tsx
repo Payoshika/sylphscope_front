@@ -179,8 +179,6 @@ const Signup: React.FC = () => {
       </div>
       <div className="signup-options">
         <GoogleOAuthButton disabled={isSubmitting} />
-        <GoogleOAuthButton disabled={isSubmitting} />
-        <GoogleOAuthButton disabled={isSubmitting} />
       </div>
     </AuthCard>
   );

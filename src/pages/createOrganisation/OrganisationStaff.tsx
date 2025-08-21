@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import type { ProviderStaff } from "../../types/user";
 import type { Provider } from "../../types/provider";
 import { getStaffByProviderId, removeStaff } from "../../services/ProviderService";
+import { createProviderInvitationCode } from "../../services/ProviderService";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import Button from "../../components/basicComponents/Button";
+import TextInput from "../../components/inputComponents/TextInput";
+import { useToast } from "../../contexts/ToastContext";
 
 interface OrganisationStaffProps {
   provider: Provider;
@@ -12,13 +15,20 @@ interface OrganisationStaffProps {
 }
 
 const OrganisationStaff: React.FC<OrganisationStaffProps> = ({ provider, onNext, onBack }) => {
+  const { showSuccess, showError } = useToast();
   const [staff, setStaff] = useState<ProviderStaff[]>([]);
   const [loading, setLoading] = useState(true);
   const [removingStaff, setRemovingStaff] = useState<string | null>(null);
 
+  // Invitation code state
+  const [invitationCode, setInvitationCode] = useState<string>(provider?.invitationCode ?? "");
+  const [isSavingInvitation, setIsSavingInvitation] = useState(false);
+
   useEffect(() => {
     fetchStaff();
-  }, [provider.id]);
+    // keep local invitationCode in sync if provider prop changes
+    setInvitationCode(provider?.invitationCode ?? "");
+  }, [provider?.id, provider?.invitationCode]);
 
   const fetchStaff = async () => {
     try {
@@ -58,6 +68,33 @@ const OrganisationStaff: React.FC<OrganisationStaffProps> = ({ provider, onNext,
     
     const nameParts = [firstName, middleName, lastName].filter(part => part.trim());
     return nameParts.join(" ").trim() || "Unknown Staff";
+  };
+
+  const handleSaveInvitationCode = async () => {
+    if (!provider?.id) {
+      showError("Provider not available", "Error");
+      return;
+    }
+    if (!invitationCode.trim()) {
+      showError("Please enter an invitation code", "Validation");
+      return;
+    }
+    setIsSavingInvitation(true);
+    try {
+      const updated = await createProviderInvitationCode(provider.id, invitationCode.trim());
+      // update local state from response if available
+      setInvitationCode(updated.invitationCode ?? invitationCode.trim());
+      showSuccess("Invitation code saved", "Success");
+    } catch (err: any) {
+      console.error("Failed to set invitation code", err);
+      if (err?.message?.includes("409") || err?.response?.status === 409) {
+        showError("Invitation code already in use", "Conflict");
+      } else {
+        showError("Failed to save invitation code", "Error");
+      }
+    } finally {
+      setIsSavingInvitation(false);
+    }
   };
 
   if (loading) {
@@ -122,19 +159,43 @@ const OrganisationStaff: React.FC<OrganisationStaffProps> = ({ provider, onNext,
         )}
       </div>
 
-      <div className="navigation-buttons">
-        <Button
-          text="Back"
-          type="button"
-          variant="outline"
-          onClick={onBack}
-        />
-        <Button
-          text="Next"
-          type="button"
-          variant="primary"
-          onClick={onNext}
-        />
+      {/* Invitation code UI */}
+      <div className="section-box" style={{ marginTop: 24 }}>
+        <h5>Staff Invitation Code</h5>
+        <p>Generate or update an invitation code staff can use to join your organisation.</p>
+        <div style={{ marginTop: 12, maxWidth: 420 }}>
+          <TextInput
+            id="invitation-code"
+            name="invitationCode"
+            label="Invitation Code"
+            placeholder="Enter invitation code (max 20 chars)"
+            value={invitationCode}
+            onChange={(e) => setInvitationCode((e.target.value || "").slice(0, 20))}
+          />
+          <div style={{ marginTop: 12, display: "flex", gap: 12 }}>
+            <Button
+              text={provider?.invitationCode ? (isSavingInvitation ? "Updating..." : "Update Code") : (isSavingInvitation ? "Creating..." : "Create Code")}
+              variant="primary"
+              onClick={handleSaveInvitationCode}
+              disabled={isSavingInvitation || !invitationCode.trim()}
+            />
+            <Button
+              text="Clear"
+              variant="outline"
+              onClick={() => setInvitationCode("")}
+              disabled={isSavingInvitation}
+            />
+          </div>
+          <p className="caption" style={{ marginTop: 8 }}>
+            Current code: {provider?.invitationCode ? provider.invitationCode : "Not set"}
+          </p>
+        </div>
+      </div>
+
+      {/* navigation buttons */}
+      <div className="navigation-buttons" style={{ marginTop: 20 }}>
+        <Button text="Back" type="button" variant="outline" onClick={onBack} />
+        <Button text="Next" type="button" variant="primary" onClick={onNext} />
       </div>
     </div>
   );

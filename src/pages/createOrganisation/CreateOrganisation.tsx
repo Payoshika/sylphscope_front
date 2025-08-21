@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation, Navigate } from "react-router-dom";
 import { updateProvider } from "../../services/ProviderService";
 import OrganisationStaff from "./OrganisationStaff";
+import CreateOrBecomeMemberofOrg from "./CreateOrBecomeMemberofOrg";
 
 const steps = [
   { key: "name", label: "Organisation Name" },
@@ -49,8 +50,13 @@ const handleUpdateProvider = async (organisation: Provider) => {
 };
 
   // Optionally, you can show a loading spinner until provider is loaded
-  if (!provider) {
+  if (provider === undefined) {
     return <div>Loading organisation...</div>;
+  }
+
+  // If provider is null (user has no provider yet) render join/create UI
+  if (!provider) {
+    return <CreateOrBecomeMemberofOrg />;
   }
 
   return (

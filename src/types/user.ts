@@ -7,6 +7,7 @@ export interface User {
   mfaEnabled?: boolean; // Optional, if MFA is not always enabled
 }
 
+export type Role = 'STUDENT' | 'PROVIDER';
 export interface CreateUserRequest {
   username: string;
   email: string;
@@ -16,6 +17,7 @@ export interface CreateUserRequest {
 export interface ProfileUpdateRequest {
   username: string;
   email: string;
+  userRoles: Role[];
 }
 export interface UpdateMfaRequest {
   enableMfa: boolean;
