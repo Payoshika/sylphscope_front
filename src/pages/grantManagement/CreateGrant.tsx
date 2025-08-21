@@ -28,8 +28,23 @@ const CreateGrant: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<"duplicate" | null>(null);
   const [selectedGrantToDuplicate, setSelectedGrantToDuplicate] = useState("");
   const navigate = useNavigate();
-  const { provider, providerStaff} = useOutletContext<{ provider: Provider; providerStaff: ProviderStaff;}>();
+  const { provider, providerStaff } = useOutletContext<{ provider: Provider; providerStaff: ProviderStaff;}>();
+
+  // Only Manager or Administrator can create/duplicate grants
+  const isEditor =
+    !!providerStaff &&
+    ["MANAGER", "ADMINISTRATOR"].includes((providerStaff.role || "").toString().toUpperCase());
+
+  const ensureEditor = (): boolean => {
+    if (!isEditor) {
+      alert("Only Manager or Administrator can create or duplicate grants.");
+      return false;
+    }
+    return true;
+  };
+
   const handleCreateNew = async () => {
+    if (!ensureEditor()) return;
     try {
       // Create a new grant program with initial values
       const newGrantProgram: Omit<GrantProgram, 'id' | 'createdAt' | 'updatedAt'> = {
@@ -69,12 +84,18 @@ const CreateGrant: React.FC = () => {
   };
 
   const handleDuplicate = () => {
+    if (!ensureEditor()) return;
     if (selectedGrantToDuplicate) {
       navigate(`/create-grant/duplicate/${selectedGrantToDuplicate}`);
     }
   };
 
   const handleOptionSelect = (option: "duplicate") => {
+    if (!isEditor) {
+      // still allow toggling UI for admins/managers only
+      alert("Only Manager or Administrator can duplicate grants.");
+      return;
+    }
     setSelectedOption(option);
   };
 
@@ -85,6 +106,12 @@ const CreateGrant: React.FC = () => {
         headline="Choose how you want to create your grant program"
         provider={true}
       />
+      
+      {!isEditor && (
+        <div className="read-only-notice" style={{ marginBottom: 16 }}>
+          <p>Only users with the Manager or Administrator role can create or duplicate grant programs.</p>
+        </div>
+      )}
       
       <div className="create-grant-options">
         {/* Create New Option */}
@@ -98,6 +125,7 @@ const CreateGrant: React.FC = () => {
               text="Create New Grant"
               variant="primary"
               onClick={handleCreateNew}
+              disabled={!isEditor}
               size="regular"
             />
           </div>
@@ -114,6 +142,7 @@ const CreateGrant: React.FC = () => {
               text="Duplicate Past Grant"
               variant={selectedOption === "duplicate" ? "primary" : "outline"}
               onClick={() => handleOptionSelect("duplicate")}
+              disabled={!isEditor}
               size="regular"
             />
             {selectedOption === "duplicate" && (
@@ -141,7 +170,7 @@ const CreateGrant: React.FC = () => {
                     text="Continue to Duplicate"
                     variant="primary"
                     onClick={handleDuplicate}
-                    disabled={!selectedGrantToDuplicate}
+                    disabled={!isEditor || !selectedGrantToDuplicate}
                     size="regular"
                   />
                 </div>
@@ -154,4 +183,4 @@ const CreateGrant: React.FC = () => {
   );
 };
 
-export default CreateGrant; 
+export default CreateGrant;

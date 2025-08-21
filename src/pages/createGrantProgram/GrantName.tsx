@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import TextInput from "../../components/inputComponents/TextInput";
 import Button from "../../components/basicComponents/Button";
 import type { GrantProgram } from "../../types/grantProgram";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
+import type { ProviderStaff } from "../../types/user";
+import { canEditGrant } from "../../utility/permissions";
 
 
 interface GrantNameProps {
@@ -27,6 +29,9 @@ const GrantName: React.FC<GrantNameProps> = ({
   error = false,
   required = true,
 }) => {
+  const { providerStaff } = useOutletContext<{ providerStaff?: ProviderStaff }>();
+  // Use helper to determine editability
+  const isEditable = canEditGrant(providerStaff, grantProgram);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
@@ -34,6 +39,7 @@ const GrantName: React.FC<GrantNameProps> = ({
 
   // Handler for TextInput's onChange event
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!isEditable) return; // prevent change if not editable
     onGrantProgramChange({ ...grantProgram, title: e.target.value });
     setSubmitError(null);
     setSubmitSuccess(null);
@@ -77,12 +83,15 @@ const GrantName: React.FC<GrantNameProps> = ({
           required={required}
           error={error}
           autoComplete="off"
+          disabled={!isEditable}
         />
-        <Button
-          text={isSubmitting ? "Saving..." : "Save Grant Name"}
-          disabled={isSubmitting || !grantProgram.title}
-          type="submit"
-        />
+        {isEditable && (
+          <Button
+            text={isSubmitting ? "Saving..." : "Save Grant Name"}
+            disabled={isSubmitting || !grantProgram.title}
+            type="submit"
+          />
+        )}
         {submitError && <div className="error-message">{submitError}</div>}
         {submitSuccess && <div className="success-message">{submitSuccess}</div>}
       </form>

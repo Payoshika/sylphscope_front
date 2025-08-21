@@ -51,8 +51,13 @@ const GrantManagement = () => {
     fetchGrants();
   }, [provider?.id]);
 
-  if (!provider || !providerStaff) {
+    if (provider === undefined || !providerStaff) {
     return <div>Loading grant management...</div>;
+  }
+
+  // If provider is null (user has no provider yet) render join/create UI
+  if (!provider) {
+    navigate("/organisation");
   }
 
   return (

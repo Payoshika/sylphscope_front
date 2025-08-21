@@ -1,7 +1,6 @@
 import Button from "../../components/basicComponents/Button";
 import type { GrantProgram } from "../../types/grantProgram";
-import { GrantStatus } from "../../types/grantProgram";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import { useState, useEffect} from "react";
 import { updateEligibilityCriteria, fetchEligibilityQuestions,fetchEligibilityQuestionGroups, getEligibilityCriteria, createQuestion } from "../../services/GrantProgramService";
@@ -10,6 +9,8 @@ import EligibilityGroupForm from "./EligibilityGroupForm";
 import EligibilityFormBuilder from "./EligibilityFormBuilder";
 import EligibilityForm from "./EligibilityForm";
 import Modal from "../../components/basicComponents/Modal";
+import type { ProviderStaff } from "../../types/user";
+import { canEditGrant } from "../../utility/permissions";
 
 interface GrantEligibilityProps {
   id: string;
@@ -48,9 +49,9 @@ const GrantEligibility: React.FC<GrantEligibilityProps> = ({
   const [showBuilderModal, setShowBuilderModal] = useState(false);
 
   const navigate = useNavigate();
-
-  // Check if the program is in draft status
-  const isReadOnly = grantProgram.status !== GrantStatus.DRAFT;
+  const { providerStaff } = useOutletContext<{ providerStaff?: ProviderStaff }>();
+  const isEditable = canEditGrant(providerStaff, grantProgram);
+  const isReadOnly = !isEditable;
 
   useEffect(() => {
     fetchQuestions();
@@ -334,6 +335,7 @@ function convertToEligibilityFormState(
                 prev.filter((g) => g.groupId !== groupId)
               )
             }
+            isReadOnly={isReadOnly}
             initialCollapsed={true}
             pending={groupForm.isPending}
           />
@@ -351,14 +353,16 @@ function convertToEligibilityFormState(
                     operator={formData.operator}
                     onRemove={() => removeEligibilityForm(index)}
                     onChange={(newOperator, newValues) => {
-                    setEligibilityForms((prev) =>
-                    prev.map((item, idx) =>
-                        idx === index
-                        ? { ...item, operator: newOperator, values: newValues }
-                        : item
-                    )
-                    );
-                }}
+                      if (isReadOnly) return;
+                      setEligibilityForms((prev) =>
+                        prev.map((item, idx) =>
+                          idx === index
+                            ? { ...item, operator: newOperator, values: newValues }
+                            : item
+                        )
+                      );
+                    }}
+                    isReadOnly={isReadOnly}
                 />
             ))}
         </div>

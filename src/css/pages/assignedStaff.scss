@@ -107,3 +107,35 @@
     }
   }
 } 
+
+/* Read-only selected staff list styles */
+.selected-staff-readonly {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.selected-staff-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.6rem 0;
+}
+
+.selected-staff-avatar {
+  width: 40px;
+  height: 40px;
+  background-color: #111;
+  color: #fffdfa;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.selected-staff-name {
+  font-size: 1.4rem;
+  color: #3a3e46;
+}

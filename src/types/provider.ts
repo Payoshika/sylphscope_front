@@ -6,5 +6,6 @@ export interface Provider {
   websiteUrl: string;
   organisationDescription: string;
   logoUrl: string;
-  createdAt: string; 
+  createdAt: string;
+  invitationCode?: string;
 }

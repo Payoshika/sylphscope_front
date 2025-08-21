@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import Textarea from "../../components/inputComponents/Textarea";
 import Button from "../../components/basicComponents/Button";
 import type { GrantProgram } from "../../types/grantProgram";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
+import type { ProviderStaff } from "../../types/user";
+import { canEditGrant } from "../../utility/permissions";
 
 interface GrantDescriptionProps {
   id: string;
@@ -27,8 +29,11 @@ const GrantDescription: React.FC<GrantDescriptionProps> = ({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { providerStaff } = useOutletContext<{ providerStaff?: ProviderStaff }>();
+  const isEditable = canEditGrant(providerStaff, grantProgram);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (!isEditable) return;
     onGrantProgramChange({ ...grantProgram, description: e.target.value });
     setSubmitError(null);
     setSubmitSuccess(null);
@@ -36,6 +41,7 @@ const GrantDescription: React.FC<GrantDescriptionProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isEditable) return;
     setIsSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(null);
@@ -60,19 +66,20 @@ const GrantDescription: React.FC<GrantDescriptionProps> = ({
     <div className="content">
         <TitleAndHeadLine title="Create Description" headline="Provide a detailed description of the grant program" provider={true} />
         <form className="form-group" onSubmit={handleSubmit}>
-        <Textarea
-          id={id}
-          name={name}
-          label="Grant Description"
-        placeholder="Enter the grant program description"
-        value={grantProgram.description}
+  <Textarea
+           id={id}
+           name={name}
+           label="Grant Description"
+         placeholder="Enter the grant program description"
+         value={grantProgram.description}
         onChange={handleInputChange}
-        required={required}
-        rows={6}
-      />
+        disabled={!isEditable}
+         required={required}
+         rows={6}
+       />
       <Button
         text={isSubmitting ? "Saving..." : "Save Description"}
-        disabled={isSubmitting || !grantProgram.description}
+        disabled={isSubmitting || !grantProgram.description || !isEditable}
         type="submit"
       />
       {submitError && <div className="error-message">{submitError}</div>}

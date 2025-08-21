@@ -16,6 +16,7 @@ interface EligibilityFormProps {
   values: any[];
   onChange: (operator: ComparisonOperator, values: any[]) => void;
   onRemove?: () => void; 
+  isReadOnly?: boolean; // <-- Add isReadOnly prop
 }
 
 const EligibilityForm: React.FC<EligibilityFormProps> = ({
@@ -24,6 +25,7 @@ const EligibilityForm: React.FC<EligibilityFormProps> = ({
   values,
   onChange,
   onRemove,
+  isReadOnly, // <-- Destructure isReadOnly prop
 }) => {
   const { question, options = [], operators } = data;
   const [multiSelectError, setMultiSelectError] = React.useState<string>("");
@@ -115,6 +117,7 @@ const handleOperatorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
             placeholder="Select operator"
             label="Condition"
             required
+            disabled={!!isReadOnly}
           />
         </div>
         <div>
@@ -125,7 +128,7 @@ const handleOperatorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
               label={question.questionText}
               value={values[0] ?? ""}
               onChange={handleValueChange}
-              disabled={false}
+              disabled={!!isReadOnly}
             />
           )}
           {question.inputType === "DATE" && (
@@ -135,6 +138,7 @@ const handleOperatorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
               label={question.questionText}
               value={values[0] ?? ""}
               onChange={handleValueChange}
+              disabled={isReadOnly}
             />
           )}
           {(question.inputType === "RADIO" || question.inputType === "MULTISELECT") && searchableOptions.length > 0 && (
@@ -153,6 +157,7 @@ const handleOperatorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
               }
               required={question.isRequired}
               error={multiSelectError}
+              disabled={isReadOnly}
             />
           )}
           {question.inputType === "TEXT" && (
@@ -163,6 +168,7 @@ const handleOperatorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
               value={values[0] ?? ""}
               onChange={handleValueChange}
               required={question.isRequired}
+              disabled={isReadOnly}
             />
           )}
           {question.inputType === "TEXTAREA" && (
@@ -173,6 +179,7 @@ const handleOperatorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
               value={values[0] ?? ""}
               onChange={(e) => handleValueChange(e)}
               required={question.isRequired}
+              disabled={isReadOnly}
             />
           )}
         </div>

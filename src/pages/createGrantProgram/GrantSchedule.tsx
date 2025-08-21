@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
 import type { GrantProgram } from "../../types/grantProgram";
-import { GrantStatus } from "../../types/grantProgram";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import Button from "../../components/basicComponents/Button";
 import DatePicker from "../../components/inputComponents/datePickers/DatePicker";
 import type { DateValue } from "../../components/inputComponents/datePickers/types";
 import { updateGrantProgramSchedule } from "../../services/GrantProgramService";
 import { toDateValue } from "../../components/inputComponents/datePickers/utils";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import type { ProviderStaff } from "../../types/user";
+import { canEditGrant } from "../../utility/permissions";
 
 interface GrantScheduleProps {
   grantProgram: GrantProgram;
@@ -31,8 +32,11 @@ const GrantSchedule: React.FC<GrantScheduleProps> = ({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { providerStaff } = useOutletContext<{ providerStaff?: ProviderStaff }>();
+  const isEditable = canEditGrant(providerStaff, grantProgram);
+  const isReadOnly = !isEditable;
 
-  // Local DateValue map to pass directly to DatePicker and avoid conversions each render
+  // Local DateValue map to pass directly to DatePicker and avoid conversions each renderxe
   const [localDateValues, setLocalDateValues] = useState<Record<string, DateValue>>(() => {
     const init: Record<string, DateValue> = {};
     scheduleFields.forEach(({ key }) => {
@@ -51,8 +55,6 @@ const GrantSchedule: React.FC<GrantScheduleProps> = ({
       return init;
     });
   }, [grantProgram?.id]); // <-- important: depend on id only
-
-  const isReadOnly = grantProgram.status !== GrantStatus.DRAFT;
 
   const fromDateValue = (val: DateValue): string | null => {
     if (!val || !val.year || !val.month || !val.day) return null;

@@ -11,6 +11,7 @@ import { ToastProvider } from "./contexts/ToastContext";
 import Components from "./pages/Components";
 import Signup from "./pages/auth/Signup";
 import Signin from "./pages/auth/Signin";
+import ChooseRole from "./pages/auth/ChooseRole";
 import Settings from "./pages/settings/Settings";
 import OAuth2Redirect from "./pages/auth/Oauth2Redirect";
 import Navigation from "./pages/Navigation";
@@ -38,6 +39,7 @@ function App() {
             <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
             <Route path="/mfa-verification" element={<MfaVerification />} />
             <Route path="/components" element={<Components />} />
+            <Route path="/choose-role" element={<ChooseRole />} />
             {/* Provider routes nested under ProtectedLayout and ProviderLayout */}
             <Route element={<ProtectedLayout />}>
               <Route element={<ProviderLayout />}>

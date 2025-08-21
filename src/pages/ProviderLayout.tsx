@@ -24,8 +24,13 @@ const ProviderLayout: React.FC = () => {
           return;
         }
         setProviderStaff(staffRes.data);
-        const providerRes = await getProviderById(staffRes.data.providerId);
-        setProvider(providerRes.data);
+        if(staffRes.data.providerId === null || staffRes.data.providerId === "") {
+          setProvider(null);
+        }
+        else{
+          const providerRes = await getProviderById(staffRes.data.providerId ? staffRes.data.providerId : "");
+          setProvider(providerRes.data);
+        }
       } catch (err) {
         setProviderStaff(null);
         setProvider(null);

@@ -7,7 +7,7 @@ interface DOBPickerProps {
   id: string;
   name: string;
   label: string;
-  value: DateValue;
+  value: DateValue | null; // allow null value
   onChange: (value: DateValue) => void;
   disabled?: boolean;
   error?: boolean | string;
@@ -28,6 +28,9 @@ const DOBPicker: React.FC<DOBPickerProps> = ({
 }) => {
   const [internalError, setInternalError] = useState("");
 
+  // Use a safe value object so rest of logic doesn't need to check for null
+  const safeValue: DateValue = value ?? { day: "", month: "", year: "" };
+
   // Generate years (past years for DOB)
   const currentYear = new Date().getFullYear();
   const years = generateYears("dob");
@@ -36,38 +39,40 @@ const DOBPicker: React.FC<DOBPickerProps> = ({
   // Validate whenever value changes
   useEffect(() => {
     if (validation) {
-      const { isValid, errorMessage } = validateDate(value, validation);
+      const { isValid, errorMessage } = validateDate(safeValue, validation);
       setInternalError(errorMessage);
       onValidationChange?.(isValid, errorMessage);
     }
+    // only depend on value/null, validation and callback
   }, [value, validation, onValidationChange]);
 
-  // Set default year
+  // Set default year if missing (if parent provided null or empty)
   useEffect(() => {
-    if (!value.year) {
+    if (!safeValue.year) {
       onChange({
-        ...value,
+        ...safeValue,
         year: defaultYear.toString(),
       });
     }
+    // depend on value so this runs when parent first gives null or empty
   }, [value, onChange, defaultYear]);
 
-  const days = generateDays(value.month, value.year);
+  const days = generateDays(safeValue.month, safeValue.year);
 
   const handleDayChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     onChange({
-      ...value,
+      ...safeValue,
       day: e.target.value,
     });
   };
 
   const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newMonth = e.target.value;
-    const newDays = generateDays(newMonth, value.year);
-    const newDay = parseInt(value.day) > newDays.length ? "" : value.day;
+    const newDays = generateDays(newMonth, safeValue.year);
+    const newDay = parseInt(safeValue.day) > newDays.length ? "" : safeValue.day;
 
     onChange({
-      ...value,
+      ...safeValue,
       month: newMonth,
       day: newDay,
     });
@@ -75,11 +80,11 @@ const DOBPicker: React.FC<DOBPickerProps> = ({
 
   const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newYear = e.target.value;
-    const newDays = generateDays(value.month, newYear);
-    const newDay = parseInt(value.day) > newDays.length ? "" : value.day;
+    const newDays = generateDays(safeValue.month, newYear);
+    const newDay = parseInt(safeValue.day) > newDays.length ? "" : safeValue.day;
 
     onChange({
-      ...value,
+      ...safeValue,
       year: newYear,
       day: newDay,
     });
@@ -116,7 +121,7 @@ const DOBPicker: React.FC<DOBPickerProps> = ({
             id={`${id}-day`}
             name={`${name}-day`}
             label="Day"
-            value={value.day}
+            value={safeValue.day}
             onChange={handleDayChange}
             options={dayOptions}
             placeholder="Day"
@@ -130,7 +135,7 @@ const DOBPicker: React.FC<DOBPickerProps> = ({
             id={`${id}-month`}
             name={`${name}-month`}
             label="Month"
-            value={value.month}
+            value={safeValue.month}
             onChange={handleMonthChange}
             options={monthOptions}
             placeholder="Month"
@@ -144,7 +149,7 @@ const DOBPicker: React.FC<DOBPickerProps> = ({
             id={`${id}-year`}
             name={`${name}-year`}
             label="Year"
-            value={value.year}
+            value={safeValue.year}
             onChange={handleYearChange}
             options={yearOptions}
             placeholder="Year"

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import type { GrantProgram } from "../../types/grantProgram";
-import { GrantStatus } from "../../types/grantProgram";
 import NumberInput from "../../components/inputComponents/NumberInput";
 import Button from "../../components/basicComponents/Button";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import Select from "../../components/inputComponents/Select";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import type { ProviderStaff } from "../../types/user";
+import { canEditGrant } from "../../utility/permissions";
 
 interface GrantAmountProps {
   grantProgram: GrantProgram;
@@ -37,9 +38,9 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const navigate = useNavigate();
-
-  // Check if the program is in draft status
-  const isReadOnly = grantProgram.status !== GrantStatus.DRAFT;
+  const { providerStaff } = useOutletContext<{ providerStaff?: ProviderStaff }>();
+  const isEditable = canEditGrant(providerStaff, grantProgram);
+  const isReadOnly = !isEditable;
 
   const handleFixedTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (isReadOnly) return;
@@ -69,7 +70,6 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isReadOnly) return;
-    
     setIsSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(null);

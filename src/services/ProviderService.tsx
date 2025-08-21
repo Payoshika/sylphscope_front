@@ -28,6 +28,7 @@ export const updateProvider = async (provider: Provider) => {
 
 export const getProviderById = async (providerId: string): Promise<{ data: Provider }> => {
     const response = await apiClient.get<Provider>(`/api/providers/${providerId}`);
+    console.log("Provider fetched:", response.data);
     if (!response.data) {
         throw new Error("Provider not found");
     }
@@ -72,4 +73,58 @@ export const getListOfStudentforProvider = async (providerId: string): Promise<M
         throw new Error("Failed to fetch managed students");
     }
     return response.data;
+};
+
+export const createEmptyProvider = async (userId: string): Promise<Provider> => {
+  const response = await apiClient.post<Provider>(`/api/providers/empty?userId=${encodeURIComponent(userId)}`);
+  if (!response.data) {
+    throw new Error("Failed to create empty provider");
+  }
+  return response.data;
+};
+
+export const createProviderInvitationCode = async (
+  providerId: string,
+  invitationCode: string
+): Promise<Provider> => {
+  // backend expects POST /api/providers/{id}/invitation-code with the code in the body
+  console.log("invitation code is", invitationCode);
+  const payload = { invitationCode };
+  const response = await apiClient.post<Provider>(
+    `/api/providers/${encodeURIComponent(providerId)}/invitation-code`,
+    payload
+  );
+  if (!response.data) {
+    throw new Error("Failed to set invitation code");
+  }
+  return response.data;
+};
+
+// Add a staff member to a provider using an invitation code
+export const addStaffMember = async (userId: string, invitationCode: string): Promise<ProviderStaff> => {
+  const response = await apiClient.post<ProviderStaff>(
+    `/api/providers/add-staff-member?userId=${encodeURIComponent(userId)}&invitationCode=${encodeURIComponent(
+      invitationCode
+    )}`
+  );
+  if (!response.data) {
+    throw new Error("Failed to add staff member");
+  }
+  return response.data;
+};
+
+
+export const switchManager = async (
+  managerId: string,
+  otherStaffId: string
+): Promise<ProviderStaff[]> => {
+  const payload = { managerId, otherStaffId };
+  const response = await apiClient.post<ProviderStaff[]>(
+    "/api/providers/switch-manager",
+    payload
+  );
+  if (!response.data) {
+    throw new Error("Failed to switch manager");
+  }
+  return response.data;
 };

@@ -1,18 +1,10 @@
 import React, { useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import type { ProviderStaff, StaffRole } from "../../types/user";
+import type { ProviderStaff } from "../../types/user";
 import { updateStaffProfile } from "../../services/ProviderService";
 import TextInput from "../../components/inputComponents/TextInput";
 import Button from "../../components/basicComponents/Button";
-import Select from "../../components/inputComponents/Select";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
-
-const staffRoleOptions = [
-  { value: "Manager", label: "Manager" },
-  { value: "Administrator", label: "Administrator" },
-  { value: "Assessor", label: "Assessor" },
-  { value: "Volunteer", label: "Volunteer" },
-];
 
 const StaffProfile: React.FC = () => {
   const { providerStaff } = useOutletContext<{ 
@@ -97,15 +89,12 @@ const StaffProfile: React.FC = () => {
           onChange={(e) => handleStaffChange("lastName", e.target.value)}
           required
         />
-        <Select
-          id="role"
-          name="role"
-          label="Role"
-          value={staffForm.role || "manager"}
-          onChange={(e) => handleStaffChange("role", e.target.value as StaffRole)}
-          options={staffRoleOptions}
-          required
-        />
+        <div className="form-group">
+          <label>Role</label>
+          <div className="read-only-field">
+            <p>{staffForm.role ? (staffForm.role.charAt(0).toUpperCase() + staffForm.role.slice(1)) : "Manager"}</p>
+          </div>
+        </div>
         <Button 
           text={isSubmitting ? "Saving..." : "Save Profile"} 
           type="submit" 

@@ -97,7 +97,13 @@ const OAuth2Redirect: React.FC = () => {
             },
           })
         );
-        navigate("/components");
+        console.log("User roles:", userData.roles);
+        if (userData.roles && userData.roles[0] === "ROLE_TEMPORARY") {
+          navigate("/choose-role");
+        }
+        else{
+          navigate("/");
+        }
       } catch (error) {
         console.error("❌ OAuth2 authentication failed:", error);
         showError(
