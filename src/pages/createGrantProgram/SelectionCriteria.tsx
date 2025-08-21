@@ -10,7 +10,10 @@ import Select from "../../components/inputComponents/Select";
 import NumberInput from "../../components/inputComponents/NumberInput";
 import CrossSign from "../../components/icons/CrossSign";
 import TextInput from "../../components/inputComponents/TextInput";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import type { ProviderStaff } from "../../types/user";
+import { canEditGrant } from "../../utility/permissions";
+
 interface SelectionCriteriaProps {
   grantProgram: GrantProgram;
   setGrantProgram: React.Dispatch<React.SetStateAction<GrantProgram>>;
@@ -46,9 +49,12 @@ const SelectionCriteria: React.FC<SelectionCriteriaProps> = ({
   const [customCriteriaName, setCustomCriteriaName] = useState("");
   const [customCriteriaError, setCustomCriteriaError] = useState("");
   const navigate = useNavigate();
+  const { providerStaff } = useOutletContext<{ providerStaff?: ProviderStaff }>();
+  const isEditable = canEditGrant(providerStaff, grantProgram);
+  const isReadOnly = !isEditable;
 
   // Check if the program is in draft status
-  const isReadOnly = grantProgram.status !== GrantStatus.DRAFT;
+  // const isReadOnly = grantProgram.status !== GrantStatus.DRAFT;
 
 
   useEffect(() => {
@@ -327,6 +333,7 @@ const handleSaveSelectionCriteria = async () => {
             onChange={e => setEvaluationScale(e.target.value as EvaluationScale)}
             options={evaluationScaleOptions}
             required
+            disabled={isReadOnly}
           />
         </div>
         <div className={`form-group eligibility-lists ${isReadOnly ? 'form-group--readonly' : ''}`}>

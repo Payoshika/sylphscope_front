@@ -15,7 +15,9 @@ import QuestionDisplay from "./QuestionDisplay";
 import { updateQuestion } from "../../services/GrantProgramService";
 import type { GrantProgram } from "../../types/grantProgram";
 import { GrantStatus } from "../../types/grantProgram";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import type { ProviderStaff } from "../../types/user";
+import { canEditGrant } from "../../utility/permissions";
 
 interface ChooseOrCreateQuestionProps {
   grantProgram: GrantProgram;
@@ -46,9 +48,9 @@ const ChooseOrCreateQuestion: React.FC<ChooseOrCreateQuestionProps> = ({
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [localQuestionIds, setLocalQuestionIds] = useState<string[]>(grantProgram.questionIds || []);
   const navigate = useNavigate();
-
-  // Check if the program is in draft status
-  const isReadOnly = grantProgram.status !== GrantStatus.DRAFT;
+  const { providerStaff } = useOutletContext<{ providerStaff?: ProviderStaff }>();
+  const isEditable = canEditGrant(providerStaff, grantProgram);
+  const isReadOnly = !isEditable;
 
   useEffect(() => {
     setLocalQuestionIds(grantProgram.questionIds || []);

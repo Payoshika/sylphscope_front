@@ -112,3 +112,19 @@ export const addStaffMember = async (userId: string, invitationCode: string): Pr
   }
   return response.data;
 };
+
+
+export const switchManager = async (
+  managerId: string,
+  otherStaffId: string
+): Promise<ProviderStaff[]> => {
+  const payload = { managerId, otherStaffId };
+  const response = await apiClient.post<ProviderStaff[]>(
+    "/api/providers/switch-manager",
+    payload
+  );
+  if (!response.data) {
+    throw new Error("Failed to switch manager");
+  }
+  return response.data;
+};

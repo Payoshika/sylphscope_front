@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import Button from "../../components/basicComponents/Button";
 import Card from "../../components/basicComponents/Card";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import { makeProgramPublic, closeProgram } from "../../services/GrantProgramService";
 import type { GrantProgram } from "../../types/grantProgram";
 import { GrantStatus } from "../../types/grantProgram";
+import type { ProviderStaff } from "../../types/user";
 
 interface ProgramStatusProps {
   grantProgram: GrantProgram;
@@ -13,12 +14,24 @@ interface ProgramStatusProps {
 }
 
 const ProgramStatus: React.FC<ProgramStatusProps> = ({ grantProgram, onGrantProgramChange }) => {
+  const { providerStaff } = useOutletContext<{ providerStaff?: ProviderStaff }>();
+  const isManager = (providerStaff?.role || "").toString().toUpperCase() === "MANAGER";
+  const isEditor = ["MANAGER", "ADMINISTRATOR"].includes((providerStaff?.role || "").toString().toUpperCase());
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
+  // Restrict actions by role:
+  const canMakePublic = grantProgram.status === GrantStatus.DRAFT && isManager;
+  const canCloseProgram = grantProgram.status === GrantStatus.OPEN && isEditor;
+
   const handleMakePublic = async () => {
+    if (!isManager) {
+      setError("Only Manager can make a program public");
+      return;
+    }
     if (grantProgram.status !== GrantStatus.DRAFT) {
       setError("Only draft programs can be made public");
       return;
@@ -31,8 +44,7 @@ const ProgramStatus: React.FC<ProgramStatusProps> = ({ grantProgram, onGrantProg
       const updatedGrantProgram = await makeProgramPublic(grantProgram.id);
       onGrantProgramChange(updatedGrantProgram);
       setSuccess(true);
-      
-      // Redirect to grant management after a short delay
+
       setTimeout(() => {
         navigate("/grant-management");
       }, 2000);
@@ -44,6 +56,10 @@ const ProgramStatus: React.FC<ProgramStatusProps> = ({ grantProgram, onGrantProg
   };
 
   const handleCloseProgram = async () => {
+    if (!isEditor) {
+      setError("Only Manager or Administrator can close a program");
+      return;
+    }
     if (grantProgram.status !== GrantStatus.OPEN) {
       setError("Only open programs can be closed");
       return;
@@ -56,8 +72,7 @@ const ProgramStatus: React.FC<ProgramStatusProps> = ({ grantProgram, onGrantProg
       const updatedGrantProgram = await closeProgram(grantProgram.id);
       onGrantProgramChange(updatedGrantProgram);
       setSuccess(true);
-      
-      // Redirect to grant management after a short delay
+
       setTimeout(() => {
         navigate("/grant-management");
       }, 2000);
@@ -82,9 +97,6 @@ const ProgramStatus: React.FC<ProgramStatusProps> = ({ grantProgram, onGrantProg
     };
     return statusMap[status] || status;
   };
-
-  const canMakePublic = grantProgram.status === GrantStatus.DRAFT;
-  const canCloseProgram = grantProgram.status === GrantStatus.OPEN;
 
   return (
     <div className="program-status-section">
@@ -174,11 +186,16 @@ const ProgramStatus: React.FC<ProgramStatusProps> = ({ grantProgram, onGrantProg
             />
           ) : (
             <div className="status-notice">
-              <p>This program's status is "{getStatusDisplay(grantProgram.status)}".</p>
-              <p>Only draft programs can be made public, and only open programs can be closed.</p>
+              <p>
+                {grantProgram.status === GrantStatus.DRAFT
+                  ? "Only users with the Manager role can make this program public."
+                  : grantProgram.status === GrantStatus.OPEN
+                  ? "Only users with Manager or Administrator role can close this program."
+                  : `This program's status is "${grantProgram.status}".`}
+              </p>
             </div>
           )}
-          
+
           <Button
             onClick={() => navigate("/grant-management")}
             variant="ghost"
@@ -190,4 +207,4 @@ const ProgramStatus: React.FC<ProgramStatusProps> = ({ grantProgram, onGrantProg
   );
 };
 
-export default ProgramStatus; 
+export default ProgramStatus;

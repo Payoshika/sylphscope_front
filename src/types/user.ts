@@ -23,7 +23,7 @@ export interface UpdateMfaRequest {
   enableMfa: boolean;
 }
 
-export type StaffRole = 'manager' | 'administrator' | 'assessor' | 'volunteer';
+export type StaffRole = 'Manager' | 'Administrator' | 'Assessor' | 'Volunteer';
 
 export interface ProviderStaff {
   id: string;

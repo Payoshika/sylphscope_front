@@ -10,7 +10,8 @@ interface EligibilityGroupFormProps {
   onCreate: (group: EligibilityGroupFormState) => void;
   onUpdateCondition?: (groupId: string, idx: number, condition: QuestionConditionPair) => void;
   onDuplicate?: (groupId: string) => void;
-  onRemove?: (groupId: string) => void; // <-- Add this prop
+  onRemove?: (groupId: string) => void;
+  isReadOnly?: boolean; // <-- new prop propagated from parent
   initialCollapsed?: boolean;
   pending?: boolean;
 }
@@ -19,7 +20,8 @@ const EligibilityGroupForm: React.FC<EligibilityGroupFormProps> = ({  group,
   onCreate,
   onUpdateCondition,
   onDuplicate,
-  onRemove, // <-- Add this prop
+  onRemove,
+  isReadOnly = false,
   initialCollapsed = false,
   pending = true,
 }) => {
@@ -29,6 +31,7 @@ const EligibilityGroupForm: React.FC<EligibilityGroupFormProps> = ({  group,
   const [pendingStatus, setPendingStatus] = useState(pending);
 
   const handleConditionChange = (idx: number, operator: ComparisonOperator, values: any[]) => {
+    if (isReadOnly) return;
     const updated = questionConditions.map((pair, i) =>
       i === idx
         ? {
@@ -48,6 +51,7 @@ const EligibilityGroupForm: React.FC<EligibilityGroupFormProps> = ({  group,
   };
 
   const handleCreate = () => {
+    if (isReadOnly) return;
     onCreate({
         ...group,
         groupName,
@@ -67,25 +71,29 @@ const EligibilityGroupForm: React.FC<EligibilityGroupFormProps> = ({  group,
               <button
                 type="button"
                 className="group-name-collapsed"
-                onClick={() => setCollapsed(false)}
+                onClick={() => !isReadOnly && setCollapsed(false)}
               >
                 {groupName}
               </button>
-              <button
-                type="button"
-                className="group-duplicate-btn"
-                onClick={() => onDuplicate && onDuplicate(group.groupId)}
-              >
-                Duplicate
-              </button>
-              <button
-                type="button"
-                className="group-remove-btn"
-                onClick={() => onRemove && onRemove(group.groupId)}
-                aria-label="Remove group"
-              >
-                <CrossSign width={22} height={22} />
-              </button>
+              {!isReadOnly && (
+                <>
+                  <button
+                    type="button"
+                    className="group-duplicate-btn"
+                    onClick={() => onDuplicate && onDuplicate(group.groupId)}
+                  >
+                    Duplicate
+                  </button>
+                  <button
+                    type="button"
+                    className="group-remove-btn"
+                    onClick={() => onRemove && onRemove(group.groupId)}
+                    aria-label="Remove group"
+                  >
+                    <CrossSign width={22} height={22} />
+                  </button>
+                </>
+              )}
             </div>
           ) : (
             <>

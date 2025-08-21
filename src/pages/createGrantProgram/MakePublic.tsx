@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import Button  from "../../components/basicComponents/Button";
 import  Card  from "../../components/basicComponents/Card";
 import  TitleAndHeadLine  from "../../components/TitleAndHeadLine";
 import { makeProgramPublic } from "../../services/GrantProgramService";
 import type { GrantProgram } from "../../types/grantProgram";
 import { GrantStatus } from "../../types/grantProgram";
+import type { ProviderStaff } from "../../types/user";
 
 interface MakePublicProps {
   grantProgram: GrantProgram;
@@ -13,12 +14,20 @@ interface MakePublicProps {
 }
 
 const MakePublic: React.FC<MakePublicProps> = ({ grantProgram, onGrantProgramChange }) => {
+  const { providerStaff } = useOutletContext<{ providerStaff?: ProviderStaff }>();
+  const isManager = (providerStaff?.role || "").toString().toUpperCase() === "MANAGER";
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
+  console.log("isManager:", isManager);
+  console.log("canMakePublic:", );
 
   const handleMakePublic = async () => {
+    if (!isManager) {
+      setError("Only Manager can make a program public");
+      return;
+    }
     if (grantProgram.status !== GrantStatus.DRAFT) {
       setError("Only draft programs can be made public");
       return;
@@ -59,18 +68,17 @@ const MakePublic: React.FC<MakePublicProps> = ({ grantProgram, onGrantProgramCha
   };
 
   const canMakePublic = grantProgram.status === GrantStatus.DRAFT;
-
+  console.log("am i manager? ", isManager);
+  console.log("can make public?", canMakePublic);
   return (
     <div className="make-public-section">
       <TitleAndHeadLine 
         title="Make Program Public" 
         headline="Review your grant program before making it public"
       />
-
       <Card>
         <div className="grant-summary">
           <h3>Grant Program Summary</h3>
-          
           <div className="summary-grid">
             <div className="summary-item">
               <strong>Title:</strong> {grantProgram.title}
@@ -134,15 +142,15 @@ const MakePublic: React.FC<MakePublicProps> = ({ grantProgram, onGrantProgramCha
         )}
 
         <div className="action-buttons">
-          {canMakePublic ? 
+          {isManager ? (
             <Button
               onClick={handleMakePublic}
               disabled={isSubmitting}
               text={isSubmitting ? "Making Public..." : "Make this program Open"}
             />
-           : (
+          ) : (
             <div className="status-notice">
-              <p>Status : Public</p>
+              <p>Only users with the Manager role can change program status.</p>
             </div>
           )}
           
@@ -157,4 +165,4 @@ const MakePublic: React.FC<MakePublicProps> = ({ grantProgram, onGrantProgramCha
   );
 };
 
-export default MakePublic; 
+export default MakePublic;
