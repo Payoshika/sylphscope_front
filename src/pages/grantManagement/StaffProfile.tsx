@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import type { ProviderStaff, StaffRole } from "../../types/user";
+import type { ProviderStaff } from "../../types/user";
 import { updateStaffProfile } from "../../services/ProviderService";
 import TextInput from "../../components/inputComponents/TextInput";
 import Button from "../../components/basicComponents/Button";

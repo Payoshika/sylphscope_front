@@ -12,7 +12,6 @@ const CreateOrBecomeMemberofOrg: React.FC = () => {
   const [invitationCode, setInvitationCode] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate();
   const { showSuccess, showError } = useToast();
 
   const handleCreateOrganisation = async () => {

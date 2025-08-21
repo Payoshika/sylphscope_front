@@ -16,7 +16,6 @@ import type { GrantProgram, Schedule, StaffRole } from "../../types/grantProgram
 import { GrantStatus } from "../../types/grantProgram";
 import { createGrantProgram, updateGrantProgram,getGrantProgramById } from "../../services/GrantProgramService";
 import type { QuestionGroupEligibilityInfoDto, QuestionEligibilityInfoDto, EligibilityCriteriaDTO } from "../../data/questionEligibilityInfoDto";
-import MakePublic from "./MakePublic";
 
 const steps = [
   { key: "name", label: "Grant Name" },

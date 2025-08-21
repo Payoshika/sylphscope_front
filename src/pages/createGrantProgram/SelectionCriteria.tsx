@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import type { GrantProgram, EvaluationScale } from "../../types/grantProgram";
-import { GrantStatus } from "../../types/grantProgram";
 import type { QuestionEligibilityInfoDto } from "../../data/questionEligibilityInfoDto";
 import type { SelectionCriterion } from "../../types/grantProgram";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";

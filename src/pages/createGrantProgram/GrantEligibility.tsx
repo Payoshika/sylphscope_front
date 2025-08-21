@@ -1,6 +1,5 @@
 import Button from "../../components/basicComponents/Button";
 import type { GrantProgram } from "../../types/grantProgram";
-import { GrantStatus } from "../../types/grantProgram";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import { useState, useEffect} from "react";

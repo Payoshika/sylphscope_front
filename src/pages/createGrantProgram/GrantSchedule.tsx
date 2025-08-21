@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import type { GrantProgram } from "../../types/grantProgram";
-import { GrantStatus } from "../../types/grantProgram";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import Button from "../../components/basicComponents/Button";
 import DatePicker from "../../components/inputComponents/datePickers/DatePicker";
@@ -37,7 +36,7 @@ const GrantSchedule: React.FC<GrantScheduleProps> = ({
   const isEditable = canEditGrant(providerStaff, grantProgram);
   const isReadOnly = !isEditable;
 
-  // Local DateValue map to pass directly to DatePicker and avoid conversions each render
+  // Local DateValue map to pass directly to DatePicker and avoid conversions each renderxe
   const [localDateValues, setLocalDateValues] = useState<Record<string, DateValue>>(() => {
     const init: Record<string, DateValue> = {};
     scheduleFields.forEach(({ key }) => {
