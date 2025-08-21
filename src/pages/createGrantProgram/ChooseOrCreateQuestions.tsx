@@ -14,7 +14,6 @@ import QuestionForm from "./QuestionForm";
 import QuestionDisplay from "./QuestionDisplay";
 import { updateQuestion } from "../../services/GrantProgramService";
 import type { GrantProgram } from "../../types/grantProgram";
-import { GrantStatus } from "../../types/grantProgram";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import type { ProviderStaff } from "../../types/user";
 import { canEditGrant } from "../../utility/permissions";

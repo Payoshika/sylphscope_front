@@ -4,7 +4,6 @@ import TextInput from "../../components/inputComponents/TextInput";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import { createEmptyProvider, addStaffMember } from "../../services/ProviderService";
 import { useAuth } from "../../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
 import { useToast } from "../../contexts/ToastContext";
 
 const CreateOrBecomeMemberofOrg: React.FC = () => {
