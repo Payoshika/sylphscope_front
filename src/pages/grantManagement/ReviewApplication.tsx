@@ -31,6 +31,13 @@ const ReviewApplication: React.FC<ReviewApplicationProps> = ({ provider, grantPr
     label: grant.title
   }));
 
+  // Auto-select the first grant program after initial render when none selected
+  useEffect(() => {
+    if (!selectedGrantProgramId && grantPrograms && grantPrograms.length > 0) {
+      setSelectedGrantProgramId(grantPrograms[0].id);
+    }
+  }, [grantPrograms, selectedGrantProgramId]);
+  
   useEffect(() => {
     if (selectedGrantProgramId) {
       fetchApplications(selectedGrantProgramId);
@@ -373,4 +380,4 @@ const ReviewApplication: React.FC<ReviewApplicationProps> = ({ provider, grantPr
   );
 };
 
-export default ReviewApplication; 
+export default ReviewApplication;

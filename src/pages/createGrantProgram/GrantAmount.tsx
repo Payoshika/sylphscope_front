@@ -123,6 +123,7 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
           onChange={handleMinAmountChange}
           min={0}
           disabled={isSubmitting || isReadOnly}
+          suffix="£"
         />
         {fixedType !== "fixed" && (
           <NumberInput
@@ -133,6 +134,7 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
             onChange={handleMaxAmountChange}
             min={minAmount}
             disabled={isSubmitting || isReadOnly}
+            suffix="£"
           />
         )}
         <NumberInput

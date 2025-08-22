@@ -2,6 +2,7 @@
 @use "../global/mixins" as *;
 
 .staff-section {
+  width: 100%;
   @include Box;
   @include Padding2rem;
   @include BoxShallowShadow;
@@ -41,37 +42,76 @@
 }
 
 .staff-item {
+  width: 100%;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
+  align-items: center; /* center items vertically */
+  gap: 1rem;
+  padding: 1rem 1.25rem;
   border: 1px solid $border-color;
   border-radius: 8px;
   background-color: $background-color;
-  transition: all 0.2s ease;
-  
+  transition: all 0.12s ease;
   &:hover {
-    box-shadow: 0 2px 8px rgba($text-color, 0.1);
+    box-shadow: 0 2px 6px rgba($text-color, 0.06);
+  }
+
+  /* Layout: left area contains name + role select inline,
+     right area contains actions (buttons) aligned center */
+  .staff-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1; /* take available space so actions stay to the right */
+    min-width: 0;
+  }
+
+  .staff-name {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    
+    h4 {
+      color: $text-color;
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .staff-role {
+      /* keep role select compact and vertically centered */
+      display: inline-flex;
+      align-items: center;
+      padding: 0;
+      background: transparent;
+    }
+  }
+
+  .staff-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-left: 0.5rem;
   }
 }
 
 .staff-info {
   flex: 1;
   
-  .staff-name {
-    @include MarginBottom1rem;
-    
+  .staff-name {    
     h4 {
       color: $text-color;
       font-size: 1.6rem;
       font-weight: 600;
-      @include MarginBottom1rem;
     }
-    
+
+    .form-group{
+      margin-bottom: 0;
+    }
+
     .staff-role {
       display: inline-block;
       padding: 0.3rem 0.8rem;
-      background-color: rgba($info-color, 0.1);
       color: $info-color;
       border-radius: 4px;
       font-size: 1.2rem;
@@ -149,4 +189,4 @@
   .staff-info .staff-details p {
     font-size: 1.2rem;
   }
-} 
+}

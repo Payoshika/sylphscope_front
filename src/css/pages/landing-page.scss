@@ -1,0 +1,166 @@
+// $primary: #2d7d32; // calming green
+// $accent: #1368b5;  // professional blue
+// $muted: #6b7280;
+// $bg: #f7fbfc;
+// $container-max: 1200px;
+// $gap: 1.25rem;
+
+// .landing {
+//   background: linear-gradient(180deg, #ffffff 0%, $bg 100%);
+//   color: #111827;
+//   a { text-decoration: none; }
+// }
+
+// /* Hero */
+// .hero {
+//   max-width: $container-max;
+//   margin: 0 auto;
+//   padding: 3.5rem 1.25rem;
+//   display: grid;
+//   grid-template-columns: 1fr 360px;
+//   gap: $gap;
+//   align-items: center;
+
+//   @media (max-width: 900px) {
+//     grid-template-columns: 1fr;
+//     padding: 2rem 1rem;
+//   }
+
+//   .heroInner {
+//     .title {
+//       font-size: 2.25rem;
+//       margin: 0 0 0.5rem 0;
+//       color: #0f172a;
+//       font-weight: 700;
+//     }
+//     .subtitle {
+//       color: $muted;
+//       font-size: 1.05rem;
+//       margin-bottom: 1.25rem;
+//     }
+//     .ctas {
+//       display: flex;
+//       gap: 0.75rem;
+//       flex-wrap: wrap;
+//       .ctaPrimary {
+//         background: $primary;
+//         color: #fff;
+//         padding: 0.85rem 1.1rem;
+//         border-radius: 8px;
+//         font-weight: 700;
+//         box-shadow: 0 6px 18px rgba(45,125,50,0.12);
+//       }
+//       .ctaSecondary {
+//         border: 2px solid rgba(19,104,181,0.12);
+//         color: $accent;
+//         padding: 0.7rem 1rem;
+//         border-radius: 8px;
+//         background: transparent;
+//         font-weight: 600;
+//       }
+//     }
+//   }
+
+//   .heroVisual {
+//     display: flex;
+//     flex-direction: column;
+//     gap: 0.8rem;
+//     align-items: stretch;
+//     .card {
+//       background: #fff;
+//       border-radius: 10px;
+//       padding: 1rem;
+//       border: 1px solid rgba(16,24,40,0.04);
+//       box-shadow: 0 8px 20px rgba(15,23,42,0.03);
+//       strong { display:block; margin-bottom: 0.25rem; }
+//       p { margin: 0; color: $muted; font-size: 0.95rem; }
+//     }
+//   }
+// }
+
+// /* Sections */
+// .section, .sectionAlt {
+//   max-width: $container-max;
+//   margin: 0 auto;
+//   padding: 2rem 1.25rem;
+// }
+
+// .sectionTitle {
+//   font-size: 1.5rem;
+//   margin-bottom: 1rem;
+//   color: #0f172a;
+//   font-weight: 700;
+// }
+
+// .grid {
+//   display: grid;
+//   gap: 1rem;
+//   grid-template-columns: 1fr 1fr;
+//   @media (max-width: 900px) { grid-template-columns: 1fr; }
+// }
+
+// .cardFeature {
+//   background: #fff;
+//   padding: 1rem;
+//   border-radius: 8px;
+//   border: 1px solid rgba(16,24,40,0.04);
+//   ul { margin: 0.5rem 0 0 1rem; color: $muted; line-height: 1.5; }
+// }
+
+// /* Steps */
+// .steps {
+//   list-style: none;
+//   display: flex;
+//   gap: 1rem;
+//   padding: 0;
+//   margin: 1rem 0 0 0;
+//   li {
+//     background: #fff;
+//     padding: 1rem;
+//     border-radius: 8px;
+//     border: 1px solid rgba(16,24,40,0.04);
+//     flex: 1;
+//     p { color: $muted; margin: 0.5rem 0 0 0; }
+//   }
+//   @media (max-width: 700px) { flex-direction: column; }
+// }
+
+// /* Features grid */
+// .featuresGrid {
+//   display: grid;
+//   gap: 1rem;
+//   grid-template-columns: repeat(4, 1fr);
+//   @media (max-width: 1100px) { grid-template-columns: repeat(2, 1fr); }
+//   @media (max-width: 600px) { grid-template-columns: 1fr; }
+// }
+// .featureItem {
+//   background: #fff;
+//   border-radius: 10px;
+//   padding: 1rem;
+//   text-align: left;
+//   border: 1px solid rgba(16,24,40,0.04);
+//   .featureIcon { font-size: 1.6rem; margin-bottom: 0.6rem; }
+//   h4 { margin: 0 0 0.4rem 0; font-size: 1.05rem; }
+//   p { margin: 0; color: $muted; font-size: 0.95rem; }
+// }
+
+// /* Footer */
+// .footer {
+//   background: transparent;
+//   padding: 2rem 1.25rem;
+//   border-top: 1px solid rgba(16,24,40,0.04);
+//   .footerInner {
+//     max-width: $container-max;
+//     margin: 0 auto;
+//     display:flex;
+//     align-items:center;
+//     justify-content:space-between;
+//     gap: 1rem;
+//     .brand { font-weight:700; color:#0f172a; }
+//     .footerNav { display:flex; gap: 1rem; a { color: $muted; } }
+//   }
+//   .copy { max-width: $container-max; margin: .5rem auto 0 auto; text-align:center; color: $muted; font-size: 0.95rem; }
+// }
+
+// /* small tweaks */
+// .sectionAlt { background: rgba(19,104,181,0.03); border-top: 1px solid rgba(16,24,40,0.02); border-bottom: 1px solid rgba(16,24,40,0.02); }

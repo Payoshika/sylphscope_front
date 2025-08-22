@@ -3,6 +3,8 @@
 
 .section-box {
   width: 100%;
+  @include Box;
+  @include BoxShallowShadow;
   h3 {
     color: $text-color;
     @include MarginBottom1rem;
@@ -17,6 +19,7 @@
     @include Box;
     @include BoxShallowShadow;
     @include Padding2rem;
+    padding: 2rem !important;
   @include ColJustifyStartFlexbox;
 }
 

@@ -25,6 +25,7 @@ import StudentDashboard from "./pages/studentDashboard/StudentDashboard";
 import StudentApplication from "./pages/studentApplication/StudentApplication";
 import ProviderLayout from "./pages/ProviderLayout";
 import StudentLayout from "./pages/StudentLayout";
+import LandingPage from "./pages/LandingPage"
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
             <Route path="/mfa-verification" element={<MfaVerification />} />
             <Route path="/components" element={<Components />} />
             <Route path="/choose-role" element={<ChooseRole />} />
+            <Route path="/landing-page" element={<LandingPage />} />
             {/* Provider routes nested under ProtectedLayout and ProviderLayout */}
             <Route element={<ProtectedLayout />}>
               <Route element={<ProviderLayout />}>
@@ -62,7 +64,7 @@ function App() {
               <Route path="settings" element={<Settings />} />
             </Route>
             {/* Catch all - redirect to signin */}
-            <Route path="*" element={<Navigate to="/signin" replace />} />
+            <Route path="*" element={<Navigate to="/landing-page" replace />} />
           </Routes>
           <ToastContainer />
         </Router>

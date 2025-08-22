@@ -236,9 +236,9 @@ const OrganisationStaff: React.FC<OrganisationStaffProps> = ({ provider, onNext,
             <p>No staff members found for this organisation.</p>
           </div>
         ) : (
-          <div className="staff-list">
+          <ul className="staff-list" role="list">
             {staff.map((staffMember) => (
-              <div key={staffMember.id} className="staff-item">
+              <li key={staffMember.id} className="staff-item" role="listitem">
                 <div className="staff-info">
                   <div className="staff-name">
                     <h4>{`${staffMember.firstName ?? ""} ${staffMember.middleName ?? ""} ${staffMember.lastName ?? ""}`.trim() || "Unknown Staff"}</h4>
@@ -266,10 +266,6 @@ const OrganisationStaff: React.FC<OrganisationStaffProps> = ({ provider, onNext,
                       )}
                     </div>
                   </div>
-                  <div className="staff-details">
-                    <p>Staff ID: {staffMember.id}</p>
-                    <p>User ID: {staffMember.userId}</p>
-                  </div>
                 </div>
                 <div className="staff-actions">
                     {isManager && (
@@ -285,9 +281,9 @@ const OrganisationStaff: React.FC<OrganisationStaffProps> = ({ provider, onNext,
                       />
                     )}
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
       </div>
 

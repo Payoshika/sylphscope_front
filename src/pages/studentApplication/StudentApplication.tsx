@@ -368,7 +368,17 @@ const StudentApplication = () => {
                   grantProgramId={grantProgramId ?? ""}
                 />
               ) : (
-                <div>Loading application...</div>
+                <div className="no-application-notice" style={{ padding: "1.2rem" }}>
+                  <h3>Save Eligibility & Questions</h3>
+                  <p>
+                    This application has not been created yet. Please save the eligibility criteria and
+                    questions for this grant program before you can submit an application.
+                  </p>
+                  <p>
+                    Go to the <strong>Eligibility</strong> and <strong>Questions</strong> steps and save your changes,
+                    then return here to apply.
+                  </p>
+                </div>
               )
             }
           />

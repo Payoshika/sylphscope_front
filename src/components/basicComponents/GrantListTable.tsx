@@ -134,7 +134,7 @@ const GrantListTable: React.FC<GrantListTableProps> = ({
                   }
                   break;
                 case "applicants":
-                  cellContent = (grant.numOfAward ? grant.numOfAward : "-") + " / " + (grant.applicationCount?.toString() || "0");
+                  cellContent = (grant.applicationCount?.toString() || "0") + " / " + (grant.numOfAward ? grant.numOfAward : "-");
                   break;
                 case "actions":
                   cellContent = getActionText?.(grant) || "View Detail";

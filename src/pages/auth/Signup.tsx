@@ -77,9 +77,9 @@ const Signup: React.FC = () => {
       if (response.success) {
         showSuccess(
           "Your account has been created successfully!",
-          "Welcome to SylphScope"
+          "Welcome to Figorous"
         );
-        navigate("/components");
+        navigate("/signin");
       } else {
         const errorMessage = response.message || "Registration failed";
         showError(errorMessage, "Registration Failed");
