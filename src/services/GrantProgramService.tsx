@@ -243,3 +243,17 @@ export const closeProgram = async (grantProgramId: string): Promise<GrantProgram
   }
   return response.data;
 };
+ 
+export const duplicateGrantProgram = async (
+  grantProgramId: string,
+  providerId: string,
+  providerStaffId: string
+): Promise<GrantProgram> => {
+  const qs = `grantProgramId=${encodeURIComponent(grantProgramId)}&providerId=${encodeURIComponent(providerId)}&providerStaffId=${encodeURIComponent(providerStaffId)}`;
+  const response = await apiClient.post<GrantProgram>(`/api/grant-programs/duplicate?${qs}`);
+  if (!response.data) {
+    throw new Error("Failed to duplicate grant program");
+  }
+  return response.data;
+};
+

@@ -82,7 +82,7 @@ const GrantManagement = () => {
           />
           <Route
             path="create"
-            element={<CreateGrant />}
+            element={<CreateGrant grantPrograms={grantPrograms} />}
           />
           <Route
             path="messages"
