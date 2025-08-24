@@ -1,17 +1,60 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Button from "../components/basicComponents/Button";
+import { getGrantPrograms } from "../services/GrantProgramService";
+import type { GrantProgram } from "../types/grantProgram";
 
 const LandingPage: React.FC = () => {
+  const [grantPrograms, setGrantPrograms] = useState<GrantProgram[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchGrantPrograms = async () => {
+      try {
+        setLoading(true);
+        const response = await getGrantPrograms(0, 20); // Fetch more to have options after filtering
+        // Filter to only show OPEN grants that students can apply to
+        const openGrants = response.content.filter(grant => grant.status === 'OPEN');
+        setGrantPrograms(openGrants);
+      } catch (err) {
+        console.error("Error fetching grant programs:", err);
+        setError("Failed to load grant programs");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGrantPrograms();
+  }, []);
+
+  const formatAmount = (awards: number[] | undefined): string => {
+    if (!awards || awards.length === 0) return "Amount TBD";
+    if (awards.length === 1) return `$${awards[0].toLocaleString()}`;
+    const min = Math.min(...awards);
+    const max = Math.max(...awards);
+    return `$${min.toLocaleString()} - $${max.toLocaleString()}`;
+  };
+
+  const formatDeadline = (endDate: string | null): string => {
+    if (!endDate) return "No deadline set";
+    const date = new Date(endDate);
+    return `Deadline: ${date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
+    })}`;
+  };
+
   return (
     <>
     {/* banner section */}
-    <div className="max-w-[1400px] mx-auto flex flex-col justify-center items-center md:flex-row gap-8">
+    <div className="max-w-[1400px] mx-auto flex flex-col justify-center items-center md:flex-row gap-8 mt-8 py-8">
       <div className="flex-1 flex justify-center">
         <div className="flex flex-col items-center gap-4 p-12 max-w-[45rem]">
           <h2 className="text-center">Apply Student grant within 2 minutes </h2>
           <p className="mb-8 text-left">Figorous,  stands for Fast and Rigorous removes the manual application mandain by storing your past application record and automatically fills out application documents for you.</p>
           <Button 
-            text="Signup to start" 
+            text="Signup to start applying" 
             variant="primary" 
             onClick={() => window.location.href = "/signup"}
           />
@@ -19,37 +62,37 @@ const LandingPage: React.FC = () => {
       </div>
       <div className="flex-1 rounded shadow p-12">
         <div className="w-full flex flex-col gap-4 p-4">
-          <h3 className="">Available Student Grants</h3>
-          <div className="flex flex gap-4">
-            {/* Grant Card 1 */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex-1 min-w-0">
-              <h5 className="">Academic Excellence Scholarship</h5>
-              <p className="text-sm text-gray-600 mb-2">For students with outstanding academic performance</p>
-              <div className="flex justify-between items-center">
-                <span className="text-green-600 font-semibold">$5,000</span>
-                <span className="text-xs text-gray-500">Deadline: Dec 31, 2025</span>
+          <h3 className="">Recent Grant Programs</h3>
+          <div className="flex flex-col sm:flex-row gap-4">
+            {loading ? (
+              <div className="flex-1 text-center py-8">
+                <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mb-2"></div>
+                <p className="text-gray-500">Loading grants...</p>
               </div>
-            </div>
-
-            {/* Grant Card 2 */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex-1 min-w-0">
-              <h5 className="">STEM Innovation Grant</h5>
-              <p className="text-sm text-gray-600 mb-2">Supporting students in Science, Technology, Engineering & Math</p>
-              <div className="flex justify-between items-center">
-                <span className="text-green-600 font-semibold">$3,500</span>
-                <span className="text-xs text-gray-500">Deadline: Jan 15, 2026</span>
+            ) : error ? (
+              <div className="flex-1 text-center py-8">
+                <p className="text-red-500">{error}</p>
               </div>
-            </div>
-
-            {/* Grant Card 3 */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex-1 min-w-0">
-              <h5 className="">Community Service Award</h5>
-              <p className="text-sm text-gray-600 mb-2">Recognizing students who give back to their communities</p>
-              <div className="flex justify-between items-center">
-                <span className="text-green-600 font-semibold">$2,000</span>
-                <span className="text-xs text-gray-500">Deadline: Nov 30, 2025</span>
+            ) : grantPrograms.length === 0 ? (
+              <div className="flex-1 text-center py-8">
+                <p className="text-gray-500">No grants available at the moment</p>
               </div>
-            </div>
+            ) : (
+              grantPrograms.slice(0, 3).map((grant) => (
+                <div key={grant.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex-1 min-w-0 hover:shadow-md transition-shadow">
+                  <h5 className="">{grant.title}</h5>
+                  <p className="text-sm text-gray-600 mb-2">
+                    {grant.description.length > 80 
+                      ? grant.description.substring(0, 80) + "..." 
+                      : grant.description}
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <span className="text-green-600 font-semibold">{formatAmount(grant.award)}</span>
+                    <span className="text-xs text-gray-500">{formatDeadline(grant.schedule.applicationEndDate)}</span>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

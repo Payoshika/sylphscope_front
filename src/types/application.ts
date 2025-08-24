@@ -32,8 +32,8 @@ export interface EligibilityResultDto {
   applicationId: string;
   grantProgramId: string;
   eligible: boolean;
-  evaluatedAt: string; // ISO string
-  updatedAt: string;   // ISO string
+  evaluatedAt: string; // ISO string (corresponds to Java Instant)
+  updatedAt: string;   // ISO string (corresponds to Java Instant)
   failedCriteria: string[];
   passedCriteria: string[];
 }
@@ -70,6 +70,7 @@ export interface EvaluationOfAnswerDto {
   questionGroupId: string;
   value: number;
   evaluationScale: EvaluationScale;
+  comment?: string;
   createdAt: string; // ISO string
   updatedAt: string; // ISO string
 }

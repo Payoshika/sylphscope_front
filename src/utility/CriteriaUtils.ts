@@ -56,12 +56,26 @@ export function doesAnswerMeetCriteria(
     }
   }
 
+  // Normalize string answers and values for case-insensitive comparison
+  const normalizeForComparison = (value: any): any => {
+    if (typeof value === "string") {
+      return value.toLowerCase();
+    }
+    if (Array.isArray(value)) {
+      return value.map(v => typeof v === "string" ? v.toLowerCase() : v);
+    }
+    return value;
+  };
+
+  const normalizedAnswer = normalizeForComparison(answer);
+  const normalizedValues = values.map(normalizeForComparison);
+
   // Non-date logic (original)
   switch (operator) {
     case "equals":
-      return values.some(v => v === answer);
+      return normalizedValues.some(v => v === normalizedAnswer);
     case "not_equals":
-      return values.every(v => v !== answer);
+      return normalizedValues.every(v => v !== normalizedAnswer);
     case "greater_than":
       return typeof answer === "number" && answer > values[0];
     case "less_than":
@@ -71,17 +85,21 @@ export function doesAnswerMeetCriteria(
     case "less_than_or_equal":
       return typeof answer === "number" && answer <= values[0];
     case "in_list":
-      return Array.isArray(answer)
-        ? answer.some(a => values.includes(a))
-        : values.includes(answer);
+      return Array.isArray(normalizedAnswer)
+        ? normalizedAnswer.some(a => normalizedValues.includes(a))
+        : normalizedValues.includes(normalizedAnswer);
     case "not_in_list":
-      return Array.isArray(answer)
-        ? answer.every(a => !values.includes(a))
-        : !values.includes(answer);
+      return Array.isArray(normalizedAnswer)
+        ? normalizedAnswer.every(a => !normalizedValues.includes(a))
+        : !normalizedValues.includes(normalizedAnswer);
     case "contains":
-      return typeof answer === "string" && values.some(v => answer.includes(v));
+      return typeof normalizedAnswer === "string" && normalizedValues.some(v => 
+        typeof v === "string" && normalizedAnswer.includes(v)
+      );
     case "not_contains":
-      return typeof answer === "string" && values.every(v => !answer.includes(v));
+      return typeof normalizedAnswer === "string" && normalizedValues.every(v => 
+        typeof v === "string" && !normalizedAnswer.includes(v)
+      );
     case "exists":
       return answer !== undefined && answer !== null && answer !== "";
     case "not_exists":

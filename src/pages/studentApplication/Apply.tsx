@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import type { ApplicationDto } from "../../types/application";
-import { applyGrant } from "../../services/ApplicationService";
+import type { ApplicationDto, EligibilityResultDto } from "../../types/application";
+import { applyGrant, getEligibilityResultByApplicationId } from "../../services/ApplicationService";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import Button from "../../components/basicComponents/Button";
 
@@ -15,13 +15,49 @@ const Apply: React.FC<ApplyProps> = ({ application, grantProgramId }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+  const [eligibilityResult, setEligibilityResult] = useState<EligibilityResultDto | null>(null);
+  const [loadingEligibility, setLoadingEligibility] = useState(true);
 
   const isAlreadyApplied = application.status === "applied";
   const isDraftStatus = application.status === "draft";
-  const canSubmit = isDraftStatus && !isAlreadyApplied;
-  const isDisabled = isSubmitting || !canSubmit;
+  const isEligible = eligibilityResult?.eligible ?? false;
+  const canSubmit = isDraftStatus && !isAlreadyApplied && isEligible;
+  const isDisabled = isSubmitting || !canSubmit || loadingEligibility;
+
+  // Fetch eligibility result when component mounts
+  useEffect(() => {
+    const fetchEligibilityResult = async () => {
+      try {
+        setLoadingEligibility(true);
+        const result = await getEligibilityResultByApplicationId(application.id);
+        setEligibilityResult(result);
+        console.log("Eligibility result:", result);
+      } catch (error) {
+        console.error("Failed to fetch eligibility result:", error);
+        // If we can't fetch eligibility, assume not eligible for safety
+        setEligibilityResult({ 
+          id: "", 
+          studentId: application.studentId, 
+          applicationId: application.id, 
+          grantProgramId: application.grantProgramId, 
+          eligible: false, 
+          evaluatedAt: "", 
+          updatedAt: "", 
+          failedCriteria: [], 
+          passedCriteria: [] 
+        });
+      } finally {
+        setLoadingEligibility(false);
+      }
+    };
+
+    fetchEligibilityResult();
+  }, [application.id]);
 
   const getStatusMessage = () => {
+    if (!isEligible && eligibilityResult) {
+      return "You are not eligible for this grant program. Please review the eligibility criteria.";
+    }
     switch (application.status) {
       case "draft":
         return "Your application is ready for submission.";
@@ -41,6 +77,9 @@ const Apply: React.FC<ApplyProps> = ({ application, grantProgramId }) => {
   };
 
   const getStatusColor = () => {
+    if (!isEligible && eligibilityResult) {
+      return "status-ineligible";
+    }
     switch (application.status) {
       case "draft":
         return "status-draft";
@@ -59,6 +98,14 @@ const Apply: React.FC<ApplyProps> = ({ application, grantProgramId }) => {
     }
   };
 
+  const getSubmitButtonText = () => {
+    if (loadingEligibility) return "Checking Eligibility...";
+    if (isSubmitting) return "Submitting...";
+    if (!isEligible) return "Not Eligible";
+    if (!isDraftStatus) return "Cannot Submit";
+    return "Submit Application";
+  };
+
   const handleApply = async () => {
     if (!canSubmit) return;
     
@@ -71,7 +118,7 @@ const Apply: React.FC<ApplyProps> = ({ application, grantProgramId }) => {
       setSubmitSuccess("Application submitted successfully!");
       // Redirect to student dashboard after a short delay
       setTimeout(() => {
-        navigate("/student-dashboard");
+        navigate("/student-dashboard/applied");
       }, 2000);
     } catch (error) {
       console.error("Failed to apply for grant:", error);
@@ -84,6 +131,21 @@ const Apply: React.FC<ApplyProps> = ({ application, grantProgramId }) => {
   const handleCancel = () => {
     navigate(`/student-application/${grantProgramId}/questions`);
   };
+
+  if (loadingEligibility) {
+    return (
+      <div className="content">
+        <TitleAndHeadLine
+          title="Submit Application"
+          headline="Review and submit your grant application"
+          provider={false}
+        />
+        <div className="loading-eligibility">
+          <p>Checking eligibility...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="content">
@@ -109,12 +171,45 @@ const Apply: React.FC<ApplyProps> = ({ application, grantProgramId }) => {
               {application.status}
             </span>
           </div>
+          <div className="summary-item">
+            <strong>Eligibility Status:</strong>
+            <span className={`status-display ${isEligible ? "status-eligible" : "status-ineligible"}`}>
+              {isEligible ? "Eligible" : "Not Eligible"}
+            </span>
+          </div>
           {(application.status === "applied" || application.status === "selected" || application.status === "not selected") && (
             <div className="summary-item">
               <strong>Submitted:</strong> {new Date(application.updatedAt).toLocaleDateString()}
             </div>
           )}
         </div>
+
+        {/* Show eligibility details if not eligible */}
+        {eligibilityResult && !isEligible && (
+          <div className="eligibility-details">
+            <h4>Eligibility Details</h4>
+            {eligibilityResult.failedCriteria.length > 0 && (
+              <div className="failed-criteria">
+                <p><strong>Failed Criteria:</strong></p>
+                <ul>
+                  {eligibilityResult.failedCriteria.map((criteria, index) => (
+                    <li key={index}>{criteria}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {eligibilityResult.passedCriteria.length > 0 && (
+              <div className="passed-criteria">
+                <p><strong>Passed Criteria:</strong></p>
+                <ul>
+                  {eligibilityResult.passedCriteria.map((criteria, index) => (
+                    <li key={index}>{criteria}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className={`status-notice ${getStatusColor()}`}>
           <p>{getStatusMessage()}</p>
@@ -142,7 +237,7 @@ const Apply: React.FC<ApplyProps> = ({ application, grantProgramId }) => {
             disabled={isSubmitting}
           />
           <Button
-            text={isSubmitting ? "Submitting..." : !isDraftStatus ? "Cannot Submit" : "Submit Application"}
+            text={getSubmitButtonText()}
             type="button"
             variant="primary"
             onClick={handleApply}
@@ -150,7 +245,7 @@ const Apply: React.FC<ApplyProps> = ({ application, grantProgramId }) => {
           />
         </div>
 
-        {isDraftStatus && (
+        {isDraftStatus && isEligible && (
           <div className="apply-notice">
             <h4>Important Notice</h4>
             <ul>
@@ -161,9 +256,23 @@ const Apply: React.FC<ApplyProps> = ({ application, grantProgramId }) => {
             </ul>
           </div>
         )}
+
+        {isDraftStatus && !isEligible && (
+          <div className="ineligibility-notice">
+            <h4>Eligibility Requirements Not Met</h4>
+            <p>You must meet all eligibility criteria before submitting your application.</p>
+            <p>Please review your answers in the eligibility section and ensure all requirements are satisfied.</p>
+            <Button
+              text="Review Eligibility"
+              type="button"
+              variant="outline"
+              onClick={() => navigate(`/student-application/${grantProgramId}/eligibility`)}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default Apply; 
+export default Apply;

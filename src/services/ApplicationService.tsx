@@ -1,5 +1,5 @@
 import { apiClient } from "../utility/ApiClient";
-import type { ApplicationDto, GrantProgramApplicationDto, StudentAnswerDto, EligibilityCriteriaWithQuestionDto, EvaluationOfAnswerDto } from "../types/application";
+import type { ApplicationDto, GrantProgramApplicationDto, StudentAnswerDto, EligibilityCriteriaWithQuestionDto, EvaluationOfAnswerDto, EligibilityResultDto } from "../types/application";
 
 
 export const getApplicationsByGrantProgramId = async (
@@ -148,6 +148,19 @@ export const getEvaluationOfAnswerDtoForApplicationAndEvaluatorId = async (
   return response.data;
 };
 
+export const getEvaluationsByApplicationId = async (
+  applicationId: string
+): Promise<EvaluationOfAnswerDto[]> => {
+  const response = await apiClient.get<EvaluationOfAnswerDto[]>(
+    `/api/evaluation-of-answers/application/${applicationId}`
+  );
+  if (!response.data) {
+    throw new Error("Failed to fetch evaluations by application ID");
+  }
+  console.log("Evaluations for application", applicationId, ":", response.data);
+  return response.data;
+};
+
 export const updateEvaluations = async (
   evaluationDtos: EvaluationOfAnswerDto[]
 ): Promise<EvaluationOfAnswerDto[]> => {
@@ -224,4 +237,27 @@ export const createEmptyApplication = async (
     throw new Error("Failed to create empty application");
   }
   return response.data;
+};
+
+export const getEligibilityResultByApplicationId = async (
+  applicationId: string
+): Promise<EligibilityResultDto | null> => {
+  try {
+    const response = await apiClient.get<EligibilityResultDto>(
+      `/api/eligibility-results/by-application/${applicationId}`
+    );
+    if (!response.data) {
+      return null;
+    }
+    console.log("Eligibility result for application", applicationId, ":", response.data);
+    return response.data;
+  } catch (error: any) {
+    // Handle 404 specifically since the Java endpoint returns 404 when not found
+    if (error.response?.status === 404) {
+      console.log("No eligibility result found for application", applicationId);
+      return null;
+    }
+    console.error("Failed to fetch eligibility result for application", applicationId, ":", error);
+    throw new Error("Failed to fetch eligibility result by application ID");
+  }
 };

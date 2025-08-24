@@ -6,13 +6,15 @@ import type { GrantProgram, SelectionCriterion, EvaluationScale } from "../../ty
 import { getApplicationById } from "../../services/ApplicationService";
 import { getEligibilityCriteriaAndQuestionFromGrantProgramId } from "../../services/ApplicationService";
 import { getQuestionByGrantProgramId, getGrantProgramById } from "../../services/GrantProgramService";
-import { getAnswersByApplicationId, getEvaluationOfAnswerDtoForApplicationAndEvaluatorId, updateEvaluations } from "../../services/ApplicationService";
+import { getAnswersByApplicationId, getEvaluationOfAnswerDtoForApplicationAndEvaluatorId, updateEvaluations, getEvaluationsByApplicationId } from "../../services/ApplicationService";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import { renderInput } from "../../utility/QuestionInput";
 import Button from "../../components/basicComponents/Button";
 import NumberInput from "../../components/inputComponents/NumberInput";
 import Select from "../../components/inputComponents/Select";
+import Textarea from "../../components/inputComponents/Textarea";
 import type { ProviderStaff } from "../../types/user";
+import { isManager, isEditor } from "../../utility/permissions";
 
 const ReviewStudentAnswer: React.FC = () => {
   const { providerStaff } = useOutletContext<{ providerStaff: ProviderStaff; provider: any }>();
@@ -28,15 +30,47 @@ const ReviewStudentAnswer: React.FC = () => {
   const [grantProgram, setGrantProgram] = useState<GrantProgram | null>(null);
   const [selectionCriteria, setSelectionCriteria] = useState<SelectionCriterion[]>([]);
   const [selectionCriteriaAnswers, setSelectionCriteriaAnswers] = useState<Record<string, any>>({});
+  const [selectionCriteriaComments, setSelectionCriteriaComments] = useState<Record<string, string>>({});
   const [evaluations, setEvaluations] = useState<EvaluationOfAnswerDto[]>([]);
+  const [existingEvaluations, setExistingEvaluations] = useState<EvaluationOfAnswerDto[]>([]);
+  const [otherStaffEvaluations, setOtherStaffEvaluations] = useState<EvaluationOfAnswerDto[]>([]);
   const [savingEvaluations, setSavingEvaluations] = useState(false);
   const [studentAnswerIdMapping, setStudentAnswerIdMapping] = useState<Record<string, string>>({});
-  console.log("grantProgram", grantProgram);
+
+  // Check if current staff can see other evaluations
+  const canViewOtherEvaluations = isEditor(providerStaff); // Manager or Administrator
+
   useEffect(() => {
     if (applicationId) {
       fetchApplicationData();
     }
   }, [applicationId]);
+
+  // Separate useEffect to handle evaluation mapping when selectionCriteria is available
+  useEffect(() => {
+    if (existingEvaluations.length > 0 && selectionCriteria.length > 0) {
+      console.log("Mapping evaluations to UI with selection criteria:", selectionCriteria);
+      
+      const existingAnswersMap: Record<string, any> = {};
+      const existingCommentsMap: Record<string, string> = {};
+      
+      existingEvaluations.forEach(evaluation => {
+        // Find the criterion that corresponds to this evaluation
+        const correspondingCriterion = selectionCriteria.find(c => 
+          c.questionId === evaluation.questionId || c.id === evaluation.questionId
+        );
+        if (correspondingCriterion) {
+          existingAnswersMap[correspondingCriterion.id || ""] = evaluation.value;
+          existingCommentsMap[correspondingCriterion.id || ""] = evaluation.comment || "";
+        }
+      });
+      
+      setSelectionCriteriaAnswers(existingAnswersMap);
+      setSelectionCriteriaComments(existingCommentsMap);
+      console.log("Existing selection criteria answers:", existingAnswersMap);
+      console.log("Existing selection criteria comments:", existingCommentsMap);
+    }
+  }, [existingEvaluations, selectionCriteria]);
 
   const fetchApplicationData = async () => {
     try {
@@ -110,25 +144,36 @@ const ReviewStudentAnswer: React.FC = () => {
 
       // Fetch existing evaluations for this application and evaluator
       if (providerStaff?.id) {
+        console.log("Fetching existing evaluations...for", providerStaff.id);
         try {
-          const existingEvaluations = await getEvaluationOfAnswerDtoForApplicationAndEvaluatorId(
+          const existingEvaluationsData = await getEvaluationOfAnswerDtoForApplicationAndEvaluatorId(
             applicationId,
             providerStaff.id
           );
-          setEvaluations(existingEvaluations);
-          
-          // Initialize selection criteria answers with existing evaluations
-          const existingAnswersMap: Record<string, any> = {};
-          existingEvaluations.forEach(evaluation => {
-            if (evaluation.questionId) {
-              existingAnswersMap[evaluation.questionId] = evaluation.value;
+          console.log("Existing evaluations fetched:", existingEvaluationsData);
+          setEvaluations(existingEvaluationsData);
+          setExistingEvaluations(existingEvaluationsData);
+
+          // Fetch all evaluations for this application if user is admin or manager
+          if (canViewOtherEvaluations) {
+            try {
+              const allEvaluationsData = await getEvaluationsByApplicationId(applicationId);
+              // Filter out current staff's evaluations
+              const otherStaffEvals = allEvaluationsData.filter(evaluation => evaluation.evaluatorId !== providerStaff.id);
+              setOtherStaffEvaluations(otherStaffEvals);
+              console.log("Other staff evaluations fetched:", otherStaffEvals);
+            } catch (error) {
+              console.error("Failed to fetch other staff evaluations:", error);
+              setOtherStaffEvaluations([]);
             }
-          });
-          setSelectionCriteriaAnswers(existingAnswersMap);
+          }
         } catch (error) {
           console.error("Failed to fetch existing evaluations:", error);
           // Continue without existing evaluations
         }
+      }
+      else{
+        console.log("No provider staff ID available");
       }
 
     } catch (error) {
@@ -178,6 +223,14 @@ const ReviewStudentAnswer: React.FC = () => {
     }));
   };
 
+  // Helper function to handle selection criteria comment changes
+  const handleSelectionCriteriaCommentChange = (criterionId: string, comment: string) => {
+    setSelectionCriteriaComments(prev => ({
+      ...prev,
+      [criterionId]: comment
+    }));
+  };
+
   // Function to save selection criteria evaluations
   const handleSaveSelectionCriteria = async () => {
     try {
@@ -189,7 +242,7 @@ const ReviewStudentAnswer: React.FC = () => {
 
       const evaluationsToSave: EvaluationOfAnswerDto[] = Object.entries(selectionCriteriaAnswers).map(([criterionId, value]) => {
         const criterion = selectionCriteria.find(c => c.id === criterionId);
-        const existingEvaluation = evaluations.find(e => e.questionId === criterionId);
+        const existingEvaluation = evaluations.find(e => e.questionId === criterion?.questionId);
         
         // Get the actual questionId from the criterion
         const actualQuestionId = criterion?.questionId || criterionId;
@@ -207,6 +260,7 @@ const ReviewStudentAnswer: React.FC = () => {
           questionGroupId: "", // SelectionCriterion doesn't have questionGroupId
           value: Number(value),
           evaluationScale: criterion?.evaluationScale || "HUNDRED",
+          comment: selectionCriteriaComments[criterionId] || "",
           createdAt: existingEvaluation?.createdAt || new Date().toISOString(),
           updatedAt: new Date().toISOString()
         };
@@ -215,13 +269,46 @@ const ReviewStudentAnswer: React.FC = () => {
       console.log("Sending evaluations to backend:", evaluationsToSave);
       const updatedEvaluations = await updateEvaluations(evaluationsToSave);
       setEvaluations(updatedEvaluations);
-      alert("Selection criteria evaluations saved successfully!");
+      alert("Selection criteria evaluations and comments saved successfully!");
     } catch (error) {
       console.error("Failed to save selection criteria evaluations:", error);
-      alert("Failed to save selection criteria evaluations");
+      alert("Failed to save selection criteria evaluations and comments");
     } finally {
       setSavingEvaluations(false);
     }
+  };
+
+  // Helper function to calculate average score from other staff for a criterion
+  const getOtherStaffAverageScore = (criterionId: string): { averageScore: number; evaluationCount: number } => {
+    const criterion = selectionCriteria.find(c => c.id === criterionId);
+    if (!criterion) return { averageScore: 0, evaluationCount: 0 };
+    
+    const questionKey = criterion.questionId || criterion.id;
+    const relevantEvaluations = otherStaffEvaluations.filter(evaluation => 
+      evaluation.questionId === questionKey || evaluation.questionId === criterionId
+    );
+    
+    if (relevantEvaluations.length === 0) return { averageScore: 0, evaluationCount: 0 };
+    
+    const totalScore = relevantEvaluations.reduce((sum, evaluation) => sum + evaluation.value, 0);
+    return { 
+      averageScore: totalScore / relevantEvaluations.length, 
+      evaluationCount: relevantEvaluations.length 
+    };
+  };
+
+  // Helper function to get other staff comments for a criterion
+  const getOtherStaffComments = (criterionId: string): string[] => {
+    const criterion = selectionCriteria.find(c => c.id === criterionId);
+    if (!criterion) return [];
+    
+    const questionKey = criterion.questionId || criterion.id;
+    const relevantEvaluations = otherStaffEvaluations.filter(evaluation => 
+      (evaluation.questionId === questionKey || evaluation.questionId === criterionId) && 
+      evaluation.comment && evaluation.comment.trim() !== ""
+    );
+    
+    return relevantEvaluations.map(evaluation => evaluation.comment || "").filter(comment => comment.trim() !== "");
   };
 
   const renderQuestions = () =>
@@ -353,55 +440,128 @@ const ReviewStudentAnswer: React.FC = () => {
           const question = criterion.questionId ? findQuestionById(criterion.questionId) : null;
           const questionGroup = !criterion.questionId ? findQuestionGroupById(criterion.id || "") : null;
           
+          // Get other staff scores and comments if user can view them
+          const otherStaffData = canViewOtherEvaluations ? getOtherStaffAverageScore(criterion.id || "") : null;
+          const otherStaffComments = canViewOtherEvaluations ? getOtherStaffComments(criterion.id || "") : [];
+          
           return (
             <div key={criterion.id} className="selection-criteria-item">
-              <h4>{criterion.criterionName}</h4>
-              <p><strong>Weight:</strong> {criterion.weight}</p>
-              <p><strong>Evaluation Scale:</strong> {criterion.evaluationScale}</p>
-              
+              <h4 className="text-lg font-semibold">{criterion.criterionName}</h4>
+              <div className="criteria-info text-xs text-gray-500 mb-4">
+                <p className="mb-1">
+                  <strong className="font-medium">Weight:</strong> {criterion.weight || "Not specified"}
+                </p>
+                <p className="mb-1">
+                  <strong className="font-medium">Evaluation Scale:</strong> {criterion.evaluationScale || "HUNDRED"}
+                </p>
+              </div>
+
               {question && (
-                <div className="question-display">
-                  <p><strong>Question:</strong> {question.question.questionText}</p>
-                  <p><strong>Student Answer:</strong> {answers[question.question.id] || "No answer"}</p>
+                <div className="question-display bg-gray-50 p-3 rounded border mb-4">
+                  <p className="text-base leading-relaxed mb-2">
+                    <strong className="text-sm font-medium text-gray-600">Question:</strong> 
+                    <span className="ml-2 text-base font-normal">{question.question.questionText}</span>
+                  </p>
+                  <p className="text-base leading-relaxed">
+                    <strong className="text-sm font-medium text-gray-600">Student Answer:</strong> 
+                    <span className="ml-2 text-base font-normal">{answers[question.question.id] || "No answer"}</span>
+                  </p>
                 </div>
               )}
               
               {questionGroup && (
-                <div className="question-group-display">
-                  <p><strong>Question Group:</strong> {questionGroup.name}</p>
-                  <p><strong>Description:</strong> {questionGroup.description}</p>
-                  <div className="group-questions">
+                <div className="question-group-display bg-gray-50 p-3 rounded border mb-4">
+                  <p className="text-base leading-relaxed mb-2">
+                    <strong className="text-sm font-medium text-gray-600">Question Group:</strong> 
+                    <span className="ml-2 text-base font-normal">{questionGroup.name}</span>
+                  </p>
+                  <div className="group-questions ml-4 mt-3">
                     {questionGroup.questions.map((q: any) => (
-                      <div key={q.question.id} className="group-question">
-                        <p><strong>Question:</strong> {q.question.questionText}</p>
-                        <p><strong>Student Answer:</strong> {answers[questionGroup.id]?.[q.question.id] || "No answer"}</p>
+                      <div key={q.question.id} className="group-question bg-white p-3 rounded border mb-2">
+                        <p className="text-sm leading-relaxed mb-2">
+                          <strong className="text-xs font-medium text-gray-600">Question:</strong> 
+                          <span className="ml-2 text-sm font-normal">{q.question.questionText}</span>
+                        </p>
+                        <p className="text-sm leading-relaxed">
+                          <strong className="text-xs font-medium text-gray-600">Student Answer:</strong> 
+                          <span className="ml-2 text-sm font-normal">{answers[questionGroup.id]?.[q.question.id] || "No answer"}</span>
+                        </p>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
+
+              {/* Show other staff evaluations if user can view them */}
+              {canViewOtherEvaluations && otherStaffData && otherStaffData.evaluationCount > 0 && (
+                <div className="other-staff-evaluations bg-blue-50 p-3 rounded border mb-4">
+                  <h5 className="text-sm font-semibold text-blue-800 mb-2">Other Staff Evaluations</h5>
+                  <div className="mb-2">
+                    <p className="text-sm text-blue-700">
+                      <strong>Average Score:</strong> {otherStaffData.averageScore.toFixed(2)}
+                      {criterion.evaluationScale === "HUNDRED" && " / 100"}
+                      {criterion.evaluationScale === "TEN" && " / 10"}
+                      {criterion.evaluationScale === "FIVE" && " / 5"}
+                      {criterion.evaluationScale === "A2E" && " / A-E"}
+                      <span className="ml-2 text-xs">({otherStaffData.evaluationCount} evaluation{otherStaffData.evaluationCount > 1 ? 's' : ''})</span>
+                    </p>
+                  </div>
+                  {otherStaffComments.length > 0 && (
+                    <div>
+                      <p className="text-xs font-medium text-blue-600 mb-1">Comments from other staff:</p>
+                      <ul className="text-xs text-blue-600 ml-4">
+                        {otherStaffComments.map((comment, index) => (
+                          <li key={index} className="mb-1 list-disc">{comment}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
               
               <div className="evaluation-input">
-                <label><strong>Evaluation Score:</strong></label>
-                {criterion.evaluationScale === "HUNDRED" ? (
-                  <NumberInput
-                    id={`eval-${criterion.id}`}
-                    name={`eval-${criterion.id}`}
-                    label=""
-                    value={selectionCriteriaAnswers[criterion.id || ""] || ""}
-                    onChange={(e) => handleSelectionCriteriaChange(criterion.id || "", e.target.value === "" ? "" : Number(e.target.value))}
-                    disabled={false}
+                <label>
+                  <strong>Evaluation Score:</strong>
+                </label>
+                <div className="evaluation-input-wrapper flex items-center gap-2">
+                  {criterion.evaluationScale === "HUNDRED" ? (
+                    <NumberInput
+                      id={`eval-${criterion.id}`}
+                      name={`eval-${criterion.id}`}
+                      label=""
+                      value={selectionCriteriaAnswers[criterion.id || ""] || ""}
+                      onChange={(e) => handleSelectionCriteriaChange(criterion.id || "", e.target.value === "" ? "" : Number(e.target.value))}
+                      disabled={false}
+                    />
+                  ) : (
+                    <Select
+                      id={`eval-${criterion.id}`}
+                      name={`eval-${criterion.id}`}
+                      label=""
+                      value={selectionCriteriaAnswers[criterion.id || ""] || ""}
+                      onChange={(e) => handleSelectionCriteriaChange(criterion.id || "", e.target.value)}
+                      options={getEvaluationScaleOptions(criterion.evaluationScale)}
+                    />
+                  )}
+                  <span className="evaluation-scale-indicator text-gray-600 font-medium">
+                    {criterion.evaluationScale === "HUNDRED" && "/ 100"}
+                    {criterion.evaluationScale === "TEN" && "/ 10"}
+                    {criterion.evaluationScale === "FIVE" && "/ 5"}
+                    {criterion.evaluationScale === "A2E" && "/ A-E"}
+                  </span>
+                </div>
+                
+                <div style={{ marginTop: "1rem" }}>
+                  <Textarea
+                    id={`comment-${criterion.id}`}
+                    name={`comment-${criterion.id}`}
+                    label="Evaluation Comment"
+                    value={selectionCriteriaComments[criterion.id || ""] || ""}
+                    onChange={(e) => handleSelectionCriteriaCommentChange(criterion.id || "", e.target.value)}
+                    placeholder="Add optional comments about this evaluation..."
+                    rows={3}
                   />
-                ) : (
-                  <Select
-                    id={`eval-${criterion.id}`}
-                    name={`eval-${criterion.id}`}
-                    label=""
-                    value={selectionCriteriaAnswers[criterion.id || ""] || ""}
-                    onChange={(e) => handleSelectionCriteriaChange(criterion.id || "", e.target.value)}
-                    options={getEvaluationScaleOptions(criterion.evaluationScale)}
-                  />
-                )}
+                </div>
               </div>
             </div>
           );
@@ -493,3 +653,4 @@ const ReviewStudentAnswer: React.FC = () => {
 };
 
 export default ReviewStudentAnswer;
+

@@ -4,6 +4,17 @@ import FormInput from "../components/FormInput";
 import Select from "../components/inputComponents/Select";
 import Textarea from "../components/inputComponents/Textarea";
 import TitleAndHeadLine from "../components/TitleAndHeadLine";
+import { contactService } from "../services/ContactService";
+import { useToast } from "../contexts/ToastContext";
+
+// Contact DTO types based on backend structure
+export type ContactCategory = 
+  | "GENERAL"
+  | "TECHNICAL" 
+  | "BILLING"
+  | "SCHOLARSHIP"
+  | "PARTNERSHIP"
+  | "FEEDBACK";
 
 interface ContactFormData {
   category: string;
@@ -14,6 +25,8 @@ interface ContactFormData {
 }
 
 const Contact: React.FC = () => {
+  const { showSuccess, showError } = useToast();
+  
   const [formData, setFormData] = useState<ContactFormData>({
     category: "",
     title: "",
@@ -25,11 +38,11 @@ const Contact: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const contactCategories = [
-    { value: "general", label: "General Inquiry" },
-    { value: "technical", label: "Technical Support" },
-    { value: "scholarship", label: "Scholarship Questions" },
-    { value: "partnership", label: "Partnership Opportunities" },
-    { value: "feedback", label: "Feedback & Suggestions" }
+    { value: "GENERAL", label: "General Inquiry" },
+    { value: "TECHNICAL", label: "Technical Support" },
+    { value: "SCHOLARSHIP", label: "Scholarship Questions" },
+    { value: "PARTNERSHIP", label: "Partnership Opportunities" },
+    { value: "FEEDBACK", label: "Feedback & Suggestions" }
   ];
 
   const handleInputChange = (field: keyof ContactFormData, value: string) => {
@@ -43,14 +56,25 @@ const Contact: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // TODO: Implement actual form submission logic
-    console.log("Contact form submitted:", formData);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      alert("Thank you for your message! We'll get back to you soon.");
-      // Reset form
+    try {
+      // Convert form data to ContactRequestDto format
+      const contactRequestDto = {
+        category: formData.category,
+        title: formData.title,
+        name: formData.name,
+        email: formData.email,
+        message: formData.message
+      };
+
+      // Call the backend API
+      await contactService.submitContact(contactRequestDto);
+      
+      // Success - show success toast and reset form
+      showSuccess(
+        "Thank you for your message! We'll get back to you soon.",
+        "Message Sent"
+      );
+      
       setFormData({
         category: "",
         title: "",
@@ -58,7 +82,15 @@ const Contact: React.FC = () => {
         email: "",
         message: ""
       });
-    }, 1000);
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      showError(
+        "Sorry, there was an error submitting your message. Please try again later.",
+        "Submission Failed"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

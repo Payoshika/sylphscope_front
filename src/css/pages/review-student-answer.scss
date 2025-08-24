@@ -27,6 +27,18 @@
   background-color: $background-color;
   border-radius: 6px;
   border: 1px solid $border-color;
+  
+  // Make question and answer text more prominent
+  p {
+    font-size: 1.5rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    
+    strong {
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+  }
 }
 
 .question-group {
@@ -39,8 +51,20 @@
   h4 {
     @include MarginBottom1rem;
     color: $secondary-color;
-    font-size: 1.1rem;
-    font-weight: 500;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  
+  p {
+    font-size: 1.4rem;
+    line-height: 1.4;
+    margin-bottom: 0.8rem;
+    
+    strong {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: $primary-color;
+    }
   }
 }
 
@@ -54,13 +78,21 @@
   h4 {
     @include MarginBottom1rem;
     color: $primary-color;
-    font-size: 1.1rem;
+    font-size: 1.6rem;
     font-weight: 600;
   }
 
   p {
     @include MarginBottom1rem;
     color: $secondary-color;
+    font-size: 1.5rem;
+    line-height: 1.5;
+    
+    strong {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: $primary-color;
+    }
   }
 
   .question-display,
@@ -72,8 +104,14 @@
     border-left: 3px solid $info-color;
 
     p {
-      margin: 0.25rem 0;
-      font-size: 0.9rem;
+      margin: 0.5rem 0;
+      font-size: 1.4rem;
+      line-height: 1.4;
+      
+      strong {
+        font-size: 1.3rem;
+        font-weight: 600;
+      }
     }
   }
 
@@ -89,24 +127,21 @@
       background-color: $background-color;
       border-radius: 3px;
       border: 1px solid rgba($border-color, 0.5);
+      
+      p {
+        font-size: 1.4rem;
+        line-height: 1.4;
+        margin: 0.5rem 0;
+        
+        strong {
+          font-size: 1.3rem;
+          font-weight: 600;
+        }
+      }
     }
   }
 
-  .evaluation-input {
-    @include MarginTop1rem;
-    @include Padding1rem;
-    background-color: rgba($primary-color, 0.05);
-    border-radius: 4px;
-    border: 1px solid $border-color;
-
-    label {
-      display: block;
-      font-weight: 500;
-      color: $primary-color;
-      @include MarginBottom1rem;
-    }
-  }
-
+  // Make metadata (Weight, Evaluation Scale) smaller and less prominent
   .criteria-info {
     @include MarginBottom1rem;
     @include Padding1rem;
@@ -116,8 +151,14 @@
 
     p {
       margin: 0.25rem 0;
-      font-size: 0.9rem;
+      font-size: 1.2rem !important;
       color: $secondary-color;
+      
+      strong {
+        font-size: 1.1rem !important;
+        font-weight: 500;
+        color: $secondary-color;
+      }
     }
   }
 }
@@ -181,4 +222,4 @@
     color: $secondary-color;
     font-weight: 500;
   }
-} 
+}
