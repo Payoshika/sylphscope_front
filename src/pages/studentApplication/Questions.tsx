@@ -96,7 +96,7 @@ const Questions: React.FC<QuestionsProps> = ({
         {renderQuestionGroups()}
         {!isReadOnly && (
           <Button
-            text={isSubmitting ? "Submitting..." : "Submit Questions"}
+            text={isSubmitting ? "Saving..." : "Save Questions"}
             type="submit"
             disabled={isSubmitting}
           />

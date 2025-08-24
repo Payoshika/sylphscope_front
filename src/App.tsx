@@ -26,6 +26,7 @@ import StudentApplication from "./pages/studentApplication/StudentApplication";
 import ProviderLayout from "./pages/ProviderLayout";
 import StudentLayout from "./pages/StudentLayout";
 import LandingPage from "./pages/LandingPage"
+import Contact from "./pages/Contact"
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
             <Route path="/components" element={<Components />} />
             <Route path="/choose-role" element={<ChooseRole />} />
             <Route path="/landing-page" element={<LandingPage />} />
+            <Route path="/contact" element={<Contact />} />
             {/* Provider routes nested under ProtectedLayout and ProviderLayout */}
             <Route element={<ProtectedLayout />}>
               <Route element={<ProviderLayout />}>

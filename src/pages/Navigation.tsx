@@ -79,12 +79,17 @@ const Navigation: React.FC = () => {
                       <span className="nav-link-icon"><HugeiconsIcon icon={Logout02Icon} /></span>
                       <span className="nav-link-label">Sign Out</span>
                 </button>
-                {/* <div className="nav-user">
-
-                </div> */}
+                <Link to="/contact" className="btn btn--small btn--ghost nav-link">
+                  <span className="nav-link-icon"><HugeiconsIcon icon={Mail01Icon} /></span>
+                  <span className="nav-link-label">Contact</span>
+                </Link>
               </>
             ) : (
               <>
+                <Link to="/contact" className="btn btn--small btn--ghost nav-link">
+                  <span className="nav-link-icon"><HugeiconsIcon icon={Mail01Icon} /></span>
+                  <span className="nav-link-label">Contact</span>
+                </Link>
                 <Link to="/signin" className="btn btn--small btn--ghost">
                   Sign In
                 </Link>
