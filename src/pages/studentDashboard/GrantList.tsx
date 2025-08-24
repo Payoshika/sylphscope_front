@@ -83,13 +83,26 @@ const GrantList: React.FC = () => {
     }
   };
 
-  const handleSort = (key: string, direction: 'asc' | 'desc') => {
+  const handleSort = (key: string, direction: 'asc' | 'desc', sortedGrants?: GrantProgram[]) => {
+    if (sortedGrants) {
+      // Use the pre-sorted grants from GrantListTable
+      setGrantPrograms(sortedGrants);
+      return;
+    }
+    
+    // Fallback to manual sorting (shouldn't be needed now)
     setGrantPrograms(prev => {
       const sorted = [...prev].sort((a, b) => {
         let aValue: any = a[key as keyof GrantProgram];
         let bValue: any = b[key as keyof GrantProgram];
         
-        if (key === 'organisation') {
+        if (key === 'schedule') {
+          aValue = getNextSchedule(a);
+          bValue = getNextSchedule(b);
+        } else if (key === 'amount') {
+          aValue = a.award && a.award.length > 0 ? a.award[0] : 0;
+          bValue = b.award && b.award.length > 0 ? b.award[0] : 0;
+        } else if (key === 'organisation') {
           aValue = providers[a.providerId]?.organisationName || '';
           bValue = providers[b.providerId]?.organisationName || '';
         }

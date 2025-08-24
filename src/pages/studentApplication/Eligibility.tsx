@@ -164,7 +164,7 @@ const Eligibility: React.FC<EligibilityProps> = ({
         })}
         {!isReadOnly && (
           <Button
-            text={isSubmitting ? "Submitting..." : "Submit Eligibility"}
+            text={isSubmitting ? "Saving..." : "Save Eligibility"}
             type="submit"
             disabled={isSubmitting}
           />

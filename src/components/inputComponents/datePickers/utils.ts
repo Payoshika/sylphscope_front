@@ -44,21 +44,21 @@ export const generateYears = (type: 'dob' | 'future' | 'any' | 'past'): number[]
   
   switch (type) {
     case 'dob':
-      // DOB: 1900 to current year
+      // DOB: 1900 to current year (current year first)
       return Array.from(
         { length: currentYear - 1900 + 1 },
         (_, i) => 1900 + i
       ).reverse();
     
     case 'future':
-      // Future: current year to +50 years
+      // Future: current year to +50 years (current year first)
       return Array.from(
         { length: 51 },
         (_, i) => currentYear + i
       );
     
     case 'past':
-      // Past: 1900 to current year
+      // Past: 1900 to current year (current year first)
       return Array.from(
         { length: currentYear - 1900 + 1 },
         (_, i) => 1900 + i
@@ -66,11 +66,14 @@ export const generateYears = (type: 'dob' | 'future' | 'any' | 'past'): number[]
     
     case 'any':
     default:
-  // Any: 1900 to +50 years (comprehensive range)
-  return Array.from(
-    { length: (currentYear + 50) - 1900 + 1 },
-    (_, i) => 1900 + i
-  ).reverse();
+      // Any: produce a centered list with current year at the top:
+      // currentYear, currentYear+1 ... up to currentYear+50, then currentYear-1 down to 1900
+      const minYear = 1900;
+      const maxYear = currentYear + 50;
+      const ordered: number[] = [];
+      for (let y = currentYear; y <= maxYear; y++) ordered.push(y);
+      for (let y = currentYear - 1; y >= minYear; y--) ordered.push(y);
+      return ordered;
   }
 };
 

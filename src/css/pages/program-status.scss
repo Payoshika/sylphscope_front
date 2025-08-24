@@ -1,168 +1,162 @@
 @use "../global/mixins" as *;
 @use "../global/base" as *;
 
-.program-status-section {
-  @include Padding2rem;
-  max-width: 800px;
+.program-status-section,
+.content .staff-management-container {
+  max-width: 980px;
   margin: 0 auto;
+  padding: 2rem;
+  box-sizing: border-box;
+}
 
-  .grant-summary {
-    @include MarginBottom2rem;
+/* Render summary as a simple vertical list (not card-like) */
+.grant-summary {
+  margin-bottom: 1.5rem;
+  @include Padding2rem;
 
-    h3 {
-      @include MarginBottom1rem;
-      color: $text-color;
-      font-size: 1.5rem;
+  h3 {
+    margin: 0 0 1rem 0;
+    font-weight: 700;
+    color: #2f3338;
+  }
+
+  .summary-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .summary-item {
+    padding: 0.6rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    /* subtle separator between items */
+    border-bottom: 1px solid rgba(58, 62, 70, 0.06);
+
+    strong {
       font-weight: 600;
+      color: #3a3e46;
+      display: block;
+      margin-bottom: 0;
     }
 
-    .summary-grid {
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: 1fr;
+    /* allow long descriptions to flow naturally */
+    & > p,
+    & > span,
+    & .value {
+      margin: 0;
+      color: #4a4f55;
+      line-height: 1.5;
+      white-space: normal;
+      word-break: break-word;
+    }
 
-      @include smartphone {
-        grid-template-columns: 1fr 1fr;
+    /* small metadata row (status, dates) displayed inline */
+    .meta-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 0.25rem;
+
+      .status-badge {
+        display: inline-block;
+        padding: 0.2rem 0.5rem;
+        border-radius: 6px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.02rem;
       }
 
-      .summary-item {
-        @include Padding1rem;
-        background-color: $background-color;
-        border: 1px solid $border-color;
-        border-radius: 0.5rem;
+      .status-draft { background: #f6bd2f; color: #fff; }
+      .status-open  { background: #2d7d32; color: #fff; }
+      .status-closed{ background: #c62828; color: #fff; }
+      .status-archived { background: rgba(58,62,70,0.12); color: #3a3e46; }
 
-        strong {
-          color: $text-color;
-          font-weight: 600;
-          margin-right: 0.5rem;
-        }
-
-        .status-badge {
-          @include PaddingX0_5rem;
-          padding-top: 0.25rem;
-          padding-bottom: 0.25rem;
-          border-radius: 0.25rem;
-          font-size: 0.875rem;
-          font-weight: 500;
-          text-transform: uppercase;
-
-          &.status-draft {
-            background-color: $warning-color;
-            color: white;
-          }
-
-          &.status-open {
-            background-color: $success-color;
-            color: white;
-          }
-
-          &.status-closed {
-            background-color: $error-color;
-            color: white;
-          }
-
-          &.status-archived {
-            background-color: $muted-color;
-            color: white;
-          }
-        }
+      .small-note {
+        color: #6b6f74;
       }
     }
   }
+}
 
-  .error-message {
-    @include MarginBottom1rem;
-    @include Padding1rem;
-    background-color: $error-color;
-    border-radius: 0.5rem;
-    color: white;
-    font-weight: 500;
-  }
+/* Messages */
+.error-message,
+.success-message {
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
 
-  .success-message {
-    @include MarginBottom1rem;
-    @include Padding1rem;
-    background-color: $success-color;
-    border-radius: 0.5rem;
-    color: white;
-    font-weight: 500;
-  }
+.error-message {
+  background: rgba(198, 40, 40, 0.12);
+  color: #c62828;
+  border: 1px solid rgba(198,40,40,0.18);
+}
 
-  .action-buttons {
-    @include RowJustifyStartFlexbox;
-    gap: 1rem;
-    flex-wrap: wrap;
+.success-message {
+  background: rgba(45, 125, 50, 0.08);
+  color: #2d7d32;
+  border: 1px solid rgba(45,125,50,0.14);
+}
 
-    .make-public-button {
-      background-color: $success-color;
-      color: white;
-      font-weight: 600;
+/* Action buttons area */
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
 
-      &:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
-    }
+/* Primary/secondary button styles (kept simple) */
+.action-buttons .make-public-button,
+.action-buttons button:first-child {
+  background-color: $provider-color;
+  color: #fffdfa;
+  border: none;
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}
 
-    .close-program-button {
-      background-color: $error-color;
-      color: white;
-      font-weight: 600;
+.action-buttons .close-program-button {
+  background-color: #c62828;
+  color: #fffdfa;
+  border: none;
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}
 
-      &:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
-    }
+.action-buttons .back-button,
+.action-buttons button[variant="ghost"] {
+  background: transparent;
+  border: 1px solid rgba(58,62,70,0.12);
+  color: #3a3e46;
+  padding: 0.6rem 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
 
-    .back-button {
-      color: $text-color;
-      border: 1px solid $border-color;
+.action-buttons button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
-      &:hover {
-        background-color: $background-color;
-      }
-    }
+/* Small screens: stack actions */
+@media (max-width: 600px) {
+  .action-buttons { flex-direction: column; align-items: stretch; }
+  .action-buttons button { width: 100%; }
+}
 
-    .status-notice {
-      @include Padding1rem;
-      background-color: $warning-color;
-      border-radius: 0.5rem;
-      color: white;
-      flex: 1;
-      min-width: 300px;
-
-      p {
-        margin-bottom: 0.5rem;
-
-        &:last-child {
-          margin-bottom: 0;
-        }
-      }
-    }
-  }
-
-  @include smartphone {
-    @include Padding1rem;
-
-    .action-buttons {
-      flex-direction: column;
-
-      .make-public-button,
-      .close-program-button,
-      .back-button {
-        width: 100%;
-      }
-
-      .status-notice {
-        min-width: auto;
-      }
-    }
-  }
-
-  @include extrasmall {
-    .summary-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-} 
+/* keep outer spacing consistent */
+.content .staff-management-container {
+  background: transparent;
+  padding: 0;
+}

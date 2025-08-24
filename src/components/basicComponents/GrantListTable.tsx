@@ -10,7 +10,7 @@ interface GrantListTableProps {
   onApply?: (grantId: string) => void;
   getNextSchedule?: (grant: any) => string;
   onSearch: (searchTerm: string) => void;
-  onSort?: (key: string, direction: 'asc' | 'desc') => void;
+  onSort?: (key: string, direction: 'asc' | 'desc', sortedGrants?: any[]) => void;
   onViewDetail?: (grantId: string) => void;
   headers?: Array<{ label: string; key: string }>;
   getActionText?: (grant: any) => string;
@@ -19,7 +19,7 @@ interface GrantListTableProps {
 const DEFAULT_HEADERS = [
   { label: "Grant Name", key: "title" },
   { label: "Organisation", key: "organisation" },
-  { label: "Application Status", key: "status" },
+  { label: "Grant Status", key: "status" },
   { label: "Expected next schedule", key: "schedule" },
   { label: "Grant Amount", key: "amount" }
 ];
@@ -52,10 +52,76 @@ const GrantListTable: React.FC<GrantListTableProps> = ({
     }
   };
 
-  const handleSort = (key: string) => {
-    const newDirection = sortState?.key === key && sortState.direction === 'asc' ? 'desc' : 'asc';
-    setSortState({ key, direction: newDirection });
-    onSort?.(key, newDirection);
+  const handleSort = (key: string, direction: 'asc' | 'desc') => {
+    setSortState({ key, direction });
+    
+    // Handle special sorting cases locally in the table component
+    const sortedGrants = [...grants].sort((a, b) => {
+      let aValue: any;
+      let bValue: any;
+      
+      switch (key) {
+        case "schedule":
+          // Sort by next schedule date value
+          aValue = getNextSchedule?.(a) || "";
+          bValue = getNextSchedule?.(b) || "";
+          // Extract date for proper sorting if it contains a date
+          const aDateMatch = aValue.match(/\d{1,2}\/\d{1,2}\/\d{4}/);
+          const bDateMatch = bValue.match(/\d{1,2}\/\d{1,2}\/\d{4}/);
+          if (aDateMatch && bDateMatch) {
+            aValue = new Date(aDateMatch[0]).getTime();
+            bValue = new Date(bDateMatch[0]).getTime();
+          } else {
+            // If no date found, sort alphabetically by the text
+            aValue = aValue.toString();
+            bValue = bValue.toString();
+          }
+          break;
+        case "amount":
+          // Sort by first award amount
+          aValue = a.award && a.award.length > 0 ? a.award[0] : 0;
+          bValue = b.award && b.award.length > 0 ? b.award[0] : 0;
+          break;
+        case "title":
+          aValue = a.title || "";
+          bValue = b.title || "";
+          break;
+        case "organisation":
+          const providerA = providers[a.providerId];
+          const providerB = providers[b.providerId];
+          aValue = providerA?.organisationName || a.providerId || "";
+          bValue = providerB?.organisationName || b.providerId || "";
+          break;
+        case "status":
+          aValue = a.status || "";
+          bValue = b.status || "";
+          break;
+        case "applicants":
+          aValue = a.applicationCount || 0;
+          bValue = b.applicationCount || 0;
+          break;
+        default:
+          aValue = a[key as keyof typeof a] || "";
+          bValue = b[key as keyof typeof b] || "";
+      }
+      
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return direction === 'asc' ? 
+          aValue.localeCompare(bValue) : 
+          bValue.localeCompare(aValue);
+      }
+      
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return direction === 'asc' ? 
+          aValue - bValue : 
+          bValue - aValue;
+      }
+      
+      return 0;
+    });
+    
+    // Call parent's onSort with the sorted data
+    onSort?.(key, direction, sortedGrants);
   };
 
   return (
@@ -86,7 +152,7 @@ const GrantListTable: React.FC<GrantListTableProps> = ({
             <span>{header.label}</span>
             <button 
               className="grantlist-sort-btn" 
-              onClick={() => handleSort(header.key)} 
+              onClick={() => handleSort(header.key, sortState?.direction === 'asc' ? 'desc' : 'asc')} 
               aria-label={`Sort by ${header.label}`}
               type="button"
             >
@@ -134,7 +200,7 @@ const GrantListTable: React.FC<GrantListTableProps> = ({
                   }
                   break;
                 case "applicants":
-                  cellContent = (grant.numOfAward ? grant.numOfAward : "-") + " / " + (grant.applicationCount?.toString() || "0");
+                  cellContent = (grant.applicationCount?.toString() || "0") + " / " + (grant.numOfAward ? grant.numOfAward : "-");
                   break;
                 case "actions":
                   cellContent = getActionText?.(grant) || "View Detail";
@@ -156,4 +222,4 @@ const GrantListTable: React.FC<GrantListTableProps> = ({
   );
 };
 
-export default GrantListTable; 
+export default GrantListTable;

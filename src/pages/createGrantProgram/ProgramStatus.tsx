@@ -99,65 +99,68 @@ const ProgramStatus: React.FC<ProgramStatusProps> = ({ grantProgram, onGrantProg
   };
 
   return (
-    <div className="program-status-section">
+    <div className="content">
       <TitleAndHeadLine 
         title="Program Status" 
         headline="Manage your grant program status"
+        provider={true}
       />
-
-      <Card>
+      <div className="staff-management-container">
         <div className="grant-summary">
           <h3>Grant Program Summary</h3>
           
           <div className="summary-grid">
             <div className="summary-item">
-              <strong>Title:</strong> {grantProgram.title}
+              <p><strong>Title:</strong> <span className="value">{grantProgram.title}</span></p>
             </div>
             
             <div className="summary-item">
-              <strong>Description:</strong> {grantProgram.description}
+              <p><strong>Description:</strong></p>
+              <p className="value">{grantProgram.description}</p>
             </div>
             
             <div className="summary-item">
-              <strong>Current Status:</strong> 
-              <span className={`status-badge status-${grantProgram.status.toLowerCase()}`}>
-                {getStatusDisplay(grantProgram.status)}
-              </span>
+              <p>
+                <strong>Current Status:</strong>
+                <span className={`status-badge status-${grantProgram.status.toLowerCase()}`} style={{ marginLeft: 8 }}>
+                  {getStatusDisplay(grantProgram.status)}
+                </span>
+              </p>
             </div>
             
             <div className="summary-item">
-              <strong>Provider:</strong> {grantProgram.providerName}
+              <p><strong>Provider:</strong> <span className="value">{grantProgram.providerName}</span></p>
             </div>
             
             <div className="summary-item">
-              <strong>Application Start Date:</strong> {formatDate(grantProgram.schedule.applicationStartDate)}
+              <p><strong>Application Start Date:</strong> <span className="value">{formatDate(grantProgram.schedule.applicationStartDate)}</span></p>
             </div>
             
             <div className="summary-item">
-              <strong>Application End Date:</strong> {formatDate(grantProgram.schedule.applicationEndDate)}
+              <p><strong>Application End Date:</strong> <span className="value">{formatDate(grantProgram.schedule.applicationEndDate)}</span></p>
             </div>
             
             <div className="summary-item">
-              <strong>Decision Date:</strong> {formatDate(grantProgram.schedule.decisionDate)}
+              <p><strong>Decision Date:</strong> <span className="value">{formatDate(grantProgram.schedule.decisionDate)}</span></p>
             </div>
             
             <div className="summary-item">
-              <strong>Fund Disbursement Date:</strong> {formatDate(grantProgram.schedule.fundDisbursementDate)}
+              <p><strong>Fund Disbursement Date:</strong> <span className="value">{formatDate(grantProgram.schedule.fundDisbursementDate)}</span></p>
             </div>
             
             <div className="summary-item">
-              <strong>Questions:</strong> {grantProgram.questionIds?.length || 0} questions
+              <p><strong>Questions:</strong> <span className="value">{grantProgram.questionIds?.length || 0} questions</span></p>
             </div>
             
             <div className="summary-item">
-              <strong>Selection Criteria:</strong> {grantProgram.selectionCriteria?.length || 0} criteria
+              <p><strong>Selection Criteria:</strong> <span className="value">{grantProgram.selectionCriteria?.length || 0} criteria</span></p>
             </div>
             
             <div className="summary-item">
-              <strong>Assigned Staff:</strong> {grantProgram.assignedStaffIds?.length || 0} staff members
+              <p><strong>Assigned Staff:</strong> <span className="value">{grantProgram.assignedStaff?.length || 0} staff members</span></p>
             </div>
-          </div>
-        </div>
+           </div>
+         </div>
 
         {error && (
           <div className="error-message">
@@ -177,12 +180,14 @@ const ProgramStatus: React.FC<ProgramStatusProps> = ({ grantProgram, onGrantProg
               onClick={handleMakePublic}
               disabled={isSubmitting}
               text={isSubmitting ? "Making Public..." : "Make Program Public"}
+              size="large"
             />
           ) : canCloseProgram ? (
             <Button
               onClick={handleCloseProgram}
               disabled={isSubmitting}
               text={isSubmitting ? "Closing Program..." : "Close Program"}
+              size="large"
             />
           ) : (
             <div className="status-notice">
@@ -202,7 +207,7 @@ const ProgramStatus: React.FC<ProgramStatusProps> = ({ grantProgram, onGrantProg
             text="Back to Grant Management"
           />
         </div>
-      </Card>
+      </div>
     </div>
   );
 };

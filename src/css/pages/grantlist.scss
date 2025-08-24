@@ -76,6 +76,7 @@
   @include BorderBottom2pxSolid;
   border-color: $border-color;
   transition: background-color 0.2s ease;
+  border-radius: 8px;
 
   &.grantlist-row-clickable {
     cursor: pointer;

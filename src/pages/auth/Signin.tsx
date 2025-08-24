@@ -131,7 +131,7 @@ const Signin: React.FC = () => {
         />
       </form>
       <div className="oauth-divider">
-        <span>or continue with email</span>
+        <span>Or</span>
       </div>
       <div className="signup-options">
         <GoogleOAuthButton disabled={isSubmitting} />

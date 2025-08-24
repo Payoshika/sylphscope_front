@@ -4,6 +4,7 @@ import Button from "../../components/basicComponents/Button";
 import SearchableDropdown from "../../components/inputComponents/SearchableDropdown";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { createNewGrantProgram } from "../../services/GrantProgramService";
+import { duplicateGrantProgram } from "../../services/GrantProgramService";
 import type { GrantProgram, StaffRole } from "../../types/grantProgram";
 import type { Provider } from "../../types/provider";
 import type { ProviderStaff } from "../../types/user";
@@ -15,18 +16,20 @@ interface GrantOption {
   year: string;
 }
 
-
+// keep a small fallback for local/testing, but prefer passed-in grantPrograms
 const mockPastGrants: GrantOption[] = [
-  { id: "1", title: "Engineering Scholarship 2023", description: "Annual engineering scholarship for undergraduate students", year: "2023" },
-  { id: "2", title: "Computer Science Grant", description: "Grant for computer science students with financial need", year: "2023" },
-  { id: "3", title: "Mathematics Award", description: "Award for outstanding mathematics students", year: "2022" },
-  { id: "4", title: "Physics Research Grant", description: "Research grant for physics students", year: "2022" },
-  { id: "5", title: "Chemistry Innovation Award", description: "Award for innovative chemistry projects", year: "2021" },
+  { id: "local-1", title: "Local Sample Grant A", description: "Fallback grant", year: "2023" },
+  { id: "local-2", title: "Local Sample Grant B", description: "Fallback grant", year: "2022" },
 ];
 
-const CreateGrant: React.FC = () => {
+interface CreateGrantProps {
+  grantPrograms?: GrantProgram[];
+}
+
+const CreateGrant: React.FC<CreateGrantProps> = ({ grantPrograms = [] }) => {
   const [selectedOption, setSelectedOption] = useState<"duplicate" | null>(null);
   const [selectedGrantToDuplicate, setSelectedGrantToDuplicate] = useState("");
+  const [isDuplicating, setIsDuplicating] = useState(false);
   const navigate = useNavigate();
   const { provider, providerStaff } = useOutletContext<{ provider: Provider; providerStaff: ProviderStaff;}>();
 
@@ -83,10 +86,23 @@ const CreateGrant: React.FC = () => {
     }
   };
 
-  const handleDuplicate = () => {
+  const handleDuplicate = async () => {
     if (!ensureEditor()) return;
-    if (selectedGrantToDuplicate) {
-      navigate(`/create-grant/duplicate/${selectedGrantToDuplicate}`);
+    if (!selectedGrantToDuplicate) return;
+    try {
+      setIsDuplicating(true);
+      const created = await duplicateGrantProgram(
+        selectedGrantToDuplicate,
+        provider.id,
+        providerStaff.id
+      );
+      // navigate to the create-grant flow for the duplicated program
+      navigate(`/create-grant/${created.id}`);
+    } catch (err) {
+      console.error("Failed to duplicate grant program:", err);
+      alert("Failed to duplicate grant program. Please try again.");
+    } finally {
+      setIsDuplicating(false);
     }
   };
 
@@ -98,7 +114,7 @@ const CreateGrant: React.FC = () => {
     }
     setSelectedOption(option);
   };
-
+ 
   return (
     <div className="content">
       <TitleAndHeadLine
@@ -153,9 +169,10 @@ const CreateGrant: React.FC = () => {
                   label="Select Grant to Duplicate"
                   value={selectedGrantToDuplicate}
                   onChange={setSelectedGrantToDuplicate}
-                  options={mockPastGrants.map(grant => ({ 
-                    value: grant.id, 
-                    label: `${grant.title} (${grant.year})` 
+                  // prefer incoming grantPrograms; fall back to mockPastGrants
+                  options={(grantPrograms.length > 0 ? grantPrograms : mockPastGrants).map(grant => ({
+                    value: grant.id,
+                    label: grant.title
                   }))}
                   placeholder="Search and select a grant to duplicate..."
                   required
@@ -170,7 +187,8 @@ const CreateGrant: React.FC = () => {
                     text="Continue to Duplicate"
                     variant="primary"
                     onClick={handleDuplicate}
-                    disabled={!isEditor || !selectedGrantToDuplicate}
+                    disabled={!isEditor || !selectedGrantToDuplicate || isDuplicating}
+                    text={isDuplicating ? "Duplicating..." : "Continue to Duplicate"}
                     size="regular"
                   />
                 </div>

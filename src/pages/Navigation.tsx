@@ -6,7 +6,7 @@ import FigorousLogo from "../components/icons/FigorousLogo";
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Mail01Icon } from '@hugeicons/core-free-icons';
 import {DashboardSquare01Icon} from '@hugeicons/core-free-icons';
-import {Profile02Icon, UserSquareIcon, Logout02Icon} from '@hugeicons/core-free-icons';
+import {Profile02Icon, UserSquareIcon, Logout02Icon, MessageQuestionIcon} from '@hugeicons/core-free-icons';
 const Navigation: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
@@ -56,7 +56,7 @@ const Navigation: React.FC = () => {
                       </Link>
                     <Link to="/grant-management/staff-profile" className="btn btn--small nav-link">
                         <span className="nav-link-icon"><HugeiconsIcon icon={UserSquareIcon} /></span>
-                        <span className="nav-link-label">My Profile</span>
+                        <span className="nav-link-label">Profile</span>
                       </Link>
                   </>
                 )}
@@ -72,19 +72,24 @@ const Navigation: React.FC = () => {
                     <span className="nav-link-label">Message</span>
                   </Link>
                 )}
+                <Link to="/contact" className="btn btn--small btn--ghost nav-link">
+                  <span className="nav-link-icon"><HugeiconsIcon icon={MessageQuestionIcon} /></span>
+                  <span className="nav-link-label">Contact</span>
+                </Link>
                 <button
                       onClick={handleLogout}
                       className="btn btn--small btn--outline nav-link"
                     >
                       <span className="nav-link-icon"><HugeiconsIcon icon={Logout02Icon} /></span>
-                      <span className="nav-link-label">Sign Out</span>
+                      <span className="nav-link-label">Logout</span>
                 </button>
-                {/* <div className="nav-user">
-
-                </div> */}
               </>
             ) : (
               <>
+                <Link to="/contact" className="btn btn--small btn--ghost nav-link">
+                  <span className="nav-link-icon"><HugeiconsIcon icon={MessageQuestionIcon} /></span>
+                  <span className="nav-link-label">Contact</span>
+                </Link>
                 <Link to="/signin" className="btn btn--small btn--ghost">
                   Sign In
                 </Link>
