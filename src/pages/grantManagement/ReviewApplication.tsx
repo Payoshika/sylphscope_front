@@ -3,13 +3,14 @@ import type { Provider } from "../../types/provider";
 import type { ApplicationDto, GrantProgramApplicationDto, EvaluationOfAnswerDto } from "../../types/application";
 import type { GrantProgram } from "../../types/grantProgram";
 import type { Student } from "../../types/student";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { getApplicationsByGrantProgramId, getEvaluationsByGrantProgramId, addReceiver, rejectReceiver } from "../../services/ApplicationService";
 import { getStudentById } from "../../services/StudentService";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import ApplicationListTable from "../../components/basicComponents/ApplicationListTable";
 import Select from "../../components/inputComponents/Select";
 import type { SelectOption } from "../../components/inputComponents/Select";
+import { isEditor } from "../../utility/permissions";
 
 interface ReviewApplicationProps {
   provider: Provider;
@@ -24,6 +25,8 @@ const ReviewApplication: React.FC<ReviewApplicationProps> = ({ provider, grantPr
   const [students, setStudents] = useState<Record<string, Student>>({});
   const [loadingStudents, setLoadingStudents] = useState(false);
   const navigate = useNavigate();
+  const { providerStaff } = useOutletContext<{ providerStaff: any }>();
+  const canEditApplications = isEditor(providerStaff);
 
   // Convert grant programs to select options
   const grantProgramOptions: SelectOption[] = grantPrograms.map(grant => ({
@@ -359,12 +362,12 @@ const ReviewApplication: React.FC<ReviewApplicationProps> = ({ provider, grantPr
           applications={applicationsForTable}
           provider={provider}
           onViewDetail={handleViewApplication}
+          onSelect={canEditApplications ? handleSelect : undefined}
+          onReject={canEditApplications ? handleReject : undefined}
           onSort={handleSort}
           markingScores={markingScores}
           applicantNames={applicantNames}
           appliedDates={appliedDates}
-          onSelect={handleSelect}
-          onReject={handleReject}
           headers={[
             { label: "Applicant Name", key: "applicantName" },
             { label: "Applied Date", key: "appliedDate" },

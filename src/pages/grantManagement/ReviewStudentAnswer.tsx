@@ -14,7 +14,7 @@ import NumberInput from "../../components/inputComponents/NumberInput";
 import Select from "../../components/inputComponents/Select";
 import Textarea from "../../components/inputComponents/Textarea";
 import type { ProviderStaff } from "../../types/user";
-import { isManager, isEditor } from "../../utility/permissions";
+import { isEditor } from "../../utility/permissions";
 
 const ReviewStudentAnswer: React.FC = () => {
   const { providerStaff } = useOutletContext<{ providerStaff: ProviderStaff; provider: any }>();
@@ -27,7 +27,6 @@ const ReviewStudentAnswer: React.FC = () => {
   const [eligibilityQuestions, setEligibilityQuestions] = useState<EligibilityCriteriaWithQuestionDto[]>([]);
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(true);
-  const [grantProgram, setGrantProgram] = useState<GrantProgram | null>(null);
   const [selectionCriteria, setSelectionCriteria] = useState<SelectionCriterion[]>([]);
   const [selectionCriteriaAnswers, setSelectionCriteriaAnswers] = useState<Record<string, any>>({});
   const [selectionCriteriaComments, setSelectionCriteriaComments] = useState<Record<string, string>>({});
@@ -581,6 +580,19 @@ const ReviewStudentAnswer: React.FC = () => {
     );
   };
 
+  // Helper function to fetch student info
+  const [student, setStudent] = useState<Student | null>(null);
+
+  useEffect(() => {
+    if (application?.studentId) {
+      import("../../services/StudentService").then(({ getStudentById }) => {
+        getStudentById(application.studentId)
+          .then(setStudent)
+          .catch(() => setStudent(null));
+      });
+    }
+  }, [application?.studentId]);
+
   if (loading) {
     return <div>Loading application details...</div>;
   }
@@ -596,25 +608,33 @@ const ReviewStudentAnswer: React.FC = () => {
         headline={`Reviewing answers for application ${applicationId}`}
         provider={true}
       />
-      
-      <div className="application-info">
-        <h3>Application Information</h3>
-        <div className="info-grid">
-          <div className="info-item">
-            <strong>Application ID:</strong> {application.id}
-          </div>
-          <div className="info-item">
-            <strong>Student ID:</strong> {application.studentId}
-          </div>
-          <div className="info-item">
-            <strong>Status:</strong> {application.status}
-          </div>
-          <div className="info-item">
-            <strong>Submitted:</strong> {new Date(application.submittedAt).toLocaleDateString()}
-          </div>
-          <div className="info-item">
-            <strong>Eligibility:</strong> {application.eligibilityResult?.eligible ? "Eligible" : "Not Eligible"}
-          </div>
+
+      {/* Combined Application & Student Info Section */}
+      <div className="w-full flex flex-col gap-4 mb-8 rounded-lg shadow-lg p-6">
+        <h3 className="">Student & Application Information</h3>
+        <div className="info-list flex flex-col gap-3">
+          <div className="info-item"><strong>Application ID:</strong> <span>{application.id}</span></div>
+          <div className="info-item"><strong>Status:</strong> <span>{application.status}</span></div>
+          <div className="info-item"><strong>Submitted:</strong> <span>{new Date(application.updatedAt).toLocaleDateString()}</span></div>
+          <div className="info-item"><strong>Eligibility:</strong> <span>{application.eligibilityResult?.eligible ? "Eligible" : "Not Eligible"}</span></div>
+          <div className="info-item"><strong>Student ID:</strong> <span>{application.studentId}</span></div>
+          {student && (
+            <>
+              <div className="info-item"><strong>Name:</strong> <span>{student.firstName} {student.middleName} {student.lastName}</span></div>
+              <div className="info-item"><strong>Date of Birth:</strong> <span>{student.dateOfBirth}</span></div>
+              <div className="info-item"><strong>Gender:</strong> <span>{student.gender}</span></div>
+              <div className="info-item"><strong>Phone:</strong> <span>{student.phoneNumber}</span></div>
+              <div className="info-item"><strong>Country:</strong> <span>{student.addressCountry?.name}</span></div>
+              <div className="info-item"><strong>City:</strong> <span>{student.addressCity}</span></div>
+              <div className="info-item"><strong>Citizenship:</strong> <span>{Array.isArray(student.citizenshipCountry) ? student.citizenshipCountry.map(c => c.name).join(", ") : ""}</span></div>
+              {/* {student.profilePictureUrl && (
+                <div className="info-item flex flex-col items-start">
+                  <strong>Profile Picture:</strong>
+                  <img src={student.profilePictureUrl} alt="Profile" className="mt-2 rounded shadow w-20 h-20 object-cover" />
+                </div>
+              )} */}
+            </>
+          )}
         </div>
       </div>
 

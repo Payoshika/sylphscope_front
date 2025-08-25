@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ToastProvider } from "./contexts/ToastContext";
-import Components from "./pages/Components";
+// import Components from "./pages/Components";
 import Signup from "./pages/auth/Signup";
 import Signin from "./pages/auth/Signin";
 import ChooseRole from "./pages/auth/ChooseRole";
@@ -40,7 +40,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
             <Route path="/mfa-verification" element={<MfaVerification />} />
-            <Route path="/components" element={<Components />} />
+            {/* <Route path="/components" element={<Components />} /> */}
             <Route path="/choose-role" element={<ChooseRole />} />
             <Route path="/landing-page" element={<LandingPage />} />
             <Route path="/contact" element={<Contact />} />
