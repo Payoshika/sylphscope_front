@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 import type { ApplicationDto } from "../../types/application";
 import type { EligibilityCriteriaWithQuestionDto, EvaluationOfAnswerDto } from "../../types/application";
-import type { GrantProgram, SelectionCriterion, EvaluationScale } from "../../types/grantProgram";
+import type { SelectionCriterion, EvaluationScale } from "../../types/grantProgram";
 import { getApplicationById } from "../../services/ApplicationService";
 import { getEligibilityCriteriaAndQuestionFromGrantProgramId } from "../../services/ApplicationService";
 import { getQuestionByGrantProgramId, getGrantProgramById } from "../../services/GrantProgramService";
@@ -15,6 +15,7 @@ import Select from "../../components/inputComponents/Select";
 import Textarea from "../../components/inputComponents/Textarea";
 import type { ProviderStaff } from "../../types/user";
 import { isEditor } from "../../utility/permissions";
+import type { Student } from "../../types/student";
 
 const ReviewStudentAnswer: React.FC = () => {
   const { providerStaff } = useOutletContext<{ providerStaff: ProviderStaff; provider: any }>();
@@ -88,7 +89,6 @@ const ReviewStudentAnswer: React.FC = () => {
 
       // Fetch grant program details including selection criteria
       const grantProgramData = await getGrantProgramById(currentApplication.grantProgramId);
-      setGrantProgram(grantProgramData);
       setSelectionCriteria(grantProgramData.selectionCriteria || []);
 
       // Fetch questions and question groups
@@ -626,7 +626,7 @@ const ReviewStudentAnswer: React.FC = () => {
               <div className="info-item"><strong>Phone:</strong> <span>{student.phoneNumber}</span></div>
               <div className="info-item"><strong>Country:</strong> <span>{student.addressCountry?.name}</span></div>
               <div className="info-item"><strong>City:</strong> <span>{student.addressCity}</span></div>
-              <div className="info-item"><strong>Citizenship:</strong> <span>{Array.isArray(student.citizenshipCountry) ? student.citizenshipCountry.map(c => c.name).join(", ") : ""}</span></div>
+              <div className="info-item"><strong>Citizenship:</strong> <span>{Array.isArray(student.citizenshipCountry) ? student.citizenshipCountry.map((c: any) => c.name).join(", ") : ""}</span></div>
               {/* {student.profilePictureUrl && (
                 <div className="info-item flex flex-col items-start">
                   <strong>Profile Picture:</strong>
