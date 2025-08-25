@@ -626,7 +626,7 @@ const ReviewStudentAnswer: React.FC = () => {
               <div className="info-item"><strong>Phone:</strong> <span>{student.phoneNumber}</span></div>
               <div className="info-item"><strong>Country:</strong> <span>{student.addressCountry?.name}</span></div>
               <div className="info-item"><strong>City:</strong> <span>{student.addressCity}</span></div>
-              <div className="info-item"><strong>Citizenship:</strong> <span>{Array.isArray(student.citizenshipCountry) ? student.citizenshipCountry.map((c: any) => c.name).join(", ") : ""}</span></div>
+              <div className="info-item"><strong>Citizenship:</strong> <span>{Array.isArray(student.citizenshipCountry) ? student.citizenshipCountry.map((c: { name: string }) => c.name).join(", ") : ""}</span></div>
               {/* {student.profilePictureUrl && (
                 <div className="info-item flex flex-col items-start">
                   <strong>Profile Picture:</strong>

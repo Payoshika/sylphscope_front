@@ -109,14 +109,12 @@ const GrantSchedule: React.FC<GrantScheduleProps> = ({
       if (date <= today) return `${label} must be in the future.`;
     }
 
-    // Order validation 
-    if (appStart && appEnd && appEnd <= appStart) return "Application End Date must be after Application Start Date.";
-    if (appEnd && decision && decision <= appEnd) return "Decision Date must be after Application End Date.";
-    if (appStart && decision && decision <= appStart) return "Decision Date must be after Application Start Date.";
-    if (decision && fundDisbursement && fundDisbursement <= decision) return "Fund Disbursement Date must be after Decision Date.";
-    if (appEnd && fundDisbursement && fundDisbursement <= appEnd) return "Fund Disbursement Date must be after Application End Date.";
-    if (appStart && fundDisbursement && fundDisbursement <= appStart) return "Fund Disbursement Date must be after Application Start Date.";
-
+    if (appEnd && appStart && appEnd <= appStart) return "Application End Date must be after Application Start Date.";
+    if (decision && appEnd && decision <= appEnd) return "Decision Date must be after Application End Date.";
+    if (decision && appStart && decision <= appStart) return "Decision Date must be after Application Start Date.";
+    if (fundDisbursement && decision && fundDisbursement <= decision) return "Fund Disbursement Date must be after Decision Date.";
+    if (fundDisbursement && appEnd && fundDisbursement <= appEnd) return "Fund Disbursement Date must be after Application End Date.";
+    if (fundDisbursement && appStart && fundDisbursement <= appStart) return "Fund Disbursement Date must be after Application Start Date.";
     return null;
   };
 
