@@ -31,6 +31,7 @@ const GrantSchedule: React.FC<GrantScheduleProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { providerStaff } = useOutletContext<{ providerStaff?: ProviderStaff }>();
   const isEditable = canEditGrant(providerStaff, grantProgram);
@@ -77,8 +78,54 @@ const GrantSchedule: React.FC<GrantScheduleProps> = ({
     });
   }, [isReadOnly]);
 
+  // Helper to convert DateValue to JS Date
+  const toJsDate = (val: DateValue): Date | null => {
+    if (!val || !val.year || !val.month || !val.day) return null;
+    return new Date(
+      parseInt(val.year),
+      parseInt(val.month) - 1,
+      parseInt(val.day)
+    );
+  };
+
+  // Validation function
+  const validateScheduleDates = (): string | null => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const appStart = toJsDate(localDateValues.applicationStartDate);
+    const appEnd = toJsDate(localDateValues.applicationEndDate);
+    const decision = toJsDate(localDateValues.decisionDate);
+    const fundDisbursement = toJsDate(localDateValues.fundDisbursementDate);
+
+    // All dates must be in the future
+    for (const [label, date] of [
+      ["Application Start Date", appStart],
+      ["Application End Date", appEnd],
+      ["Decision Date", decision],
+      ["Fund Disbursement Date", fundDisbursement],
+    ]) {
+      if (!date) return `Please select ${label}.`;
+      if (date <= today) return `${label} must be in the future.`;
+    }
+
+    // Order validation
+    if (appEnd <= appStart) return "Application End Date must be after Application Start Date.";
+    if (decision <= appEnd) return "Decision Date must be after Application End Date.";
+    if (decision <= appStart) return "Decision Date must be after Application Start Date.";
+    if (fundDisbursement <= decision) return "Fund Disbursement Date must be after Decision Date.";
+    if (fundDisbursement <= appEnd) return "Fund Disbursement Date must be after Application End Date.";
+    if (fundDisbursement <= appStart) return "Fund Disbursement Date must be after Application Start Date.";
+
+    return null;
+  };
+
   const handleSaveSchedule = useCallback(async () => {
     if (isReadOnly) return;
+    const errorMsg = validateScheduleDates();
+    setValidationError(errorMsg);
+    if (errorMsg) return;
+
     setIsSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(null);
@@ -136,6 +183,7 @@ const GrantSchedule: React.FC<GrantScheduleProps> = ({
         disabled={isSubmitting || isReadOnly}
         onClick={handleSaveSchedule}
       />
+      {validationError && <div className="error-message">{validationError}</div>}
       {submitError && <div className="error-message">{submitError}</div>}
       {submitSuccess && <div className="success-message">{submitSuccess}</div>}
     </div>

@@ -184,7 +184,6 @@ const CreateGrant: React.FC<CreateGrantProps> = ({ grantPrograms = [] }) => {
                 />
                 <div className="create-grant-action">
                   <Button
-                    text="Continue to Duplicate"
                     variant="primary"
                     onClick={handleDuplicate}
                     disabled={!isEditor || !selectedGrantToDuplicate || isDuplicating}

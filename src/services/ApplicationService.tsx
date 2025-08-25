@@ -244,7 +244,7 @@ export const getEligibilityResultByApplicationId = async (
 ): Promise<EligibilityResultDto | null> => {
   try {
     const response = await apiClient.get<EligibilityResultDto>(
-      `/api/eligibility-results/by-application/${applicationId}`
+      `/api/eligibility-result/by-application/${applicationId}`
     );
     if (!response.data) {
       return null;

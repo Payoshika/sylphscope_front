@@ -29,6 +29,7 @@ const Apply: React.FC<ApplyProps> = ({ application, grantProgramId }) => {
     const fetchEligibilityResult = async () => {
       try {
         setLoadingEligibility(true);
+        console.log("Fetching eligibility result for application ID:", application.id);
         const result = await getEligibilityResultByApplicationId(application.id);
         setEligibilityResult(result);
         console.log("Eligibility result:", result);
@@ -229,13 +230,15 @@ const Apply: React.FC<ApplyProps> = ({ application, grantProgramId }) => {
         )}
 
         <div className="apply-actions">
-          <Button
-            text="Cancel"
-            type="button"
-            variant="outline"
-            onClick={handleCancel}
-            disabled={isSubmitting}
-          />
+          {!isAlreadyApplied && (
+            <Button
+              text="Cancel"
+              type="button"
+              variant="outline"
+              onClick={handleCancel}
+              disabled={isSubmitting}
+            />
+          )}
           <Button
             text={getSubmitButtonText()}
             type="button"

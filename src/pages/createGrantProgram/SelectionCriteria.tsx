@@ -21,15 +21,11 @@ interface SelectionCriteriaProps {
 }
 
 const evaluationTypeOptions = [
-  { value: "MANUAL", label: "Manual" },
-  { value: "AUTO", label: "Auto" },
+  { value: "MANUAL", label: "Manual" }
 ];
 
 const evaluationScaleOptions = [
-  { value: "HUNDRED", label: "0-100" },
-  { value: "TEN", label: "0-10" },
-  { value: "FIVE", label: "0-5" },
-  { value: "A2E", label: "A-E" },
+  { value: "HUNDRED", label: "0-100" }
 ];
 
 const SelectionCriteria: React.FC<SelectionCriteriaProps> = ({
@@ -334,6 +330,9 @@ const handleSaveSelectionCriteria = async () => {
             required
             disabled={isReadOnly}
           />
+          <div className="">
+            Other evaluation scale options are coming soon.
+          </div>
         </div>
         <div className={`form-group eligibility-lists ${isReadOnly ? 'form-group--readonly' : ''}`}>
           {renderSelectedQuestionButtons()}
@@ -343,6 +342,9 @@ const handleSaveSelectionCriteria = async () => {
           <div className="selection-criteria__total">
             Total: {totalWeight}%
           </div>
+        </div>
+        <div className="">
+          Automatic evaluation options are coming soon.
         </div>
         <Button
           text={isSubmitting ? "Saving..." : "Save Selection Criteria"}

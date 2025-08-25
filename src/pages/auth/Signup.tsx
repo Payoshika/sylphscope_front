@@ -80,6 +80,7 @@ const Signup: React.FC = () => {
           "Welcome to Figorous"
         );
         navigate("/signin");
+        window.location.reload();
       } else {
         const errorMessage = response.message || "Registration failed";
         showError(errorMessage, "Registration Failed");

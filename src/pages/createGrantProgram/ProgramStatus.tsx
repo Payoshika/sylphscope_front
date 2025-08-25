@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import Button from "../../components/basicComponents/Button";
-import Card from "../../components/basicComponents/Card";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import { makeProgramPublic, closeProgram } from "../../services/GrantProgramService";
 import type { GrantProgram } from "../../types/grantProgram";
@@ -157,7 +156,7 @@ const ProgramStatus: React.FC<ProgramStatusProps> = ({ grantProgram, onGrantProg
             </div>
             
             <div className="summary-item">
-              <p><strong>Assigned Staff:</strong> <span className="value">{grantProgram.assignedStaff?.length || 0} staff members</span></p>
+              <p><strong>Assigned Staff:</strong> <span className="value">{grantProgram.assignedStaffIds?.length || 0} staff members</span></p>
             </div>
            </div>
          </div>

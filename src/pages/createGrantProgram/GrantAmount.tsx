@@ -118,7 +118,7 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
         <NumberInput
           id="min-amount"
           name="minAmount"
-          label={fixedType === "fixed" ? "Grant Amount" : "Minimum Grant Amount"}
+          label={fixedType === "fixed" ? "Grant Amount for each receiver" : "Minimum Grant Amount for each receiver"}
           value={minAmount}
           onChange={handleMinAmountChange}
           min={0}
@@ -129,7 +129,7 @@ const GrantAmount: React.FC<GrantAmountProps> = ({
           <NumberInput
             id="max-amount"
             name="maxAmount"
-            label="Maximum Grant Amount"
+            label="Maximum Grant Amount for each receiver"
             value={maxAmount}
             onChange={handleMaxAmountChange}
             min={minAmount}
