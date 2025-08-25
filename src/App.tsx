@@ -1,5 +1,3 @@
-// Update src/App.tsx
-import "./App.css";
 import {
   BrowserRouter as Router,
   Routes,
