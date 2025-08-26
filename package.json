@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "build:css": "sass src/css/index.scss src/css/index.css --style=compressed"
+    "build:css": "sass src/css/index.scss src/css/index.css --style=compressed",
+    "k6:run": "k6 run ./tests/E2Etest/k6/test.js"
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^1.0.16",
