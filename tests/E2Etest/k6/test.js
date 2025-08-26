@@ -2,20 +2,26 @@ import http from "k6/http";
 import { check, sleep } from "k6";
 
 export let options = {
-  stages: [
-    { duration: '5s', target: 50},
-    { duration: '10s', target: 1000},
-    { duration: '5s', target: 0}
-  ]
+  scenarios: {
+    constant_load: {
+      executor: 'constant-vus',
+      vus: 1000,
+      duration: '1m',
+    },
+  },
+  thresholds: { 'http_req_duration': ['p(95)<2000'] }, 
 };
 
-const BASE_URL = __ENV.BASE_URL || "http://localhost:5173";
-// Replace with the real backend login endpoint used by [`AuthService.login`](src/services/AuthService)
-const LOGIN_URL = __ENV.LOGIN_URL || `${BASE_URL}/api/auth/login`;
+const BASE_URL = "http://localhost:8080/api";
+const LOGIN_URL = `http://localhost:8080/api/public/login`;
 
-// Use env vars for test credentials
-const USERNAME = __ENV.TEST_STUDENT_USERNAME || "testuser";
-const PASSWORD = __ENV.TEST_STUDENT_PASSWORD || "testpass";
+// Student creds
+const STUDENT_USERNAME = __ENV.TEST_STUDENT_USERNAME || "testuser";
+const STUDENT_PASSWORD = __ENV.TEST_STUDENT_PASSWORD || "testpass";
+
+// Provider creds
+const PROVIDER_USERNAME = __ENV.TEST_PROVIDER_USERNAME || "testProvider";
+const PROVIDER_PASSWORD = __ENV.TEST_PROVIDER_PASSWORD || "kohei0099";
 
 function extractToken(loginRes) {
   try {
@@ -26,20 +32,48 @@ function extractToken(loginRes) {
   }
 }
 
+function doLogin(username, password) {
+  const payload = JSON.stringify({ username, password });
+  const res = http.post(LOGIN_URL, payload, { headers: { "Content-Type": "application/json" } });
+  const token = extractToken(res);
+  const cookie = res.headers && (res.headers["Set-Cookie"] || res.headers["set-cookie"]) ? (res.headers["Set-Cookie"] || res.headers["set-cookie"]) : null;
+  return { res, token, cookie };
+}
+
 export function setup() {
-  const loginPayload = JSON.stringify({ username: USERNAME, password: PASSWORD });
-  const loginRes = http.post(LOGIN_URL, loginPayload, { headers: { "Content-Type": "application/json" } });
-  const token = extractToken(loginRes);
-  return { token, cookie: loginRes.headers["Set-Cookie"] || null };
+  // Login student
+  const studentLogin = doLogin(STUDENT_USERNAME, STUDENT_PASSWORD);
+
+  // Login provider
+  const providerLogin = doLogin(PROVIDER_USERNAME, PROVIDER_PASSWORD);
+
+  return {
+    student: { token: studentLogin.token, cookie: studentLogin.cookie },
+    provider: { token: providerLogin.token, cookie: providerLogin.cookie },
+  };
 }
 
 export default function (data) {
-  const authHeaders = { Accept: "text/html,application/xhtml+xml,application/json" };
-  if (data.token) authHeaders["Authorization"] = `Bearer ${data.token}`;
-  else if (data.cookie) authHeaders["Cookie"] = data.cookie;
+  // Test as student
+  const studentHeaders = { Accept: "text/html,application/xhtml+xml,application/json" };
+  if (data.student.token) studentHeaders["Authorization"] = `Bearer ${data.student.token}`;
+  else if (data.student.cookie) studentHeaders["Cookie"] = data.student.cookie;
 
-  // requests
-  const resDashboard = http.get(`${BASE_URL}/student-dashboard/list`, { headers: authHeaders });
-  check(resDashboard, { "dashboard status is 200": (r) => r.status === 200 });
+  // Test as student
+  const studentId = "687b962d61ab6353b233ba7a"; // Replace with actual studentId if available
+  const page = 0;
+  const size = 10;
+  const resStudentList = http.get(`${BASE_URL}/grant-programs/student/${studentId}?page=${page}&size=${size}`, { headers: studentHeaders });
+  check(resStudentList, { "grant-programs/student status 200": (r) => r.status === 200 });
+  sleep(1);
+
+  // Test as provider
+  const providerHeaders = { Accept: "text/html,application/xhtml+xml,application/json" };
+  if (data.provider.token) providerHeaders["Authorization"] = `Bearer ${data.provider.token}`;
+  else if (data.provider.cookie) providerHeaders["Cookie"] = data.provider.cookie;
+
+  // Example provider sub-route
+  const resGrantList = http.get(`${BASE_URL}/grant-programs/provider/687a5bc3f7cf4d29b47e4e75`, { headers: providerHeaders });
+  check(resGrantList, { "grant-programs/provider/687a5bc3f7cf4d29b47e4e75 status 200": (r) => r.status === 200 });
   sleep(1);
 }
