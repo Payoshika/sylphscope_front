@@ -42,7 +42,7 @@ const initialGrantProgram: GrantProgram = {
     decisionDate: null,
     fundDisbursementDate: null,
   } as Schedule,
-  assignedStaffIds: [],
+  assignedStaff: [],
   contactPerson: {
     id: "",
     userId: "",

@@ -102,10 +102,6 @@ const OrganisationStaff: React.FC<OrganisationStaffProps> = ({ provider, onNext,
     }
   };
 
-  const getRoleDisplay = (role: string) => {
-    return role.charAt(0).toUpperCase() + role.slice(1);
-  };
-
   const getFullName = (staff: ProviderStaff) => {
     const firstName = staff.firstName || "";
     const middleName = staff.middleName || "";
