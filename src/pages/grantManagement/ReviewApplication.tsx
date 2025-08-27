@@ -280,7 +280,7 @@ const ReviewApplication: React.FC<ReviewApplicationProps> = ({ provider, grantPr
       return sorted;
     });
   };
-
+ 
   // Convert applications to GrantProgramApplicationDto format for the table
   const applicationsForTable: GrantProgramApplicationDto[] = applications.map(application => {
     const selectedGrant = grantPrograms.find(g => g.id === selectedGrantProgramId);
