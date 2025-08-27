@@ -62,7 +62,7 @@ const CreateGrant: React.FC<CreateGrantProps> = ({ grantPrograms = [] }) => {
           decisionDate: null,
           fundDisbursementDate: null
         },
-        assignedStaffIds: [],
+        assignedStaff: [],
         contactPerson: {
           id: providerStaff.id,
           userId:"",

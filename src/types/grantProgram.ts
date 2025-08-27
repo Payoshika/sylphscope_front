@@ -26,7 +26,7 @@ export interface GrantProgram {
   schedule: Schedule;
   createdAt: string; 
   updatedAt: string; 
-  assignedStaffIds: string[];
+  assignedStaff: AssignedStaff[];
   contactPerson: ProviderStaffDto;
   questionIds: string[];
   questionGroupsIds: string[];

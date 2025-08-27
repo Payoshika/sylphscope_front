@@ -104,7 +104,7 @@ const handleOperatorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         </button>
       )}
       <div>
-        <p className="form-label">{question.questionText}</p>
+        <p className="form-label">{question.name}</p>
       </div>
       <div className="comparison-and-values-options">
         <div>

@@ -300,7 +300,7 @@ const ReviewApplication: React.FC<ReviewApplicationProps> = ({ provider, grantPr
         },
         createdAt: "",
         updatedAt: "",
-        assignedStaffIds: [],
+        assignedStaff: [],
         contactPerson: {
           id: "",
           userId: "",

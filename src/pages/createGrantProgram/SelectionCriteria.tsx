@@ -340,7 +340,7 @@ const handleSaveSelectionCriteria = async () => {
         <div className={`form-group eligibility-forms ${isReadOnly ? 'form-group--readonly' : ''}`}>
           {renderSelectedCriteriaInputs()}
           <div className="selection-criteria__total">
-            Total: {totalWeight}%
+            <p>Total: {totalWeight}%</p>
           </div>
         </div>
         <div className="">

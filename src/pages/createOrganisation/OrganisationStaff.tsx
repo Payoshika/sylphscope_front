@@ -20,7 +20,7 @@ const OrganisationStaff: React.FC<OrganisationStaffProps> = ({ provider, onNext,
   const [staff, setStaff] = useState<ProviderStaff[]>([]);
   const [loading, setLoading] = useState(true);
   const [removingStaff, setRemovingStaff] = useState<string | null>(null);
-  console.log("providerStaff in OrganisationStaff", providerStaff);
+  console.log(staff);
   // Invitation code state
   const [invitationCode, setInvitationCode] = useState<string>(provider?.invitationCode ?? "");
   const [isSavingInvitation, setIsSavingInvitation] = useState(false);
@@ -50,7 +50,9 @@ const OrganisationStaff: React.FC<OrganisationStaffProps> = ({ provider, onNext,
     }
   };
 
-  const isManager = (providerStaff?.role || "").toString().toLowerCase() === "manager";
+  const roleLower = ((providerStaff?.role || "") as string).toString().toLowerCase();
+  const isManager = roleLower === "manager";
+  const isEditor = ["manager", "administrator"].includes(roleLower);
 
   const handleRemoveStaff = async (staffId: string) => {
     // Manager-only removal
@@ -58,8 +60,8 @@ const OrganisationStaff: React.FC<OrganisationStaffProps> = ({ provider, onNext,
       showError("Only managers can remove staff", "Permission");
       return;
     }
-  // Prevent manager removing themself
-  if (providerStaff?.id === staffId && (providerStaff?.role || "").toString().toLowerCase() === "manager") {
+    // Prevent manager removing themself
+    if (providerStaff?.id === staffId && roleLower === "manager") {
       showError("You cannot remove yourself as manager", "Action not allowed");
       return;
     }
@@ -100,15 +102,10 @@ const OrganisationStaff: React.FC<OrganisationStaffProps> = ({ provider, onNext,
     }
   };
 
-  const getRoleDisplay = (role: string) => {
-    return role.charAt(0).toUpperCase() + role.slice(1);
-  };
-
   const getFullName = (staff: ProviderStaff) => {
     const firstName = staff.firstName || "";
     const middleName = staff.middleName || "";
     const lastName = staff.lastName || "";
-    
     const nameParts = [firstName, middleName, lastName].filter(part => part.trim());
     return nameParts.join(" ").trim() || "Unknown Staff";
   };
@@ -122,6 +119,12 @@ const OrganisationStaff: React.FC<OrganisationStaffProps> = ({ provider, onNext,
       showError("Please enter an invitation code", "Validation");
       return;
     }
+    // Permission guard: only managers or administrators may save
+    if (!isEditor) {
+      showError("Only Managers or Administrators can update invitation code", "Permission");
+      return;
+    }
+
     setIsSavingInvitation(true);
     try {
       const updated = await createProviderInvitationCode(provider.id, invitationCode.trim());
@@ -243,27 +246,30 @@ const OrganisationStaff: React.FC<OrganisationStaffProps> = ({ provider, onNext,
                   <div className="staff-name">
                     <h4>{`${staffMember.firstName ?? ""} ${staffMember.middleName ?? ""} ${staffMember.lastName ?? ""}`.trim() || "Unknown Staff"}</h4>
                     <div className="staff-role">
-                      {isManager ? (
-                        <Select
-                          id={`role-${staffMember.id}`}
-                          name={`role-${staffMember.id}`}
-                          label=""
-                          value={staffMember.role}
-                          onChange={(e) => handleRoleChange(staffMember, e.target.value)}
-                          options={[
-                            { value: "manager", label: "Manager" },
-                            { value: "administrator", label: "Administrator" },
-                            { value: "assessor", label: "Assessor" },
-                            { value: "volunteer", label: "Volunteer" },
-                          ]}
-                          // disable changing role for any staff member whose role is manager
-                          disabled={
-                            savingRoleFor === staffMember.id || (staffMember.role || "").toString().toLowerCase() === "manager"
-                          }
-                        />
-                      ) : (
-                        <span>{getRoleDisplay(staffMember.role)}</span>
-                      )}
+                      <Select
+                        id={`role-${staffMember.id}`}
+                        name={`role-${staffMember.id}`}
+                        label=""
+                        value={staffMember.role}
+                        onChange={(e) => {
+                          // only invoke change when current user is manager
+                          if (isManager) handleRoleChange(staffMember, e.target.value);
+                        }}
+                        options={[
+                          { value: "Manager", label: "Manager" },
+                          { value: "Administrator", label: "Administrator" },
+                          { value: "Volunteer", label: "Volunteer" },
+                        ]}
+                        // show select for everyone, but disable when not allowed
+                        disabled={
+                          // disable while saving role for this member
+                          savingRoleFor === staffMember.id ||
+                          // never allow changing role of an existing manager
+                          (staffMember.role || "").toString().toLowerCase() === "manager" ||
+                          // non-managers cannot change roles
+                          !isManager
+                        }
+                      />
                     </div>
                   </div>
                 </div>
@@ -305,18 +311,23 @@ const OrganisationStaff: React.FC<OrganisationStaffProps> = ({ provider, onNext,
               text={provider?.invitationCode ? (isSavingInvitation ? "Updating..." : "Update Code") : (isSavingInvitation ? "Creating..." : "Create Code")}
               variant="primary"
               onClick={handleSaveInvitationCode}
-              disabled={isSavingInvitation || !invitationCode.trim()}
+              disabled={!isEditor || isSavingInvitation || !invitationCode.trim()}
             />
             <Button
               text="Clear"
               variant="outline"
               onClick={() => setInvitationCode("")}
-              disabled={isSavingInvitation}
+              disabled={!isEditor || isSavingInvitation}
             />
           </div>
           <p className="caption" style={{ marginTop: 8 }}>
             Current code: {provider?.invitationCode ? provider.invitationCode : "Not set"}
           </p>
+          {!isEditor && (
+            <p className="caption muted" style={{ marginTop: 8 }}>
+              Only Managers or Administrators can create, update or clear the invitation code.
+            </p>
+          )}
         </div>
       </div>
 

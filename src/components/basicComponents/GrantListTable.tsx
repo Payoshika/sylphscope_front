@@ -124,6 +124,26 @@ const GrantListTable: React.FC<GrantListTableProps> = ({
     onSort?.(key, direction, sortedGrants);
   };
 
+  const formatCurrency = (val: number | string | undefined) => {
+    if (typeof val === 'number') {
+      try {
+        return `$${val.toLocaleString()}`;
+      } catch {
+        return `$${val}`;
+      }
+    }
+    return val ? String(val) : "-";
+  };
+  
+  const formatAmountCell = (grant: any) => {
+    const award = grant.award && grant.award.length > 0
+      ? grant.award.map((a: any) => formatCurrency(a)).join(" - ")
+      : "Amount TBD";
+    const receivers = grant.numOfAward ? `${grant.numOfAward} receiver${grant.numOfAward > 1 ? "s" : ""}` : "Receivers: N/A";
+    // Show labels to make it clear: "<amount>  /  <receivers>"
+    return `${award}  for  ${receivers}`;
+  };
+
   return (
     <div className="grantlist-outer">
       <div className="grantlist-search-row">
@@ -194,10 +214,7 @@ const GrantListTable: React.FC<GrantListTableProps> = ({
                   cellContent = getNextSchedule?.(grant) || "-";
                   break;
                 case "amount":
-                  cellContent = grant.award && grant.award.length > 0 ? grant.award.join(" - ") : "-";
-                  if (grant.numOfAward) {
-                    cellContent += ` / ${grant.numOfAward}`;
-                  }
+                  cellContent = formatAmountCell(grant);
                   break;
                 case "applicants":
                   cellContent = (grant.applicationCount?.toString() || "0") + " / " + (grant.numOfAward ? grant.numOfAward : "-");

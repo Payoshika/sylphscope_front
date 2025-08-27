@@ -40,17 +40,20 @@ const ReviewStudentAnswer: React.FC = () => {
   // Check if current staff can see other evaluations
   const canViewOtherEvaluations = isEditor(providerStaff); // Manager or Administrator
 
+  // Disable marking for these statuses
+  const nonMarkableStatuses = ["draft", "selected", "not selected", "canceled"];
+  const canMark = !!application && !nonMarkableStatuses.includes(application.status);
+
   useEffect(() => {
     if (applicationId) {
       fetchApplicationData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [applicationId]);
 
   // Separate useEffect to handle evaluation mapping when selectionCriteria is available
   useEffect(() => {
     if (existingEvaluations.length > 0 && selectionCriteria.length > 0) {
-      console.log("Mapping evaluations to UI with selection criteria:", selectionCriteria);
-      
       const existingAnswersMap: Record<string, any> = {};
       const existingCommentsMap: Record<string, string> = {};
       
@@ -67,8 +70,6 @@ const ReviewStudentAnswer: React.FC = () => {
       
       setSelectionCriteriaAnswers(existingAnswersMap);
       setSelectionCriteriaComments(existingCommentsMap);
-      console.log("Existing selection criteria answers:", existingAnswersMap);
-      console.log("Existing selection criteria comments:", existingCommentsMap);
     }
   }, [existingEvaluations, selectionCriteria]);
 
@@ -105,17 +106,12 @@ const ReviewStudentAnswer: React.FC = () => {
       const answersMap: Record<string, any> = {};
       const studentAnswerIdMap: Record<string, string> = {};
       
-      console.log("Student answers:", studentAnswers);
-      
       studentAnswers.forEach(answerDto => {
-        console.log("Processing answerDto:", answerDto);
         if (answerDto.questionGroupId) {
           if (!answersMap[answerDto.questionGroupId]) {
             answersMap[answerDto.questionGroupId] = {};
           }
           answerDto.answer.forEach((ans: any) => {
-            console.log("Group answer:", ans);
-            // Handle different answer formats
             let processedAnswer = ans.answer;
             if (Array.isArray(processedAnswer) && processedAnswer.length === 1) {
               processedAnswer = processedAnswer[0];
@@ -125,8 +121,6 @@ const ReviewStudentAnswer: React.FC = () => {
           });
         } else {
           answerDto.answer.forEach((ans: any) => {
-            console.log("Individual answer:", ans);
-            // Handle different answer formats
             let processedAnswer = ans.answer;
             if (Array.isArray(processedAnswer) && processedAnswer.length === 1) {
               processedAnswer = processedAnswer[0];
@@ -137,19 +131,16 @@ const ReviewStudentAnswer: React.FC = () => {
         }
       });
       
-      console.log("Processed answers map:", answersMap);
       setAnswers(answersMap);
       setStudentAnswerIdMapping(studentAnswerIdMap);
 
       // Fetch existing evaluations for this application and evaluator
       if (providerStaff?.id) {
-        console.log("Fetching existing evaluations...for", providerStaff.id);
         try {
           const existingEvaluationsData = await getEvaluationOfAnswerDtoForApplicationAndEvaluatorId(
             applicationId,
             providerStaff.id
           );
-          console.log("Existing evaluations fetched:", existingEvaluationsData);
           setEvaluations(existingEvaluationsData);
           setExistingEvaluations(existingEvaluationsData);
 
@@ -157,10 +148,8 @@ const ReviewStudentAnswer: React.FC = () => {
           if (canViewOtherEvaluations) {
             try {
               const allEvaluationsData = await getEvaluationsByApplicationId(applicationId);
-              // Filter out current staff's evaluations
               const otherStaffEvals = allEvaluationsData.filter(evaluation => evaluation.evaluatorId !== providerStaff.id);
               setOtherStaffEvaluations(otherStaffEvals);
-              console.log("Other staff evaluations fetched:", otherStaffEvals);
             } catch (error) {
               console.error("Failed to fetch other staff evaluations:", error);
               setOtherStaffEvaluations([]);
@@ -168,10 +157,8 @@ const ReviewStudentAnswer: React.FC = () => {
           }
         } catch (error) {
           console.error("Failed to fetch existing evaluations:", error);
-          // Continue without existing evaluations
         }
-      }
-      else{
+      } else {
         console.log("No provider staff ID available");
       }
 
@@ -232,6 +219,11 @@ const ReviewStudentAnswer: React.FC = () => {
 
   // Function to save selection criteria evaluations
   const handleSaveSelectionCriteria = async () => {
+    if (!canMark) {
+      alert("This application cannot be marked in its current status.");
+      return;
+    }
+
     try {
       setSavingEvaluations(true);
       
@@ -245,8 +237,6 @@ const ReviewStudentAnswer: React.FC = () => {
         
         // Get the actual questionId from the criterion
         const actualQuestionId = criterion?.questionId || criterionId;
-        console.log("Actual question ID:", actualQuestionId);
-        console.log("Student answer ID mapping:", studentAnswerIdMapping);
         const studentAnswerId = studentAnswerIdMapping[actualQuestionId] || "";
         
         return {
@@ -265,7 +255,6 @@ const ReviewStudentAnswer: React.FC = () => {
         };
       });
 
-      console.log("Sending evaluations to backend:", evaluationsToSave);
       const updatedEvaluations = await updateEvaluations(evaluationsToSave);
       setEvaluations(updatedEvaluations);
       alert("Selection criteria evaluations and comments saved successfully!");
@@ -316,7 +305,6 @@ const ReviewStudentAnswer: React.FC = () => {
       .map((q) => {
         const questionId = q.question.id ?? "";
         const answerValue = answers[questionId] || "";
-        console.log(`Question ${questionId}:`, { question: q.question, answer: answerValue });
         return (
           <div className="eligibility-form" key={questionId}>
             {renderInput(
@@ -339,7 +327,6 @@ const ReviewStudentAnswer: React.FC = () => {
           {group.questions.map((q: any) => {
             const questionId = q.question.id ?? "";
             const answerValue = answers[groupId]?.[questionId] || "";
-            console.log(`Group Question ${questionId}:`, { question: q.question, answer: answerValue });
             return (
               <div className="eligibility-form" key={questionId}>
                 {renderInput(
@@ -365,7 +352,6 @@ const ReviewStudentAnswer: React.FC = () => {
               {(() => {
                 const questionId = item.question.question.id ?? "";
                 const answerValue = answers[questionId] || "";
-                console.log(`Eligibility Question ${questionId}:`, { question: item.question.question, answer: answerValue });
                 return renderInput(
                   item.question.question,
                   item.question.options,
@@ -388,39 +374,24 @@ const ReviewStudentAnswer: React.FC = () => {
               <h4>Eligibility Question Group: {item.questionGroup.name}</h4>
               <p>{item.questionGroup.description}</p>
               {item.questionGroup.questions.map((q: any) => {
-                const questionCondition = item.eligibilityCriteria?.questionConditions?.find(
-                  (c: any) => c.questionId === q.question.id
-                );
-
+                const questionId = q.question.id;
+                const answerValue = answers[item.questionGroup?.id ?? ""]?.[questionId] || "";
                 return (
                   <div key={q.question.id} className="eligibility-form">
-                    {(() => {
-                      const questionId = q.question.id;
-                      const answerValue = answers[item.questionGroup?.id ?? ""]?.[questionId] || "";
-                      console.log(`Eligibility Group Question ${questionId}:`, { question: q.question, answer: answerValue });
-                      return renderInput(
-                        q.question,
-                        q.options,
-                        answerValue,
-                        () => {} // Read-only
-                      );
-                    })()}
-                    {questionCondition && (
+                    {renderInput(
+                      q.question,
+                      q.options,
+                      answerValue,
+                      () => {} // Read-only
+                    )}
+                    {item.eligibilityCriteria?.questionConditions && (
                       <div className="criteria-info">
-                        <p>
-                          <strong>Criteria:</strong> Your answer should {questionCondition.comparisonOperator}{" "}
-                          {JSON.stringify(questionCondition.values)}
-                        </p>
+                        <p><strong>Note:</strong> All group conditions must be met for eligibility</p>
                       </div>
                     )}
                   </div>
                 );
               })}
-              {item.eligibilityCriteria?.questionConditions && (
-                <div className="criteria-info">
-                  <p><strong>Note:</strong> All group conditions must be met for eligibility</p>
-                </div>
-              )}
             </div>
           )}
         </div>
@@ -435,11 +406,19 @@ const ReviewStudentAnswer: React.FC = () => {
     return (
       <div className="section">
         <h3>Selection Criteria Evaluation</h3>
+
+        {!canMark && (
+          <div className="alert muted" style={{ marginBottom: 12 }}>
+            <p>
+              This application is in status "<strong>{application?.status}</strong>" and cannot be marked or updated.
+            </p>
+          </div>
+        )}
+
         {selectionCriteria.map((criterion) => {
           const question = criterion.questionId ? findQuestionById(criterion.questionId) : null;
           const questionGroup = !criterion.questionId ? findQuestionGroupById(criterion.id || "") : null;
           
-          // Get other staff scores and comments if user can view them
           const otherStaffData = canViewOtherEvaluations ? getOtherStaffAverageScore(criterion.id || "") : null;
           const otherStaffComments = canViewOtherEvaluations ? getOtherStaffComments(criterion.id || "") : [];
           
@@ -491,7 +470,6 @@ const ReviewStudentAnswer: React.FC = () => {
                 </div>
               )}
 
-              {/* Show other staff evaluations if user can view them */}
               {canViewOtherEvaluations && otherStaffData && otherStaffData.evaluationCount > 0 && (
                 <div className="other-staff-evaluations bg-blue-50 p-3 rounded border mb-4">
                   <h5 className="text-sm font-semibold text-blue-800 mb-2">Other Staff Evaluations</h5>
@@ -530,7 +508,7 @@ const ReviewStudentAnswer: React.FC = () => {
                       label=""
                       value={selectionCriteriaAnswers[criterion.id || ""] || ""}
                       onChange={(e) => handleSelectionCriteriaChange(criterion.id || "", e.target.value === "" ? "" : Number(e.target.value))}
-                      disabled={false}
+                      disabled={!canMark}
                     />
                   ) : (
                     <Select
@@ -540,6 +518,7 @@ const ReviewStudentAnswer: React.FC = () => {
                       value={selectionCriteriaAnswers[criterion.id || ""] || ""}
                       onChange={(e) => handleSelectionCriteriaChange(criterion.id || "", e.target.value)}
                       options={getEvaluationScaleOptions(criterion.evaluationScale)}
+                      disabled={!canMark}
                     />
                   )}
                   <span className="evaluation-scale-indicator text-gray-600 font-medium">
@@ -559,6 +538,7 @@ const ReviewStudentAnswer: React.FC = () => {
                     onChange={(e) => handleSelectionCriteriaCommentChange(criterion.id || "", e.target.value)}
                     placeholder="Add optional comments about this evaluation..."
                     rows={3}
+                    disabled={!canMark}
                   />
                 </div>
               </div>
@@ -572,7 +552,7 @@ const ReviewStudentAnswer: React.FC = () => {
               onClick={handleSaveSelectionCriteria}
               type="button"
               variant="primary"
-              disabled={savingEvaluations}
+              disabled={savingEvaluations || !canMark}
             />
           </div>
         )}
@@ -626,13 +606,7 @@ const ReviewStudentAnswer: React.FC = () => {
               <div className="info-item"><strong>Phone:</strong> <span>{student.phoneNumber}</span></div>
               <div className="info-item"><strong>Country:</strong> <span>{student.addressCountry?.name}</span></div>
               <div className="info-item"><strong>City:</strong> <span>{student.addressCity}</span></div>
-              <div className="info-item"><strong>Citizenship:</strong> <span>{Array.isArray(student.citizenshipCountry) ? student.citizenshipCountry.map((c: { name: string }) => c.name).join(", ") : ""}</span></div>
-              {/* {student.profilePictureUrl && (
-                <div className="info-item flex flex-col items-start">
-                  <strong>Profile Picture:</strong>
-                  <img src={student.profilePictureUrl} alt="Profile" className="mt-2 rounded shadow w-20 h-20 object-cover" />
-                </div>
-              )} */}
+              <div className="info-item"><strong>Citizenship:</strong> <span>{Array.isArray(student.citizenshipCountry) ? student.citizenshipCountry.map(c => c).join(", ") : ""}</span></div>
             </>
           )}
         </div>
