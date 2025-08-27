@@ -25,7 +25,7 @@ const ProgramStatus: React.FC<ProgramStatusProps> = ({ grantProgram, onGrantProg
   // Restrict actions by role:
   const canMakePublic = grantProgram.status === GrantStatus.DRAFT && isManager;
   const canCloseProgram = grantProgram.status === GrantStatus.OPEN && isEditor;
-
+  console.log("assigned staff page, this grant program is ", grantProgram);
   const handleMakePublic = async () => {
     if (!isManager) {
       setError("Only Manager can make a program public");
@@ -156,7 +156,7 @@ const ProgramStatus: React.FC<ProgramStatusProps> = ({ grantProgram, onGrantProg
             </div>
             
             <div className="summary-item">
-              <p><strong>Assigned Staff:</strong> <span className="value">{grantProgram.assignedStaffIds?.length || 0} staff members</span></p>
+              <p><strong>Assigned Staff:</strong> <span className="value">{grantProgram.assignedStaff?.length || 0} staff members</span></p>
             </div>
            </div>
          </div>

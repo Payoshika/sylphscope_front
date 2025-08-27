@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import type { ApplicationDto, EligibilityResultDto } from "../../types/application";
 import { applyGrant, getEligibilityResultByApplicationId } from "../../services/ApplicationService";
+import { getGrantProgramById } from "../../services/GrantProgramService";
+import type { GrantProgram } from "../../types/grantProgram";
 import TitleAndHeadLine from "../../components/TitleAndHeadLine";
 import Button from "../../components/basicComponents/Button";
 
@@ -17,12 +19,26 @@ const Apply: React.FC<ApplyProps> = ({ application, grantProgramId }) => {
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [eligibilityResult, setEligibilityResult] = useState<EligibilityResultDto | null>(null);
   const [loadingEligibility, setLoadingEligibility] = useState(true);
+  const [grantProgram, setGrantProgram] = useState<GrantProgram | null>(null);
+  const [loadingGrantProgram, setLoadingGrantProgram] = useState(true);
 
   const isAlreadyApplied = application.status === "applied";
   const isDraftStatus = application.status === "draft";
   const isEligible = eligibilityResult?.eligible ?? false;
-  const canSubmit = isDraftStatus && !isAlreadyApplied && isEligible;
-  const isDisabled = isSubmitting || !canSubmit || loadingEligibility;
+  // Allow apply only when the current date is within the grant program application window
+  const isWithinApplicationWindow = (() => {
+    if (!grantProgram || !grantProgram.schedule) return false;
+    const { applicationStartDate, applicationEndDate } = grantProgram.schedule;
+    if (!applicationStartDate || !applicationEndDate) return false;
+    const now = new Date();
+    const start = new Date(applicationStartDate);
+    const end = new Date(applicationEndDate);
+    // inclusive window
+    return now >= start && now <= end;
+  })();
+
+  const canSubmit = isDraftStatus && !isAlreadyApplied && isEligible && isWithinApplicationWindow;
+  const isDisabled = isSubmitting || !canSubmit || loadingEligibility || loadingGrantProgram;
 
   // Fetch eligibility result when component mounts
   useEffect(() => {
@@ -55,9 +71,39 @@ const Apply: React.FC<ApplyProps> = ({ application, grantProgramId }) => {
     fetchEligibilityResult();
   }, [application.id]);
 
+  // Fetch grant program to read schedule
+  useEffect(() => {
+    const fetchGrantProgram = async () => {
+      if (!grantProgramId) {
+        setGrantProgram(null);
+        setLoadingGrantProgram(false);
+        return;
+      }
+      try {
+        setLoadingGrantProgram(true);
+        const gp = await getGrantProgramById(grantProgramId);
+        setGrantProgram(gp);
+      } catch (err) {
+        console.error("Failed to fetch grant program:", err);
+        setGrantProgram(null);
+      } finally {
+        setLoadingGrantProgram(false);
+      }
+    };
+    fetchGrantProgram();
+  }, [grantProgramId]);
+
   const getStatusMessage = () => {
     if (!isEligible && eligibilityResult) {
       return "You are not eligible for this grant program. Please review the eligibility criteria.";
+    }
+    if (!loadingGrantProgram && !isWithinApplicationWindow) {
+      if (grantProgram && grantProgram.schedule && (grantProgram.schedule.applicationStartDate || grantProgram.schedule.applicationEndDate)) {
+        const start = grantProgram.schedule.applicationStartDate ? new Date(grantProgram.schedule.applicationStartDate).toLocaleDateString() : "N/A";
+        const end = grantProgram.schedule.applicationEndDate ? new Date(grantProgram.schedule.applicationEndDate).toLocaleDateString() : "N/A";
+        return `Applications are open between ${start} and ${end}. You can only apply during that period.`;
+      }
+      return "This grant program does not have an application window set. You cannot apply at this time.";
     }
     switch (application.status) {
       case "draft":
@@ -100,10 +146,11 @@ const Apply: React.FC<ApplyProps> = ({ application, grantProgramId }) => {
   };
 
   const getSubmitButtonText = () => {
-    if (loadingEligibility) return "Checking Eligibility...";
+    if (loadingEligibility || loadingGrantProgram) return "Checking Eligibility...";
     if (isSubmitting) return "Submitting...";
     if (!isEligible) return "Not Eligible";
     if (!isDraftStatus) return "Cannot Submit";
+    if (!isWithinApplicationWindow) return "Outside Application Period";
     return "Submit Application";
   };
 
@@ -214,6 +261,11 @@ const Apply: React.FC<ApplyProps> = ({ application, grantProgramId }) => {
 
         <div className={`status-notice ${getStatusColor()}`}>
           <p>{getStatusMessage()}</p>
+          {!loadingGrantProgram && !isWithinApplicationWindow && grantProgram && (
+            <p className="caption muted" style={{ marginTop: 8 }}>
+              Application window: {grantProgram.schedule.applicationStartDate ? new Date(grantProgram.schedule.applicationStartDate).toLocaleDateString() : "N/A"} - {grantProgram.schedule.applicationEndDate ? new Date(grantProgram.schedule.applicationEndDate).toLocaleDateString() : "N/A"}
+            </p>
+          )}
         </div>
 
         {submitError && (

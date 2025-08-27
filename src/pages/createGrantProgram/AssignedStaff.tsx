@@ -20,7 +20,6 @@ interface AssignedStaffProps {
 const staffRoleOptions = [
   { value: "Manager", label: "Manager" },
   { value: "Administrator", label: "Administrator" },
-  { value: "Assessor", label: "Assessor" },
   { value: "Volunteer", label: "Volunteer" },
 ];
 
