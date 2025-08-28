@@ -1,6 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import ApplicationListTable from "../../src/components/basicComponents/ApplicationListTable";
+import { describe, vi, it, expect } from "vitest";
 
 const dummyApplications = [
   {

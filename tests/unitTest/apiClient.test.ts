@@ -2,9 +2,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { apiClient } from "../../src/utility/ApiClient";
 
-// Files referenced:
-// - apiClient: ../../src/utility/ApiClient.tsx
-
 describe("apiClient basic request handling", () => {
   const originalFetch = global.fetch;
 

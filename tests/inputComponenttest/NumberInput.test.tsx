@@ -1,6 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import NumberInput from "../../src/components/inputComponents/NumberInput";
+import { describe, vi, it, expect } from "vitest";
 
 describe("NumberInput", () => {
   it("renders and accepts numeric input", () => {

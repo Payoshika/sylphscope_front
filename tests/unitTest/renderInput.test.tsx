@@ -3,9 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { renderInput } from "../../src/utility/QuestionInput";
 
-// Files referenced:
-// - renderInput: ../../src/utility/QuestionInput.tsx
-
 describe("renderInput helper", () => {
   it("renders NUMBER input and forwards numeric value via onChange", () => {
     const onChange = vi.fn();
