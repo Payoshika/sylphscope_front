@@ -1,4 +1,3 @@
-// ...existing code...
 // Mock modules before importing them so imports use the mocks
 vi.mock("../../src/utility/ApiClient", () => ({ apiClient: { post: vi.fn(), get: vi.fn() } }));
 vi.mock("../../src/utility/TokenManager", () => ({

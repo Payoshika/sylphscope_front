@@ -1,12 +1,4 @@
 import React from 'react';
-/**
- * NOTE: The `student` and `provider` props are custom and not valid DOM attributes.
- * To prevent React from passing them to the underlying <svg> element (which causes
- * warnings like "Received `true` for a non-boolean attribute `student`"), we should
- * omit them before spreading props onto <svg>.
- *
- * This is handled by destructuring them out of props before passing the rest to <svg>.
- */
 
 type PlusSignProps = React.SVGProps<SVGSVGElement> & { provider?: boolean; student?: boolean };
 const PlusSign: React.FC<PlusSignProps> = ({ provider, student, ...svgProps }) => {

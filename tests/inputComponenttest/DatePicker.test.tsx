@@ -1,5 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
+import { describe, vi, it, expect } from "vitest";
 import DatePicker from "../../src/components/inputComponents/datePickers/DatePicker";
 
 describe("DatePicker", () => {

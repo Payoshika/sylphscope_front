@@ -1,9 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { doesAnswerMeetCriteria } from "../../src/utility/CriteriaUtils";
 
-// Files referenced:
-// - doesAnswerMeetCriteria: ../../src/utility/CriteriaUtils.ts
-
 describe("doesAnswerMeetCriteria - dates and numbers", () => {
   it("returns true for date equals when answer is an array of date objects", () => {
     const answer = [{ day: "21", month: "07", year: "2025" }];

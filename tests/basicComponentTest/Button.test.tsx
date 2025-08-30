@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { vi } from "vitest";
 import Button from "../../src/components/basicComponents/Button";
+import { describe, vi, it, expect } from "vitest";
 
 describe("Button", () => {
   it("renders text and calls onClick", () => {

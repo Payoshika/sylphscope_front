@@ -1,6 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import TextInput from "../../src/components/inputComponents/TextInput";
+import { describe, vi, it, expect } from "vitest";
 
 describe("TextInput", () => {
   it("renders and responds to input", () => {

@@ -1,6 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import Card from "../../src/components/basicComponents/Card";
+import { describe, vi, it, expect } from "vitest";
 
 describe("Card", () => {
   it("renders title, subtitle, children and footer", () => {

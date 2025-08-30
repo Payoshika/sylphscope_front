@@ -1,6 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import Textarea from "../../src/components/inputComponents/Textarea";
+import { describe, vi, it, expect } from "vitest";
 
 describe("Textarea", () => {
   it("renders and expands on input", () => {

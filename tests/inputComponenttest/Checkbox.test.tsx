@@ -1,6 +1,8 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import Checkbox from "../../src/components/inputComponents/Checkbox";
+import { describe, expect, it, vi } from "vitest";
+import "@testing-library/jest-dom";
 
 describe("Checkbox", () => {
   it("renders label and toggles", () => {
