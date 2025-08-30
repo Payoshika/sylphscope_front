@@ -78,7 +78,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setMfaRequired(false);
     };
 
-    // Add event listeners
     window.addEventListener("auth:login", handleAuthLogin as EventListener);
     window.addEventListener("auth:logout", handleAuthLogout);
 
